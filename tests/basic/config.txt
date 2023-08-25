@@ -1,0 +1,103 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Size of the netwrok
+
+N_x = 50         # size of the regular network
+N_y = 50         # size of the regular network
+
+# P_out = 0       # pressure at the outlet, always should be set to zero
+# P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
+# Q_tot = 2*N_x   # total flow through the system (if Q_tot == 0 the constant pressure is kept), rigth now Q_tot is set autoamtically after setting N_x
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Dimenssionless parameters describing evolution of the system
+
+l0    = 1		# initial characteristic pore length (should be always equal to one!!!!)
+d0    = 0.02  	# initial characteristic pore diameter
+Da    = 0.1     # effective Damkohler number for dissolution
+G1    = 1		# DaPe for dissolution
+gamma = 0.75    # parameters of precipitation: V_pre/V_diss
+theta = 1       # parameters of precipitation: G_pre / G_diss
+kappa = 0.01    # parameters of precipitation: Da_pre / Da_diss
+
+d_min = 0.01              # minimal pore diameter
+l_min = 0.001            # minimal pore length 
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Dynamics
+
+T_max       = 500000        # maximal number of time steps
+dt          = 0.0001        # time step (in dimensionless units [2 k1 * gamma_1/d0])
+d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
+d_d_min     = 0 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
+d_V_max     = 0.5     	    # (for precipitation only) maximal change of volume in one step (in % if obtained then dt = 2/3 dt)
+d_V_min     = 0.1    	    # (for precipitation only) minimal change of pore Volume in one step (in % if not obtained then dt = 1.2dt)
+d_d_dis     = 5             # minimal dissolution at the outlet to finish simulation (unit d0)
+d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
+if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
+if_full_dissolution = true  # if true evolution stops when system is fully dissolved
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Output
+
+printing_mode         = grains_and_diss   # style of printing: 
+                                                # "debugging", 
+                                                # "dissolution" 
+                                                # "grains"
+                                                # "grains_and_diss"
+L_out                 = 1		# printing scale
+pages_tot             = 100		# total nr of pages in the pictures (should be recalculated in future)
+s_save_data           = 10          # how often save txt and ps files 
+                                       #  if s_save_data > 1 then we save every s_save_data time step
+                                       #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
+                                       #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving
+print_diss_factor     = 2       # for printing_mode==dissolution, defines threshold for dissolution pattern (pores larger then factor x d0 are printed)
+if_save_ps            = true    # if true ps pictures are created
+if_save_txt           = true   # if true data about network (nodes, grains, pores) is seved in text file
+if_save_topology      = true   # if true topology is saved in each save_all
+if_save_table         = true    # if true tables with diameters, flows and concentration is saved
+if_verbose            = false   # if true verbose version for debugging
+if_debugging_printing = false 	# if true debugging printing is done few time in each time step
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Type of the network
+
+type_of_topology                   = triangulation     # six options: 
+                                                            #  "hexagonal" 
+                                                            #  "from_file", 
+                                                            #  "triangulation" 
+                                                            #  "cubic"
+                                                            #  "diamond"
+                                                            #  "square"
+
+in_topology_file_name              = ../../../siatki_z_triangulacji/200x200/seed-3/net.out          # file name with input topology of the network
+in_topology_file_name_g            = ../../../siatki_z_triangulacji/200x200/seed-3/net_g.out        # file name with input topology of the network
+in_pore_size_file_name             = ../../../siatki_z_triangulacji/200x200/seed-3/brak_pliku.out   # file name with input pore sizes
+if_periodic_bc                     = true           # if true (default) horizontal periodic conditions are set
+if_clear_unused_pores              = false          # if true unused pores and nodes and grains are deleted 
+random_seed                        = 12             # if -1 then srand(time(NULL)) else srand(time(random_seed))
+if_randomness_in_regular_net       = false	        # if true randomness is added to hexagonal or cubic network (working for hexagonal net)
+gauss_sigma_d                      = 0  		    # if randomness is on this gives information about width of the initial diameter distribution
+max_rand_shift_xy                  = 0       		# if randomness is on this gives information about max shift in node positions
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Model properties
+
+if_precipitation                   = true        # if true the precipitation is addet to dissolution
+if_track_grains                    = true        # if true grains and their volume are tracked (important for merging and precipitation)
+if_dynamical_length                = true        # if true pore length is addapted in each time step
+if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)
+if_smarter_calculation_of_pressure = false       # if true pressure and flow is calculate in two steps
+type_of_merging                    = none        # type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#  Initial inlet cut
+
+inlet_cut_factor = 1;      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
+inlet_cut_w = 1;           # width of an inlet cut
+inlet_cut_l = 1;		   # length of an inlet cut
