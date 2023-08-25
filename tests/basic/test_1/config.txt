@@ -101,7 +101,7 @@ type_of_merging                    = none        # type of merging: "none", "mer
 inlet_cut_factor = 1;      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
 inlet_cut_w = 1;           # width of an inlet cut
 inlet_cut_l = 1;		   # length of an inlet cut
-gamma =
+gamma = 1
 kappa = 0.2
 Da = 0.25
 d0 = 0.5
