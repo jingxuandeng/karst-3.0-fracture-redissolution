@@ -91,6 +91,7 @@ int main(int argc, char** argv){
 	if(if_show_picture or true){
 		cerr<<"Preparing pictures..."<<endl;
 		system("ps2pdf net.ps");
+        system("ps2pdf net_2.ps");
 		//system("open net.pdf");
 	}
 	

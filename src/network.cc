@@ -133,6 +133,7 @@ Network::Network (string input_file_name) {
 
 //input/output files
 	net_ps    .open("net.ps",	      ios_base::out | ios_base::trunc );
+    net_ps2   .open("net_2.ps",	      ios_base::out | ios_base::trunc );
 	pores_out .open("pores.out",	  ios_base::out | ios_base::trunc );
 	grains_out.open("grains.out",	  ios_base::out | ios_base::trunc );
 	nodes_out .open("nodes.out",	  ios_base::out | ios_base::trunc );
@@ -268,6 +269,7 @@ Network:: ~Network (){
 //file closing
 	
 	net_ps    .close();
+    net_ps2   .close();
 	net_out   .close();
 	pores_out .close();
 	grains_out.close();

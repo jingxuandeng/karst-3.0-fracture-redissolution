@@ -42,7 +42,7 @@ if_full_dissolution = true  # if true evolution stops when system is fully disso
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
 
-printing_mode         = grains_and_diss   # style of printing: 
+printing_mode         = grains         # style of printing:
                                                 # "debugging", 
                                                 # "dissolution" 
                                                 # "grains"

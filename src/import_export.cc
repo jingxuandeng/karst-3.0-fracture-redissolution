@@ -558,7 +558,7 @@ void Network::save_all_data(bool if_save_now){
 	if(if_save_now){
 		cerr<<"Saving all data..."<<endl;
 		description_note = "At the end of evolution step: s = " + to_string(tot_steps);
-		if(if_save_ps)        net_ps<< *this;
+		if(if_save_ps)        {net_ps<< *this;  Print_network_in_dissolution_style (net_ps2,*this);} //Not very pretty but I want two net.pdf files -- one with pores and one with gains.
 		if(if_save_txt)       print_net_txt();
 		if(if_save_table)     print_tables_txt();
 		if(if_save_topology) {export_topology_file(); export_topology_file_with_grains();}
@@ -566,5 +566,29 @@ void Network::save_all_data(bool if_save_now){
 	}
 
 
+}
+
+
+void Network::reprint_pictures(string& output_file_name){
+/**
+ * Reading files form  simulation anr geenrates new output files.
+ * Unused right now.
+ * TODO: Naive implementation assuming the files consists of only one system snapshot. Think of rewriting it into proper reading entire file for long simulation.
+ */
+    net_ps    .open(output_file_name+"_grains.ps",	      ios_base::out | ios_base::trunc );
+    net_ps2   .open(output_file_name+"_pores.ps",	      ios_base::out | ios_base::trunc );
+
+    for (auto i=0;i<pages_tot;i++)
+    {
+        import_topology_from_file  (in_topology_file_name);//+"_"+to_string(i));
+        import_pore_size_from_file (in_pore_size_file_name+"_"+to_string(i));
+        if(if_track_grains) {
+            import_grains_from_file    (in_topology_file_name_g+"_"+to_string(i));
+            add_information_about_grains_in_nodes();}
+
+        net_ps<< *this;  Print_network_in_dissolution_style (net_ps2,*this);
+    }
+    net_ps.close();
+    net_ps2.close();
 }
 

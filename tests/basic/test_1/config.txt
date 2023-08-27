@@ -42,7 +42,7 @@ if_full_dissolution = true  # if true evolution stops when system is fully disso
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
 
-printing_mode         = grains_and_diss   # style of printing: 
+printing_mode         = grains         # style of printing:
                                                 # "debugging", 
                                                 # "dissolution" 
                                                 # "grains"
@@ -104,5 +104,5 @@ inlet_cut_l = 1;		   # length of an inlet cut
 gamma = 1
 kappa = 0.2
 Da = 0.25
-d0 = 0.5
+d0 = 0.1
 d_min = 0.05

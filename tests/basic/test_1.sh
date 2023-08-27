@@ -22,7 +22,7 @@ gamma=1
 Da=0.25
 kappa=0.2
 
-d0=0.5
+d0=0.1
 d_min=0.05
 {
   echo gamma = $gamma
