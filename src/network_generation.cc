@@ -429,24 +429,63 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
 
 
 	cerr<<"Setting inlet and outlet..."<<endl;
-	//inlet and outlet pores
-	for (int i=0; i<NN; i++)
-		if(int(n[i]->xy.y)==0)     N_wi++;
-		else break;
-	for (int i=NN-1; i>=0; i--)
-		if(int(n[i]->xy.y)==N_y-1) N_wo++;
-		else break;
 
-	wi = new Node* [N_wi];
-	wo = new Node* [N_wo];
+    if (if_radial_geometry){
 
-	for(int i=0;i<N_wi;i++) {wi[i] = n[i];      wi[i]->t =  1;}
-	for(int i=0;i<N_wo;i++) {wo[i] = n[NN-i-1]; wo[i]->t = -1;}
+        //setting single inlet in the systems centre
+        Point xy_center  = Point( N_x/2., N_y/2.);    // center of the s system
+        Node * n_in_tmp = n[0];                 // candidate for the inlet node
+        N_wi = 1;
+        wi = new Node* [N_wi];
 
-	//cutting vertical boundary conditions
-	for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->xy.y-p[i]->n[1]->xy.y)>N_y/2)          p[i]->d = 0;
-	for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->t) == 1 &&  abs(p[i]->n[1]->t) == 1)   p[i]->d = 0;
+        for (int i=0; i<NN; i++)
+            if(n[i]->xy - xy_center < n_in_tmp->xy - xy_center)
+                n_in_tmp = n[i];
 
+        wi[0] = n_in_tmp;
+        wi[0]->t =  1;
+
+
+        // setting system outlets
+        double R = min(N_x/2.-5., N_y/2. - 5.);   //radius of the system
+
+        // setting the number of outlets pores
+        for (int i=0; i<NN; i++)
+            if(n[i]->xy - xy_center > R) N_wo++;
+
+        // setting the outlets pores
+        wo = new Node* [N_wo];
+        int j=0;
+        for (int i=0; i<NN; i++)
+            if(n[i]->xy - xy_center > R){
+                wo[j] = n[i]; wo[j]->t = -1; j++;
+            }
+
+        //cutting unnececery connections
+        for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->xy.y-p[i]->n[1]->xy.y)>N_y/2)          p[i]->d = 0;
+        for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->t) == 1 &&  abs(p[i]->n[1]->t) == 1)   p[i]->d = 0;
+    }
+
+    else{
+        //inlet and outlet pores for square geometry
+        for (int i=0; i<NN; i++)
+            if(int(n[i]->xy.y)==0)     N_wi++;
+            else break;
+        for (int i=NN-1; i>=0; i--)
+            if(int(n[i]->xy.y)==N_y-1) N_wo++;
+            else break;
+
+        wi = new Node* [N_wi];
+        wo = new Node* [N_wo];
+
+        for(int i=0;i<N_wi;i++) {wi[i] = n[i];      wi[i]->t =  1;}
+        for(int i=0;i<N_wo;i++) {wo[i] = n[NN-i-1]; wo[i]->t = -1;}
+
+        //cutting vertical boundary conditions
+        for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->xy.y-p[i]->n[1]->xy.y)>N_y/2)          p[i]->d = 0;
+        for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->t) == 1 &&  abs(p[i]->n[1]->t) == 1)   p[i]->d = 0;
+
+    }
 	//check_network_connections();
 
 	//Check if memory should be freed

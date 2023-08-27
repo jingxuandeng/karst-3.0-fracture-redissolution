@@ -142,8 +142,9 @@ class Network
 	   	string in_topology_file_name;   ///< file with initial topology of the network
 	   	string in_pore_size_file_name;  ///< file with initial pore size of the network
 	   	string in_topology_file_name_g; ///< file with initial topology of grains
+	   	bool if_radial_geometry;        ///<  if true (false is default) one input in the centre and output along circle
 		bool if_clear_unused_pores;     ///< if true unused pores and nodes and grains are deleted
-	    bool if_track_grains;           ///<  if true grains are tracked (important for merging and precipitation)
+	    bool if_track_grains;           ///< if true grains are tracked (important for merging and precipitation)
 		bool if_periodic_bc;            ///< if false - network without boundary conditions is created, works for hexagonal, cubic or triangulation (default true)
 	    double random_seed;             ///< random seed for generating random networks
 	   	bool if_randomness_in_regular_net;  ///< if true randomness is added to hexagonal network (working for hexagonal net)

@@ -90,6 +90,7 @@ Network::Network (string input_file_name) {
 	in_topology_file_name              = "net_0.out";    //file name with input topology of the network
 	in_topology_file_name_g            = "net_g_0.out";  //file name with input topology of the network
 	in_pore_size_file_name             = "pores_0.out";  //file name with input pore sizes
+    if_radial_geometry                 = false;          // if true (false is default) one input in the centre and output along circle
 	if_randomness_in_regular_net       = true;  	     //if true randomness is added to hexagonal network (working for hexagonal net)
 	if_clear_unused_pores              = true;           //if true unused pores and nodes and grains are deleted
 	if_track_grains                    = true;           //if true grains and their volume are tracked (important for merging and precipitation)
@@ -233,9 +234,9 @@ Network::Network (string input_file_name) {
 
 //printing network before dissolving
 	description_note = "At the beginning of the simulation.";
-	for(int i=0;i<NN;i++) n[i]->tmp = n[i]->a;
-	for(int i=0;i<NP;i++) p[i]->tmp = p[i]->a;
-	for(int i=0;i<NG;i++) g[i]->tmp = g[i]->a;
+	for(int i=0;i<NN;i++) n[i]->tmp = n[i]->t;
+	for(int i=0;i<NP;i++) p[i]->tmp = p[i]->d;
+	for(int i=0;i<NG;i++) g[i]->tmp = g[i]->Ve;
 	if(if_save_ps)   net_ps<< *this;
 	if(if_save_txt)  print_net_txt();
 

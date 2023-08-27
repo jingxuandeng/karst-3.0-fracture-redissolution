@@ -1,14 +1,16 @@
-23/08/2023
+27/08/2023
 
 1. Naprawić nieszczęsny Makfile (poprosić Janka o pomoc!!) - done
 2. Zrobić porzątek z projektem z CLionie i sprawdzić jak automatycznie się on tu buduje/uruchamia. - done
 4. Sprawdzić kolorowanie układu:
     - czy ładnie działa dla wersji pores i grains (tej lepiej nie ruszać)
-    - dodać flagę, czy zapisywać pores, grains czy obie wersje
-    - przygotować jakąś skalę kolorów (mathematica)
+    - dodać flagę, czy zapisywać pores, grains czy obie wersje - done
+    - przygotować jakąś skalę kolorów (mathematica) - todo
+
 3. Przygotować pliki wsadowe dla wariantów:
     - mniejszy układ, zapis obrazków i pores i grains dwa warianty geometrii: radialna i prostokątna
     - dorobić potrzebne obrazki do wykresów z długością, wymiarem fraktalnym, rozkładem VE i wastefullness
+
 4. Mathematica:
     - zrobić porządek
     - zrobić porządne wykresy dla:
@@ -18,23 +20,23 @@
         - wastefullness
 
 
-24/08/2023
+28/08/2023
 
 1. Napisać rozdział z modelem
 2. Ogarnąć brakujące symulacje na myszach i szczurach
 3. Ogarnąć ostateczne rysunki do tego rozdziału
 
 
-25/08/2023
+29/08/2023
 
 1. Napisać rozdział z wynikami qualitative i dorobićdo niego rysunki
 
 
-26/08/2023
+30/08/2023
 
 1. Napisać rozdział z wynikami quantitative i obrobićdo niego rysunki
 
 
-27/08/2023
+31/08/2023
 
 1. Poprawić tekst i wysłać do PSZ maila

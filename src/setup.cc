@@ -258,8 +258,14 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else                     cerr<<"WARNING: Wrong value of variable if_periodic_bc. Set true or false."<<endl;
 			cerr<< "Setting if_periodic_bc = "<<if_periodic_bc<<endl;}
 
+        else if(name == "if_radial_geometry"){
+            if      (value == "true" )   if_radial_geometry   = true;
+            else if (value == "false")   if_radial_geometry   = false;
+            else                     cerr<<"WARNING: Wrong value of variable if_radial_geometry . Set true or false."<<endl;
+            cerr<< "Setting if_radial_geometry  = "<<if_radial_geometry  <<endl;}
 
-		else if(name == "if_randomness_in_regular_net"){
+
+        else if(name == "if_randomness_in_regular_net"){
 			if      (value == "true" )   if_randomness_in_regular_net  = true;
 			else if (value == "false")   if_randomness_in_regular_net  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_randomness_in_regular_net. Set true or false."<<endl;
