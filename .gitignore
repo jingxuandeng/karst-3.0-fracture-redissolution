@@ -3,7 +3,8 @@
 /build/
 /build_clion/
 /.idea
-
+/tests/karst
+/notes
 
 # Prerequisites
 *.d
