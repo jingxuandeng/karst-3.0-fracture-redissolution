@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 500         # size of the regular network
-N_y = 500         # size of the regular network
+N_x = 100         # size of the regular network
+N_y = 100         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -76,9 +76,9 @@ type_of_topology                   = triangulation     # six options:
 in_topology_file_name              = ../../../siatki_z_triangulacji/200x200/seed-3/net.out          # file name with input topology of the network
 in_topology_file_name_g            = ../../../siatki_z_triangulacji/200x200/seed-3/net_g.out        # file name with input topology of the network
 in_pore_size_file_name             = ../../../siatki_z_triangulacji/200x200/seed-3/brak_pliku.out   # file name with input pore sizes
-if_radial_geometry                 = true           # if true (false is default) one input in the centre and output along circle
+if_radial_geometry                 = false          # if true (false is default) one input in the centre and output along circle
 if_periodic_bc                     = true           # if true (default) horizontal periodic conditions are set
-if_clear_unused_pores              = true          # if true unused pores and nodes and grains are deleted
+if_clear_unused_pores              = true           # if true unused pores and nodes and grains are deleted
 random_seed                        = 12             # if -1 then srand(time(NULL)) else srand(time(random_seed))
 if_randomness_in_regular_net       = false	        # if true randomness is added to hexagonal or cubic network (working for hexagonal net)
 gauss_sigma_d                      = 0  		    # if randomness is on this gives information about width of the initial diameter distribution
