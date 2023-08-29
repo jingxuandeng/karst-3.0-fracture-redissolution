@@ -319,9 +319,9 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
 
 	cerr<<"Getting rid of unnecessary edges."<<endl;
 	vector<Edge<double> > edges2;
-	for(auto e : edges){
+	for(const auto& e : edges){
 		bool if_new = true;
-		for(auto e2 : edges2) if(e==e2)  if_new = false;
+		for(const auto& e2 : edges2) if(e==e2)  if_new = false;
 		if(if_new) if((e.p1.a<e.p2.a && e.p1.a >=0 && e.p1.a < NN)) edges2.push_back(e);
 	}
 	edges2.swap(edges);
@@ -462,7 +462,7 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
             }
 
         //cutting unnececery connections
-        for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->xy.y-p[i]->n[1]->xy.y)>N_y/2)          p[i]->d = 0;
+        for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->xy.y-p[i]->n[1]->xy.y)>N_y/2.)         p[i]->d = 0;
         for (int i=0;i<NP;i++) if( abs(p[i]->n[0]->t) == 1 &&  abs(p[i]->n[1]->t) == 1)   p[i]->d = 0;
     }
 
