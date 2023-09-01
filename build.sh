@@ -1,5 +1,9 @@
 #! /bin/sh
 
+if [ ! -d bin ]; then
+    mkdir bin
+fi
+
 # Get the system name using uname
 system_name=$(uname -s)
 

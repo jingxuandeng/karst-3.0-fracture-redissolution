@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 200         # size of the regular network
-N_y = 200         # size of the regular network
+N_x = 20         # size of the regular network
+N_y = 20         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -27,7 +27,7 @@ l_min = 0.001            # minimal pore length
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Dynamics
 
-T_max       = 1#500000        # maximal number of time steps
+T_max       = 500000        # maximal number of time steps
 dt          = 0.0001        # time step (in dimensionless units [2 k1 * gamma_1/d0])
 d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
 d_d_min     = 0 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
@@ -55,8 +55,8 @@ s_save_data           = 0.001          # how often save txt and ps files
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving
 print_diss_factor     = 2       # for printing_mode==dissolution, defines threshold for dissolution pattern (pores larger then factor x d0 are printed)
 if_save_ps            = true    # if true ps pictures are created
-if_save_txt           = true   # if true data about network (nodes, grains, pores) is seved in text file
-if_save_topology      = true   # if true topology is saved in each save_all
+if_save_txt           = true    # if true data about network (nodes, grains, pores) is seved in text file
+if_save_topology      = true    # if true topology is saved in each save_all
 if_save_table         = true    # if true tables with diameters, flows and concentration is saved
 if_verbose            = false   # if true verbose version for debugging
 if_debugging_printing = false 	# if true debugging printing is done few time in each time step

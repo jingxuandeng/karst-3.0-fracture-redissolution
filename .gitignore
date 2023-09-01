@@ -44,4 +44,6 @@
 *.ps
 *.pdf
 *.out
+*.out.gz
+*.txt.gz
 

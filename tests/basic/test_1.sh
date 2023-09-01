@@ -15,6 +15,7 @@ if [ ! -d "test_1" ]; then
 fi
 
 cd test_1 || exit
+rm *
 cp ../config.txt .
 
 

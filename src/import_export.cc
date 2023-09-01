@@ -504,9 +504,7 @@ void Network::print_tables_txt(){
 			}
 		}
 
-
-
-	else {   //printing nodes line by line,  mean d and q around given node are printed.
+    else {   //printing nodes line by line,  exact d and q around given node are printed. (NEW VERSION, NO MEANS)
 		int linia = 0;
 		for(int i=0;i<NN;i++) {
 			if(int(n[i]->xy.y) > linia){
@@ -517,18 +515,61 @@ void Network::print_tables_txt(){
 				concentration2_out <<endl;
 				pressure_out       <<endl;
 				lengths_out        <<endl;
+                VA_out             <<endl;
+                VE_out             <<endl;
+                VX_out             <<endl;
 			}
-			double d_mean = 0; double q_mean = 0; double l_mean = 0;
-			for(int b=0;b<n[i]->b;b++){ d_mean+= n[i]->p[b]->d;  q_mean+= n[i]->p[b]->q; l_mean+=n[i]->p[b]->l;}
-			diameters_out      <<setprecision(5)<<setw(10)<<d_mean/n[i]->b;
-			flow_out           <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
-			pressure_out       <<setprecision(5)<<setw(12)<<n[i]->u;
-			lengths_out        <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
-			if (if_streamtube_mixing)   concentration_out  <<setprecision(5)<<setw(12)<<p[i]->c_in<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->c_in;
-			else						concentration_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
-			concentration2_out <<setprecision(5)<<setw(12)<<n[i]->cc;
+
+			for(int b=0;b<n[i]->b;b++) {
+
+                diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
+                flow_out << setprecision(5) << setw(10) << n[i]->p[b]->q;
+                lengths_out << setprecision(7) << setw(12) << n[i]->p[b]->l;
+
+                concentration_out << setprecision(5) << setw(12) << n[i]->cb;
+                concentration2_out << setprecision(5) << setw(12) << n[i]->cc;
+                pressure_out << setprecision(5) << setw(12) << n[i]->u;
+            }
+            for(int b=0;b<n[i]->b;b++)  if(if_track_grains) {
+                VA_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Va;
+                VE_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Ve;
+                VX_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Vx;
+            }
 		}
 	}
+
+//	else {   //printing nodes line by line,  mean d and q around given node are printed.
+//		int linia = 0;
+//		for(int i=0;i<NN;i++) {
+//			if(int(n[i]->xy.y) > linia){
+//				linia++;
+//				diameters_out      <<endl;
+//				flow_out           <<endl;
+//				concentration_out  <<endl;
+//				concentration2_out <<endl;
+//				pressure_out       <<endl;
+//				lengths_out        <<endl;
+//                VA_out             <<endl;
+//                VE_out             <<endl;
+//                VX_out             <<endl;
+//			}
+//			double d_mean = 0; double q_mean = 0; double l_mean = 0; double VE_mean=0, VA_mean=0, VX_mean=0;
+//			for(int b=0;b<n[i]->b;b++){ d_mean+= n[i]->p[b]->d;  q_mean+= n[i]->p[b]->q; l_mean+=n[i]->p[b]->l;}
+//            if(if_track_grains) for(int b=0;b<n[i]->bG;b++){ VE_mean+=n[i]->g[b]->Ve; VA_mean+=n[i]->g[b]->Va; VX_mean+=n[i]->g[b]->Vx;}
+//			diameters_out      <<setprecision(5)<<setw(10)<<d_mean/n[i]->b;
+//			flow_out           <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
+//			pressure_out       <<setprecision(5)<<setw(12)<<n[i]->u;
+//			lengths_out        <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
+//			if (if_streamtube_mixing)   concentration_out  <<setprecision(5)<<setw(12)<<p[i]->c_in<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->c_in;
+//			else						concentration_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
+//			concentration2_out <<setprecision(5)<<setw(12)<<n[i]->cc;
+//            if(if_track_grains) {
+//                VA_out <<setprecision(5)<<setw(10)<<VA_mean/n[i]->bG;;
+//                VE_out <<setprecision(5)<<setw(10)<<VE_mean/n[i]->bG;;
+//                VX_out <<setprecision(5)<<setw(10)<<VX_mean/n[i]->bG;;
+//            }
+//		}
+//	}
 }
 
 /**
