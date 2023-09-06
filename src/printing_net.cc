@@ -143,6 +143,7 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
 
 	//for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
 	//for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
+    for(int i=0;i<S.NN;i++) S.n[i]->tmp=i;
 	for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
 	for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
 
@@ -203,6 +204,9 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 			if (p.x == 1)           stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
 			else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
 			}
+
+//        for(int i=0;i<S.N_wi;i++) {S.wi[i]->tmp=1; stream<<*S.wi[i];}
+//        for(int i=0;i<S.N_wo;i++) {S.wi[i]->tmp=0; stream<<*S.wo[i];}
 	}
 	else if( S.print_diss_factor)  for(int i=0;i<S.NP;i++) if(S.p[i]->x==1) {S.p[i]->tmp=666; stream<<*S.p[i];}
 	else if(!S.print_diss_factor)  for(int i=0;i<S.NP;i++)                  {S.p[i]->tmp=666; stream<<*S.p[i];}

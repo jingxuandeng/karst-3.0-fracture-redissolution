@@ -108,7 +108,7 @@ class Kropa : public Kropka
 		Node *nod;
 	
 	public:
-		Kropa(Point aa = Point(), Node * nnod=NULL, Kolor kk = Kolor(), double rr=1)
+		Kropa(Point aa = Point(), Node * nnod=NULL, Kolor kk = Kolor(), double rr=1.5)
 		{
 			a = aa;
 			k = kk;
