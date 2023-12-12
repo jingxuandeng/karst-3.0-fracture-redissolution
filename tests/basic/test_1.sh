@@ -8,13 +8,23 @@ if ! bash ./build.sh; then
     exit 1
 fi
 cd tests/basic || exit
+#
+#if [ ! -d "test_1" ]; then
+#    mkdir "test_1"
+#    echo "Utworzono katalog test_1"
+#fi
 
-if [ ! -d "test_1" ]; then
-    mkdir "test_1"
-    echo "Utworzono katalog test_1"
+# Creating proper directory
+current_date_time=$(date +test_%Y_%m_%d_%H_%M)
+mkdir "$current_date_time"
+if [ -d "$current_date_time" ]; then
+  echo "Directory '$current_date_time' created successfully."
+else
+  echo "Failed to create directory."
+  exit 1
 fi
 
-cd test_1 || exit
+cd "$current_date_time" || exit
 rm *
 cp ../config.txt .
 

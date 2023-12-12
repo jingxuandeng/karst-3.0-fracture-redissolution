@@ -109,7 +109,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
 	if (d == 0) return;
 
-	if(!S->if_dynamical_length || !S->if_track_grains) return;
+	if(!S->if_dynamical_length || !S->if_track_grains) return;          //FIXME: zaimplementować poprawnie wzór na d(l)?
 
 	double factor=0; double V_max=0; double V_act=0;
 	for (int s=0; s<bG; s++){
@@ -123,7 +123,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
 	if(l<=S->l_min) l = S->l_min;
 
-	if(l<=S->l_min) {
+	if(l<=S->l_min) {                                                   //FIXME: raz zarośnięty por powinien mieć opcjęby się odetkać?
 		if(S->if_verbose) cerr<<"l = l_min for Pore:"<<*this<<endl;
 		for (int s=0; s<bG; s++){
 			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\
