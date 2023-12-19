@@ -160,8 +160,12 @@ void Grain::calculate_initial_volume (Network *S){
 		double z = S->node_distance(n[2], n[0]);
 		double P = (x+y+z)/2;
 
-		Va = sqrt(P*(P-x)*(P-y)*(P-z));
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
+		double Va_0 = sqrt(P*(P-x)*(P-y)*(P-z));
+        double d_mean = 0;
+        for (int i=0;i<bP;i++) d_mean+=p[i]->d/bP;
+        Va = (pow(3. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));
+
+		//for (int i=0;i<bP;i++) Va_0 -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;   //old, naive version
 	}
 	//WARNING: the general formula should be implemented for cubic network with added random node positions
 	else if(bN==8){
