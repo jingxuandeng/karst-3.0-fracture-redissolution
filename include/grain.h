@@ -60,6 +60,7 @@ class Grain{
 		int a;           ///< name of a grain
 		int bN;          ///< numbers of nodes in vicinity (used for non-triangular network)
 		int bP;          ///< numbers of pores in vicinity (used for non-triangular network)
+        int x;           ///< additional info about grain (if connected to the dissolution pattern)
 
 		Node **n;		///< node list
 		Pore **p;		///< pore list

@@ -328,6 +328,7 @@ class Network
 
     int find_percolation();
 
+    void check_preci_pattern(double threshold);
 };
 
 

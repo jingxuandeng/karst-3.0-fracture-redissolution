@@ -34,7 +34,7 @@ Grain::Grain (){
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 		
 	Va = 0; 	Ve=0;     Vx=0;
-	tmp = name; a = name; tmp2=0;
+	tmp = name; a = name; tmp2=0;  x=1;
 	bN=3; bP=3;
 
 	n = new Node*[3];
@@ -62,7 +62,7 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 
 	Va = 0; 	Ve=0;      Vx=0;
-	tmp = name; a = name; tmp2=0;
+	tmp = name; a = name; tmp2=0; x=1;
 	bN=4; bP=4;
 
 	n = new Node*[4];
@@ -86,7 +86,7 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 Grain::Grain (Grain &g){
 
 	Va  = g.Va;  Ve = g.Ve;   Vx = g.Vx;
-	tmp = g.tmp; a  = g.a; tmp2=0;
+	tmp = g.tmp; a  = g.a; tmp2=0; x=g.x;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -102,7 +102,7 @@ Grain& Grain::operator = (Grain &g){
 
 
 	Va  = g.Va;  Ve = g.Ve;  Vx = g.Vx;
-	tmp = g.tmp; a  = g.a; tmp2=g.tmp2;
+	tmp = g.tmp; a  = g.a; tmp2=g.tmp2; x=g.x;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -122,7 +122,7 @@ Grain& Grain::operator = (Grain &g){
 Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 
 	Va = 0; 	Ve=0;     Vx=0;
-	tmp = name; a = name; tmp2=0;
+	tmp = name; a = name; tmp2=0; x=1;
 	bN=bbN; bP=bbP;
 
 	n = new Node*[bN];
@@ -134,7 +134,7 @@ Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 
 Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_x_tmp, int bb_N, int bb_P){
 	Va = V_a_tmp; 	Ve = V_e_tmp;   Vx = V_x_tmp;
-	tmp = name; a = name; tmp2=0;
+	tmp = name; a = name; tmp2=0; x=1;
 	bN=bb_N; bP=bb_P;
 
 	n = new Node*[bN];

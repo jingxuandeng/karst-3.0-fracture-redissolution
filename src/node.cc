@@ -84,7 +84,14 @@ void Node::check_diss_pattern(double threshold){
 		if (n[i]->x==0) n[i]->check_diss_pattern(threshold);
 	}
 }
-
+void Node::check_preci_pattern(double thr){
+    x = 1;  			//the node has been checked
+    for(int i=0;i<bG;i++) if(g[i]->Va>thr/g[i]->Ve>g[i]->Va*thr) {
+            g[i]->x = 1;  	//pore has been set as connected to the dissolution pattern
+            x = 2;  		//node is connected to the pattern
+            if (n[i]->x==0) n[i]->check_diss_pattern(thr);
+        }
+}
 
 //Old version numbering fork form the root
 

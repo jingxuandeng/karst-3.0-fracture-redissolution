@@ -86,6 +86,7 @@ class Node{
 		void find_forks();                                      ///< decides if the nod is a for and what is the fork generation
 		int cluster_size (int l);                               ///<returns cluster size with the root in the node and length given by l ()
 		void check_cluster(int l, int &sum, bool &if_l);        ///<cheching the cluster
+    void check_preci_pattern(double thr);
 };
 
 ofstream_txt & operator << (ofstream_txt & stream, Node &p);

@@ -196,12 +196,28 @@ void Network::check_if_dissolved(){
 	for(int i=0;i<N_wo;i++){
 		Node* nn = wo[i];
 		for (int j=0; j<nn->b;j++) if (nn->p[j]->d > d0*d_d_dis && nn->p[j]->x==1){
-			cerr<<"\nSystem is fully dissolved\nDissolution finished."<<endl;
+			cerr<<"\nSystem is fully dissolved\nSimulation finished."<<endl;
 			if_system_dissolved = true;
 			return;}
 	}
 
-	//condition for clogging
+    //condition for pattern_breakthrough
+    check_preci_pattern(1);
+    for(int i=0;i<N_wo;i++){
+        Node* nn = wo[i];
+        for (int j=0; j<nn->bG;j++) if (nn->g[j]->x>=1){
+                cerr<<"\nPrecipitation pattern has made breakthrough \nSimulation finished."<<endl;
+                if_system_dissolved = true;
+                return;}
+    }
+
+
+    //condition for clogging (new) TODO: check it
+    if (find_percolation()>0){
+        if_system_dissolved = true;
+        return;}
+
+	//condition for clogging (old, to be removed) TODO: check if works, seems to be not that stupid
 	int nr_of_red_grains=0;
 	if(if_precipitation) for(int i=0;i<N_wo;i++){
 		Node* nn = wo[i];
@@ -209,7 +225,7 @@ void Network::check_if_dissolved(){
 
 	}
 	 if(nr_of_red_grains>double(N_wo)/20.){
-		cerr<<"\nSystem is dissolved\nDissolution and precipitation is finished."<<endl;
+		cerr<<"\nSystem's output has been clogged \nDissolution and precipitation is finished."<<endl;
 		if_system_dissolved = true;
 	}
 
@@ -235,6 +251,14 @@ void Network::check_diss_pattern (double threshold){
 	for (int i =0;i<NP;i++)   p[i]->x=0;
 	for (int i =0;i<N_wi;i++) wi[i]->check_diss_pattern(threshold*d0);
 	for (int i =0;i<N_wi;i++) wi[i]->x=2;
+}
+
+
+void Network::check_preci_pattern (double threshold){
+    for (int i =0;i<NN;i++)   n[i]->x=0;
+    for (int i =0;i<NG;i++)   g[i]->x=0;
+    for (int i =0;i<N_wi;i++) wi[i]->check_preci_pattern(threshold);
+    for (int i =0;i<N_wi;i++) wi[i]->x=2;
 }
 
 /**

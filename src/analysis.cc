@@ -125,6 +125,7 @@ void Network::write_time_step_properties(){
 				"VE_tot"        <<setw(15)<<\
 				"VX_tot"        <<setw(15)<<\
                 "plots"         <<setw(15)<<\
+                "percolation"   <<setw(15)<<\
 				"d_in_max"      <<setw(15)<<\
 				"d_out_max"     <<setw(15)<<endl;
 		time_evolution_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
@@ -133,9 +134,13 @@ void Network::write_time_step_properties(){
 	//calculating maximal pore diameter at the outlet
 	double d_out_max = 0;double d_in_max = 0;
 	for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++)
-		if(d_in_max<wi[i]->p[s]->d) d_in_max=wi[i]->p[s]->d;
+		if(d_in_max<wi[i]->p[s]->d)
+            d_in_max=wi[i]->p[s]->d;
 	for(int i=0;i<N_wo;i++) for(int s=0;s<wo[i]->b;s++)
-		if(d_out_max<wo[i]->p[s]->d) d_out_max=wo[i]->p[s]->d;
+		if(d_out_max<wo[i]->p[s]->d)
+            d_out_max=wo[i]->p[s]->d;
+
+    double percolation = find_percolation();
 
 
 
@@ -148,6 +153,7 @@ void Network::write_time_step_properties(){
 			Ve_tot     <<setw(15)<<\
 			Vx_tot     <<setw(15)<<\
             pages_saved<<setw(15)<<\
+            percolation<<setw(15)<<\
 			d_in_max   <<setw(15)<<\
 			d_out_max  <<endl<<flush;
 }
