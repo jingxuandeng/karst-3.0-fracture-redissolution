@@ -78,7 +78,7 @@ void Node::remove_form_IO_list(Network *S){
 */
 void Node::check_diss_pattern(double threshold){
 	x = 1;  			//the node has been checked
-	for(int i=0;i<b;i++) if(p[i]->d>threshold){
+	for(int i=0;i<b;i++) if(p[i]->d>threshold || p[i]->d<=-threshold){
 		p[i]->x = 1;  	//pore has been set as connected to the dissolution pattern
 		x = 2;  		//node is connected to the pattern
 		if (n[i]->x==0) n[i]->check_diss_pattern(threshold);

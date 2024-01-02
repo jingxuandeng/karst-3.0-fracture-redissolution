@@ -190,6 +190,25 @@ int* Network::find_child_distribution (){
 
 }
 
+int Network::find_percolation(){
+
+    for (int i =0;i<NP;i++)   p[i]->x=p[i]->d;
+    for (int i =0;i<NP;i++)   if (p[i]->d<=d_min) p[i]->d=0;
+    calculate_pressures();
+    bool if_flow = false;
+//sprawdzam, czy nie ma problemu z nieskończonościami
+    for(int i=0;i<NN;i++)
+        if (not isfinite(n[i]->u))
+            return 1;
+//sprawdzam, czy jest przeplyw przez uklad;
+    for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++)
+        if(p[i]->n[0]->u - p[i]->n[1]->u !=0)
+            return 0;
+
+
+    return 1;
+}
+
 /**
 * This function finds forking in a tree (starting form the root).
 * To estimate fractal dimension it is better to use revert forking.

@@ -326,6 +326,8 @@ class Network
 		void write_concentration(string file_name);
 
 
+    int find_percolation();
+
 };
 
 

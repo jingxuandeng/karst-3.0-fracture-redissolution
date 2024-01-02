@@ -27,15 +27,15 @@ cp ../../../karst_3.0/simulation_setups/1D/config.txt . || exit
 
 printf "Running the simulation...\n\n"
 
-Da=0.2
+Da=0.02
 gamma=1
-kappa=1
-d0=0.5
+kappa=0.5
+d0=0.4
 d_min=0.05
 
 for gamma in 1.5   #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
-for dmin in  0.27 0.275
+for dmin in  0.1 0.001 0.2 0.3  0.25 0.35
 do
   (
                 param=Da-$Da-gamma-$gamma-kappa-$kappa-d0-$d0-dmin-$dmin
@@ -45,7 +45,6 @@ do
                 cp ../config.txt .
 
                 {
-                  echo N_y    = 4000
                   echo gamma = $gamma
                   echo kappa = $kappa
                   echo Da    = $Da
