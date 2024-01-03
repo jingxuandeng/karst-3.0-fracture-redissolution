@@ -60,7 +60,7 @@ void Network::calculate_pressures(){
 	double S_tmp=0;
 	for(int i=0;i<NN;i++) if(y[i]!=P_in) S_tmp+= y[i];
 	if(S_tmp==0) {
-		cerr<<"Pressure has not been calculated properly."<<endl;
+		cerr<<"Pressure has not been calculated properly."<<endl;  //FIXME: nie sprawdzac tego warunku gdy sprawdzam perkolacje
 		ofstream_txt B_err;
 		B_err     .open("B_err.out",	      ios_base::out | ios_base::trunc );
 		for(int i=0;i<R_no;i++) B_err<<ww_r[i]<<"\t"<<ww_c[i]<<"\t"<<B[i]<<endl;
