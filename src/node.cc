@@ -84,16 +84,24 @@ void Node::check_diss_pattern(double threshold){
 		if (n[i]->x==0) n[i]->check_diss_pattern(threshold);
 	}
 }
-void Node::check_preci_pattern(double thr){
+void Node::check_preci_pattern(double factor){
     x = 1;  			//the node has been checked
-    for(int i=0;i<bG;i++) if(g[i]->Va>thr/g[i]->Ve>g[i]->Va*thr) {
-            g[i]->x = 1;  	//pore has been set as connected to the dissolution pattern
-            x = 2;  		//node is connected to the pattern
-            if (n[i]->x==0) n[i]->check_diss_pattern(thr);
-        }
+    double max_distance = 5;
+    for(int i=0;i<bG;i++)
+        if(g[i]->bN==3)
+            if(abs(g[i]->n[0]->xy.y-g[i]->n[1]->xy.y<max_distance) &&
+               abs(g[i]->n[1]->xy.y-g[i]->n[2]->xy.y<max_distance) &&
+               abs(g[i]->n[2]->xy.y-g[i]->n[0]->xy.y<max_distance))
+                if(g[i]->Ve > g[i]->Va*factor) { // && g[i]->Ve>0.000001) {
+                    g[i]->x = 1;  	//grain has been set as connected to the precipitation pattern
+                    x = 2;  		//node is connected to the pattern
+                    for (int b=0; b<g[i]->bN;b++)
+                        if (g[i]->n[b]->x==0)
+                            g[i]->n[b]->check_preci_pattern(factor);
+                }
 }
-
 //Old version numbering fork form the root
+
 
 void Node::find_forks(){
 
@@ -288,6 +296,13 @@ void Node::add_new_Grain(Grain *g_tmp){
 	for(int i=0; i<bG; i++) if(g[i]==g_tmp) return;
 	g[bG] = g_tmp;
 	bG++;
+}
+
+bool Node::is_clogged() {
+    for (int i=0;i<b;i++)
+        if (p[i]->d>0)
+            return false;
+    return true;
 }
 
 ostream & operator << (ostream & stream, Node &n){

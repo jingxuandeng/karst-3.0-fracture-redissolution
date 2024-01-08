@@ -1,7 +1,7 @@
 #include "network.h"
 
 double z_to_print=0;
-double max_distance = 4;
+double max_distance = 6;
 
 
 
@@ -13,13 +13,23 @@ ofstream_ps & operator << (ofstream_ps & stream, Grain &g){
 		//stream<<Trojkacik(g.n[0]->xy,g.n[1]->xy,g.n[2]->xy,g.tmp,Kolor(double(rand())/RAND_MAX,double(rand())/RAND_MAX,double(rand())/RAND_MAX))<<endl;
 		//stream<<Trojkacik(g.n[0]->xy,g.n[1]->xy,g.n[2]->xy,g.tmp,Kolor(double(rand())/RAND_MAX,double(rand())/RAND_MAX,double(rand())/RAND_MAX))<<endl;
 	//else
-		stream<<Trojkacik(g.n[0]->xy,g.n[1]->xy,g.n[2]->xy,g.tmp,Kolor(0.9,0.9,0.1))<<endl;
+    {
+        auto k = Kolor(0.9,0.9,0.9);
+        if (g.tmp==1)      k = Kolor(1,0,0);
+        else if (g.tmp==2) k = Kolor(0,1,0);
+        else if (g.tmp==0) k = Kolor(0.9,0.9,0.9);
+        else          k = Kolor(0.1,0.1,0.1);
+
+		stream<<Trojkacik(g.n[0]->xy,g.n[1]->xy,g.n[2]->xy,g.tmp,k)<<endl;
+    }
 
 	return stream;}
 
 
 
 ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network &S){
+
+
 	if(g.bN<3) {
 		if(S.if_verbose) cerr<<"Patological grain (bN = "<<g.bN<<", bP = "<<g.bP<<") has to be implemented."<<endl<<g<<endl;
 		return stream; }
@@ -53,7 +63,8 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	double factor = 2;
 	if (S.if_precipitation)  color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
 
-	//if(g.bN==3)  stream<<Trojkacik(pp[0],pp[1],pp[2],g.tmp,color)<<endl<<flush;
+
+	if(g.bN==3)  stream<<Trojkacik(pp[0],pp[1],pp[2],666,color)<<endl<<flush;
 	stream<<Wielobok (g.bN, pp,g.tmp,color)<<endl<<flush;
 
 
@@ -63,10 +74,15 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	return stream;
 }
 
-ofstream_ps & operator << (ofstream_ps & stream, Node &n){
+ofstream_ps & operator  << (ofstream_ps & stream, Node &n){
 	//stream<<Kropka(n.xy,n.tmp,Kolor(1,0,0),0.1);
 	if(n.xy.z != z_to_print) return stream;
-	stream<<Kropa(n.xy,&n,Kolor(1,0,0),0.1);
+    Kolor k;
+    if (n.tmp<2)
+        k = (0.5,0.5,0.5);
+    else
+        k = (1,0,0);
+	stream<<Kropa(n.xy,&n,k,0.1);
 	return stream;}
 
 ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
@@ -140,11 +156,11 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
 	stream<<"0 "<<-450./skala<<" moveto"<<endl;
 	stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
 
-
-	//for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
+    for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->x;
+	for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
 	//for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NN;i++) S.n[i]->tmp=i;
-	for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
+    for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
+    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->x;
 	for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
 
 	stream << "showpage "<<endl<<flush;
@@ -192,7 +208,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 			g = 1;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
 			b = 0;
 			kkk=Kolor(r,g,b);}
-        if (p.d<S.d_min*(1+0.01) ){
+        if (p.d<=S.d_min){// FIXME *(1+0.01) ){
                 r = 1;
                 g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
                 b = 0;

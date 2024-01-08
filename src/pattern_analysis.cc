@@ -1,5 +1,6 @@
 #include "network.h"
 #include "printing.h"
+#include "algorithms_cc.h"
 
 
 /**
@@ -190,22 +191,29 @@ int* Network::find_child_distribution (){
 
 }
 
+
 int Network::find_percolation(){
 
-    for (int i =0;i<NP;i++)   p[i]->x=p[i]->d;
-    for (int i =0;i<NP;i++)   if (p[i]->d<=d_min) p[i]->d=0;
-    calculate_pressures();
-    bool if_flow = false;
-//checking if all pressures are finite
-    for(int i=0;i<NN;i++)
-        if (not isfinite(n[i]->u))
-            return 2;
-//checking if there is no-zero flow through the system
-    for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++)
-        if(p[i]->n[0]->u - p[i]->n[1]->u !=0)
-            return 0;
+    cerr<<"Checking percolation..."<<endl;
+    for (int i =0;i<NN;i++)   n[i]->x=0;
+    for (int i =0;i<NP;i++)   p[i]->x=0;
+    for (int i =0;i<N_wi;i++) wi[i]->check_diss_pattern(d_min);
+    for (int i =0;i<N_wi;i++) wi[i]->x=2;
 
-    return 1;
+//    if(if_debugging_printing){
+//        for(int i=0;i<NN;i++) n[i]->tmp = n[i]->x;
+//        for(int i=0;i<NP;i++) p[i]->tmp = p[i]->d;
+//        description_note = "Finding percolation: s = " + to_string(tot_steps);
+//        net_ps<<*this;}
+
+    for(int i=0;i<N_wo;i++) {
+        Node *nn = wo[i];
+        for (int j = 0; j < nn->b; j++)
+            if (nn->p[j]->x == 1)
+                return 0;
+    }
+
+        return 1;
 }
 
 /**

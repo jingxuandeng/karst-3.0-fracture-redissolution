@@ -578,7 +578,7 @@ void Network::print_tables_txt(){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::save_all_data(bool if_save_now){
+void Network::  save_all_data(bool if_save_now){
 
 
 	static double Va_old = 0;

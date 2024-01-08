@@ -280,7 +280,7 @@ void Network::calculate_flows(){ //version without pore merging
 * @date 25/09/2019
 */
 void Network::calculate_flows_for_large_d(double d_max){
-	cerr<<"Calculating flows..."<<endl;
+	cerr<<"Calculating flows for large d..."<<endl;
 
 	for(int i=0;i<NP;i++) if(p[i]->n[0]->x==2 && p[i]->n[1]->x==2) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(mu_0);
 	for(int i=0;i<NP;i++) if(!isfinite(p[i]->q)) {
@@ -307,7 +307,7 @@ void Network::calculate_flows_for_large_d(double d_max){
 void Network::recalculate_flows_to_keep_Q_tot(string type){
 
 	double Q_tmp = 0;
-
+    cerr<<"Recalculating flows to keep Q_tot..."<<endl;
 
 	if(type == "inlet"){  //to be used for large d only !!!
 		//cerr<<"Recalculating flows for large d only!!!"<<endl;
@@ -324,7 +324,7 @@ void Network::recalculate_flows_to_keep_Q_tot(string type){
 			Node* n_tmp = wo[i];
 			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) Q_tmp+=fabs(n_tmp->p[j]->q);
 			}
-		if (fabs(Q_tmp)<1e-10) {
+		if (fabs(Q_tmp)<1e-13/N_x) {
 			cerr<<"Problem with flow through the system. Check if the system is not clogged."<<endl;
 			s_save_data = 1;
 			save_all_data();

@@ -276,7 +276,7 @@ void Network::add_randomness_to_regular_network(double d_sigma, double max_nodes
 		for(int i=0;i<NN;i++) n[i]->tmp = n[i]->u;
 		for(int i=0;i<NP;i++) p[i]->tmp = p[i]->l;
 		description_note = "After adding randomness to the network: s = " + to_string(tot_steps);
-		net_ps<<*this;}
+		net_ps2<<*this;}
 }
 
 /**

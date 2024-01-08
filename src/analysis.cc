@@ -94,7 +94,7 @@ void Network::write_pattern_properties(){
 				for (int i=0;i<NP;i++) p[i]->tmp = 666;
 				printing_mode = "debugging";
 				net_ps<< *this;
-				printing_mode = "grains";
+				//printing_mode = "grains";  FIXME: nie iwem czemu ta ostatnia linijka tutaj
 		}
 }
 

@@ -88,10 +88,14 @@ ostream & operator<< (ostream &os, Kropa kr) {
 
 
 ostream & operator<< (ostream &os, Trojkacik tr) {
-	
+
+    //printing shape
+//    cerr<<"Kolor: "<<tr.k.r<<" "<<tr.k.g<<" "<<tr.k.b<<endl;
 	os<<tr.k;
 	os<<tr.n1<<"moveto "<<tr.n2<<"lineto "<<tr.n3<<"lineto closepath fill stroke"<<endl;
-	os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
+
+    //printing label
+    os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
 	//os<<"/Times-Bold findfont "<<(tr.n1-tr.n2)/5.<<" scalefont setfont"<<endl;
 	os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl;
 	os<<Point((tr.n1.x+tr.n2.x+tr.n3.x)/3,(tr.n1.y+tr.n2.y+tr.n3.y)/3)<<"moveto"<<endl;
@@ -103,14 +107,15 @@ ostream & operator<< (ostream &os, Trojkacik tr) {
 
 ostream & operator<< (ostream &os, Wielobok w) {
 
+
 	os<<w.k;
 	os<<w.p[0]<<"moveto ";
 	for (int i=1;i<w.b;i++)
-	os<<w.p[i]<<"lineto ";
+	    os<<w.p[i]<<"lineto ";
 	os<<"closepath fill stroke"<<endl;
 	os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
-	//os<<"/Times-Bold findfont "<<(tr.n1-tr.n2)/5.<<" scalefont setfont"<<endl;
-	//os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl; FIXME:edit 28.11.2022
+	//os<<"/Times-Bold findfont "<<(w.p[0]-w.p[1])/5.<<" scalefont setfont"<<endl;
+	os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl; //FIXME:edit 28.11.2022
 	Point sr = Point();
 	for (int i=0;i<w.b;i++) sr = sr +w.p[i];
 	os<<Point(sr.x/w.b,sr.y/w.b)<<"moveto"<<endl;

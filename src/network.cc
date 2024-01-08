@@ -140,12 +140,14 @@ Network::Network (string input_file_name) {
 	nodes_out .open("nodes.out",	  ios_base::out | ios_base::trunc );
 	net_out   .open("net.out",   	  ios_base::out | ios_base::trunc );
 	net_g_out .open("net_g.out",      ios_base::out | ios_base::trunc );
+    tmp_out   .open("tmp.out",        ios_base::out | ios_base::trunc );
 
 	time_evolution_out     .open("time_evolution.out"     ,ios_base::out | ios_base::trunc );
 	pattern_analysis_out   .open("pattern_analysis.out"   ,ios_base::out | ios_base::trunc );
 	child_distribution_out .open("child_distribution.out" ,ios_base::out | ios_base::trunc );
 	fork_distribution_out  .open("fork_distribution.out"  ,ios_base::out | ios_base::trunc );
 	cluster_size_out       .open("cluster_size.out"       ,ios_base::out | ios_base::trunc );
+
 
 	if (if_save_table){
 		diameters_out     .open("d.out",	      ios_base::out | ios_base::trunc );
@@ -277,6 +279,7 @@ Network:: ~Network (){
 	nodes_out .close();
 	net_out   .close();
 	net_g_out .close();
+    tmp_out   .close();
 
 	time_evolution_out     .close();
 	pattern_analysis_out   .close();

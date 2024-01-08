@@ -77,6 +77,7 @@ class Node{
 		void add_neighbor    (Node *n_tmp, Pore *p_tmp);		///< add n_tmp and p_tmp to the list of neighbors
 		void remove_neighbor (Node *n_tmp);						///< remove n_tmp and proper pore form the list of neighbors
 		void remove_neighbor (Pore *p_tmp);						///< remove p_tmp and proper node from the list of neighbors
+        bool is_clogged ();                                     ///< returns true if pore surrounded by pores that are all clogged
 
 		double total_abs_flow();								///< returns total absolute flow through neighbor pores
 		double total_pores_d ();								///< returns total diameter of neighbor pores

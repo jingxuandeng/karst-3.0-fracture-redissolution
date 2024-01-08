@@ -1,6 +1,7 @@
 #include "grain.h"
 #include "network.h"
 #include "printing.h"
+#include <algorithm>
 
 
 /**
@@ -202,7 +203,7 @@ void Network::check_if_dissolved(){
 	}
 
     //condition for pattern_breakthrough
-    check_preci_pattern(1);
+    check_preci_pattern(0.5);
     for(int i=0;i<N_wo;i++){
         Node* nn = wo[i];
         for (int j=0; j<nn->bG;j++) if (nn->g[j]->x>=1){
@@ -212,22 +213,23 @@ void Network::check_if_dissolved(){
     }
 
 
-    //condition for clogging (new) TODO: check it
-    if (find_percolation()>0){
+    //condition for clogging (new) TODO: check it; FIXME: function find_percolation should not be called twice in one step
+    if (find_percolation()>0 && tot_steps>10){
+        cerr<<"\nSystem clogged due to d_min percolation.\nSimulation finished."<<endl;
         if_system_dissolved = true;
         return;}
 
-	//condition for clogging (old, to be removed) TODO: check if works, seems to be not that stupid
-	int nr_of_red_grains=0;
-	if(if_precipitation) for(int i=0;i<N_wo;i++){
-		Node* nn = wo[i];
-		for (int j=0; j<nn->bG;j++) if(nn->g[j]->Va == 0 && nn->g[j]->bP>2 && nn->g[j]->Ve>l0*l0/10) nr_of_red_grains++;
-
-	}
-	 if(nr_of_red_grains>double(N_wo)/20.){
-		cerr<<"\nSystem's output has been clogged \nDissolution and precipitation is finished."<<endl;
-		if_system_dissolved = true;
-	}
+//	//condition for clogging (old, to be removed) TODO: check if works, seems to be not that stupid
+//	int nr_of_red_grains=0;
+//	if(if_precipitation) for(int i=0;i<N_wo;i++){
+//		Node* nn = wo[i];
+//		for (int j=0; j<nn->bG;j++) if(nn->g[j]->Va == 0 && nn->g[j]->bP>2 && nn->g[j]->Ve>l0*l0/10) nr_of_red_grains++;
+//
+//	}
+//	 if(nr_of_red_grains>double(N_wo)/20.){
+//		cerr<<"\nSystem's output has been clogged. \nDissolution and precipitation is finished.\n"<<endl;
+//		if_system_dissolved = true;
+//	}
 
 	//condition for pressure drop
 	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min){
@@ -255,10 +257,19 @@ void Network::check_diss_pattern (double threshold){
 
 
 void Network::check_preci_pattern (double threshold){
+    cerr<<"Checking precipitation pattern..."<<endl;
+    double factor = threshold*std::min(1.0,gamma);
     for (int i =0;i<NN;i++)   n[i]->x=0;
     for (int i =0;i<NG;i++)   g[i]->x=0;
-    for (int i =0;i<N_wi;i++) wi[i]->check_preci_pattern(threshold);
-    for (int i =0;i<N_wi;i++) wi[i]->x=2;
+    for (int i =0;i<N_wi;i++) wi[i]->check_preci_pattern(factor);
+    for (int i =0;i<N_wi;i++) wi[i]->x=2;  //FIXME: sprawdzic czy ta linijka byla potrzebna
+
+    if(if_debugging_printing){
+        for(int i=0;i<NN;i++) n[i]->tmp = n[i]->x;
+        for(int i=0;i<NP;i++) p[i]->tmp = 666;
+        for(int i=0;i<NG;i++) g[i]->tmp = g[i]->x;
+        description_note = "Finding perci pattern: s = " + to_string(tot_steps);
+        net_ps<<*this;}
 }
 
 /**
@@ -385,7 +396,7 @@ void Network::move_node_to_the_end(int i, int NN_tmp){
 void Network::clear_unused_grains(){
 
 	int NG_tmp = NG;
-	for(int i=0;i<NG_tmp;i++) if(g[i]->bP==0 && g[i]->a>=0){
+	for(int i=0;i<NG_tmp;i++) if(g[i]->bP==0 && g[i]->a>=0){// FIXME: check want thet commented condition was about
 		cerr<<g[i]->a<<" ";
 		for(int b=0;b<g[i]->bN;b++) g[i]->n[b]->remove_Grain(g[i]);
 		move_grain_to_the_end(i, NG_tmp);
