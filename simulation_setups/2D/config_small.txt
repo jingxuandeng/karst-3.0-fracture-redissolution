@@ -60,7 +60,7 @@ if_save_topology      = true    # if true topology is saved in each save_all
 if_save_table         = true    # if true tables with diameters, flows and concentration is saved
 if_verbose            = false   # if true verbose version for debugging
 if_debugging_printing = false 	# if true debugging printing is done few time in each time step
-
+if_cut_d_min          = true    # cutting completely pores with d<=d_min
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Type of the network

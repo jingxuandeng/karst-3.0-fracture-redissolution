@@ -213,6 +213,12 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
                 g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
                 b = 0;
                 kkk=Kolor(r,g,b);}
+//        if(p.d==0) {
+//            r = 0;
+//            g = 1;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
+//            b = 0;
+//            kkk=Kolor(r,g,b);
+//        }
 		if(p.x==1) kkk=Kolor(0.0,0.0,0.0);
 
 		p.tmp=666;  // no printing names

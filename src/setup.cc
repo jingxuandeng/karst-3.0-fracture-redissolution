@@ -319,6 +319,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else                     cerr<<"WARNING: Wrong value of variable if_dynamical_length. Set true or false."<<endl;
 			cerr<< "Setting if_dynamical_length = "<<if_dynamical_length<<endl;}
 
+        else if(name == "if_cut_d_min"){
+            if      (value == "true" )   if_cut_d_min  = true;
+            else if (value == "false")   if_cut_d_min  = false;
+            else                     cerr<<"WARNING: Wrong value of variable if_cut_d_min. Set true or false."<<endl;
+            cerr<< "Setting if_cut_d_min = "<<if_cut_d_min<<endl;}
+
 		else if(name == "if_streamtube_mixing"){
 			if      (value == "true" )   if_streamtube_mixing  = true;
 			else if (value == "false")   if_streamtube_mixing  = false;

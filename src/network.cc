@@ -108,9 +108,10 @@ Network::Network (string input_file_name) {
 	if_adaptive_dt                       = true; 	     //adapting dt according to d_d_max and d_d_min;
 	if_recalculate_physical_parameters   = true;         //if true recalculate physical parameters according to dimensionless one
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps
-	if_precipitation				     = false;		 //if true apart form dissolution the precipitation in on
+	if_precipitation				     = false;		 //if true apart from dissolution the precipitation in on
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
-	if_streamtube_mixing                 = false;        // if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+    if_cut_d_min                         = false;        //if true the d<=d_min -> d=0
 
 	//output
 	if_save_ps            = true;     //if true ps pictures are created

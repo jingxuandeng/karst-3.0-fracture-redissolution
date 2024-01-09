@@ -15,12 +15,18 @@
 void Network::calculate_pressures(){
 
 	cerr<<"Calculating pressures..."<<endl;
-	
+
+    // checking if point is connected to the inlet
+    for (int i =0;i<NN;i++)   n[i]->x=0;
+    for (int i =0;i<NP;i++)   p[i]->x=0;
+    for (int i =0;i<N_wi;i++) wi[i]->check_diss_pattern(d_min);
+
+
 	for(int i=0;i<NN;i++) n[i]->tmp=i;
 
 	int R_no = 0;
 	for(int i=0;i<NN;i++)
-		if(n[i]->t==0) R_no+=n[i]->b+1;
+		if(n[i]->t==0 and n[i]->x==2) R_no+=n[i]->b+1;
 		else           R_no++;
 
 	int R_m  = NN;				    //rank of the matrix to be solved
@@ -37,7 +43,7 @@ void Network::calculate_pressures(){
 	int r_no=0; double S=0;
 	for(int i=0;i<NN;i++){
 		S=0;
-		if(abs(n[i]->t)==1) S=-1;			     //if node is an I/O node
+		if(abs(n[i]->t)==1 || n[i]->x<2) S=-1;//if node is an I/O node or is not connected to the inlet
 		else for(int s=0; s<n[i]->b;s++){	 //eqs for normal nodes
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
@@ -65,7 +71,7 @@ void Network::calculate_pressures(){
 		B_err     .open("B_err.out",	      ios_base::out | ios_base::trunc );
 		for(int i=0;i<R_no;i++) B_err<<ww_r[i]<<"\t"<<ww_c[i]<<"\t"<<B[i]<<endl;
 		B_err.close();
-		exit(123);
+        if_system_dissolved = true;
 	}
 
 	//additional printing for debugging
@@ -250,13 +256,14 @@ void Network::calculate_pressures_for_large_d(double d_max){
 void Network::calculate_flows(){ //version without pore merging
 
 	cerr<<"Calculating flows..."<<endl;
-	
+	if (if_system_dissolved) return;
+
 	for(int i=0;i<NP;i++) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(mu_0);
 	for(int i=0;i<NP;i++) if(not isfinite(p[i]->q)) {
 		cerr<<"Problem with flow through the system. Check if the system is not clogged."<<endl;
 		s_save_data = 1;
 		save_all_data();
-		exit(3);}
+        if_system_dissolved=true;}
 	
 
 	// additionally we can neglect extremely small q as they can cause numerical problems (equivalent to neglect to small d in precipitation)
@@ -282,12 +289,13 @@ void Network::calculate_flows(){ //version without pore merging
 void Network::calculate_flows_for_large_d(double d_max){
 	cerr<<"Calculating flows for large d..."<<endl;
 
+    if(if_system_dissolved) return;
 	for(int i=0;i<NP;i++) if(p[i]->n[0]->x==2 && p[i]->n[1]->x==2) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(mu_0);
 	for(int i=0;i<NP;i++) if(!isfinite(p[i]->q)) {
 			cerr<<"Problem with flow through the system. Check if the system is not clogged."<<endl;
 			s_save_data = 1;
 			save_all_data();
-			exit(3);}
+            if_system_dissolved=true;}
 
 	// additionally we can neglect extremely small q as they can cause numerical problems (equivalent to neglect to small d in precipitation)
 	// if (q_min>0) for(int i=0;i<NP;i++) if (fabs(p[i]->q) < q_min) p[i]->q = 0;
@@ -308,6 +316,7 @@ void Network::recalculate_flows_to_keep_Q_tot(string type){
 
 	double Q_tmp = 0;
     cerr<<"Recalculating flows to keep Q_tot..."<<endl;
+    if(if_system_dissolved) return;
 
 	if(type == "inlet"){  //to be used for large d only !!!
 		//cerr<<"Recalculating flows for large d only!!!"<<endl;
@@ -337,7 +346,7 @@ void Network::recalculate_flows_to_keep_Q_tot(string type){
 	else {
 		cerr<<"ERROR: wrong value of type in function \
 				Network::recalculate_flows_to_keep_Q_tot(string type), use \"inlet\" or \"outlet\"."<<endl;
-		exit(777);
+        if_system_dissolved=true;
 	}
 
 }
@@ -450,6 +459,8 @@ void Network::calculate_concentrations(){
 
 	cerr<<"Calculating concentrations for species B..."<<endl;
 
+    if(if_system_dissolved) return;
+
 	//calculating no of non zero elements of linear equations
 	for(int i=0;i<NN;i++) n[i]->tmp=i;
 
@@ -524,6 +535,9 @@ void Network::calculate_concentrations(){
 void Network::calculate_concentrations_c(){
 
 	cerr<<"Calculating concentrations for species C..."<<endl;
+
+    if(if_system_dissolved) return;
+
 	for(int i=0;i<NN;i++) n[i]->tmp=i;
 
 	//calculating nr of nono zero elements of linear equations
@@ -604,6 +618,8 @@ void Network::calculate_concentrations_c(){
 void Network::calculate_concentrations_streamtube_mixing(){
 
 	cerr<<"Calculating concentrations for species B using fancy stream tube mixing rules..."<<endl;
+
+    if (if_system_dissolved) return;
 
 	int N_streamtube_mixing =0;
 
@@ -830,6 +846,7 @@ void Network::dissolve_and_precipitate(){
 		for (int i=0;i<NG;i++)  g[i]->Ve+=g[i]->tmp2;
 	}
 
+    if(if_cut_d_min)        for(int i=0; i<NP; i++) if(p[i]->d <= d_min) p[i]->d = 0;
 	if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
 
 
