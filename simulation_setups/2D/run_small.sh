@@ -27,18 +27,19 @@ cp ../../../karst_3.0/simulation_setups/2D/config_small.txt ./config.txt || exit
 
 printf "Running the simulation...\n\n"
 
-Da=1
-gamma=1
-kappa=5
-d0=0.1
-dmin=0.001
+Da=0.5
+gamma=0.9
+kappa=1
+d0=0.3
+dmin=0.0001
+cut=true
 
-for gamma in  1.5 #1.5 1 0.75 #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for d0 in 0.1 0.3 #0.1 0.2 0.5 0.75 1 1.25 2 10
 do
-for kappa in    1 #0.1  1 10 #0.001 0.2 0.3  0.25 0.35
-do
+  for Da in 0.1 0.5 1 #0.01 0.1 0.2 0.5 1 2 5 10 100
+  do
   (
-                param=Da-$Da-gamma-$gamma-kappa-$kappa-d0-$d0-dmin-$dmin
+                param=Da-$Da-d0-$d0-diss
                 printf "Creating variant: %s\n" "$param"
                 mkdir $param
                 cd    $param || exit
@@ -50,6 +51,7 @@ do
                   echo Da    = $Da
                   echo d0    = $d0
                   echo d_min = $dmin
+                  echo if_cut_d_min = $cut
                 } >> config.txt
 
                 ../../../../karst_3.0/build/karst config.txt # >wyjscie.out 2>bledy.out &
@@ -57,6 +59,5 @@ do
              )
 done
 done
-
 
 

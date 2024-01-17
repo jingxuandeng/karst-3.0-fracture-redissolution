@@ -89,8 +89,8 @@ ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
 
 	Kolor kkk(0.5,0.5,0.5);
 
-	if(p.x==1) kkk=Kolor(0.2,0.8,0.2);
-	if(p.x==2) kkk=Kolor(0.8,0.2,0.2);
+	if(p.x==1) kkk=Kolor(0.5,0.5,0.5);
+	if(p.x==2) kkk=Kolor(0,0,0);
 
 	bool if_debug=true;
 	if(p.n[0]->xy - p.n[1]->xy < max_distance && p.d<300&& p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print){
@@ -198,9 +198,10 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 	stream<<"0 "<<-450./skala<<" moveto"<<endl;
 	stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
 
+    Kolor kkk;
 
 	if(S.if_precipitation)         for(int i=0;i<S.NP;i++)                  {
-		Kolor kkk(0.5,0.5,0.5);
+		kkk = Kolor(0.5,0.5,0.5);
 		Pore &p = *S.p[i];
 		double r=0.5, g=0.5, b=0.5;
 		if (p.d<S.d0 and p.d!=0){
@@ -208,17 +209,18 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 			g = 1;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
 			b = 0;
 			kkk=Kolor(r,g,b);}
-        if (p.d<=S.d_min){// FIXME *(1+0.01) ){
-                r = 1;
-                g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
-                b = 0;
-                kkk=Kolor(r,g,b);}
-//        if(p.d==0) {
-//            r = 0;
-//            g = 1;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
-//            b = 0;
-//            kkk=Kolor(r,g,b);
-//        }
+        if (p.d<=S.d0/10.){// FIXME *(1+0.01) ){
+            r = 1;
+            g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
+            b = 0;
+            kkk=Kolor(r,g,b);}
+        if(p.d<=S.d_min) {
+            r = 1;
+            g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
+            b = 0;
+            kkk=Kolor(r,g,b);
+        }
+        //if(p.d==0) kkk=Kolor(0,0,1);
 		if(p.x==1) kkk=Kolor(0.0,0.0,0.0);
 
 		p.tmp=666;  // no printing names
