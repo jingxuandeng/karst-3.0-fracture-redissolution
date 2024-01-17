@@ -458,13 +458,13 @@ void Network::print_tables_txt(){
 		for(int i=0;i<NN;i++) {
 			for(int b=0; b<3;b++) diameters_out  <<setprecision(7)<<setw(12)<<p[i*3+b]->d;
 			for(int b=0; b<3;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*3+b]->q;
-			for(int b=0; b<3;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
-			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
+//			for(int b=0; b<3;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
+//			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
 			concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
 			concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
 			for(int b=0; b<2;b++)VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Va;
 			for(int b=0; b<2;b++)VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Ve;
-			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
+//			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
 			if(i%N_x ==N_x-1){
 				diameters_out       <<endl;
 				flow_out            <<endl;
