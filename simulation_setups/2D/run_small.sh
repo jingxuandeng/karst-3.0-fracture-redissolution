@@ -33,13 +33,14 @@ kappa=1
 d0=0.3
 dmin=0.0001
 cut=true
+los=105
 
-for d0 in 0.1 0.3 #0.1 0.2 0.5 0.75 1 1.25 2 10
+for gamma in 1.5 #0.1 0.2 0.5 0.75 1 1.25 2 10
 do
-  for Da in 0.1 0.5 1 #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for kappa in  20                                #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
-                param=Da-$Da-d0-$d0-diss
+                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa
                 printf "Creating variant: %s\n" "$param"
                 mkdir $param
                 cd    $param || exit
@@ -52,6 +53,7 @@ do
                   echo d0    = $d0
                   echo d_min = $dmin
                   echo if_cut_d_min = $cut
+                  echo random_seed = $los
                 } >> config.txt
 
                 ../../../../karst_3.0/build/karst config.txt # >wyjscie.out 2>bledy.out &

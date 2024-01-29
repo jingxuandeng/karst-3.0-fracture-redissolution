@@ -584,7 +584,7 @@ void Network::  save_all_data(bool if_save_now){
 	static double Va_old = 0;
 
 	//deciding either to save or not
-	if     (s_save_data<0)                                   if_save_now = check_diss_front(print_diss_factor, pages_saved*abs(s_save_data));
+	if     (s_save_data<0 and !if_save_now)                  if_save_now = check_diss_front(print_diss_factor, pages_saved*fabs(s_save_data));
 	else if(s_save_data>=1 && tot_steps%int(s_save_data)==0) if_save_now = true;
 	else if(s_save_data>0 && s_save_data<1){
 //check the volume condition!!!
