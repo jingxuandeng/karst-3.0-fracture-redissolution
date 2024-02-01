@@ -232,7 +232,14 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			set_new_dt = stod(value);
 			cerr<< "Setting set_new_dt = "<<set_new_dt<<endl;}
 
-		else if(name == "type_of_topology"){
+
+        else if(name == "time_factor_after_b"){
+            time_factor_after_b = stod(value);
+            cerr<< "Setting time_factor_after_b = "<<time_factor_after_b<<endl;}
+
+
+
+        else if(name == "type_of_topology"){
 			type_of_topology =   value;
 			cerr<< "Setting type_of_topology = "<<type_of_topology<<endl;}
 

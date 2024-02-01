@@ -69,6 +69,7 @@ Network::Network (string input_file_name) {
 	d_V_max     = 0.1;        //(only for precipitation)  maximal change of pore volume in one step (if obtained the dt = 2/3dt)
 	set_new_dt  =-1;          //0-don't change dt; 1 - increase dt by factor 1.2; -1 - decrease dt by factor 0.75
 	d_max_for_u = 1000;       //maximal diameter that consume pressure, for d>d_max_for_u * d0 delta u in pore is zero
+    time_factor_after_b = 1.5;  //how long after breakthrough run simulation (as a fraction fof tot_steps)
 
 	//merging parameters
 	type_of_merging = "merge_empty_grains"; //type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"

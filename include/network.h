@@ -125,6 +125,7 @@ class Network
 		double d_d_dis; 	///< minimal dissolution at the outlet to finish simulation (unit d0)
 		double u_min;       ///< minimal pressure drop to finish simulation.
 		int    set_new_dt;  ///< 0-don't change dt; 1 - increase dt by factor 1.2; -1 - decrease dt by factor 0.75
+        double time_factor_after_b; ///< how much longer run the simulation after breakthrough
 		
 		// merging parameters
 		string type_of_merging; ///< type of merging: "none", "merge_empty_grains", "empty_grains_to_pores", "merge_pores"

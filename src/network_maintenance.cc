@@ -201,7 +201,6 @@ void Network::check_if_dissolved(){
        sim_state = -abs(sim_state);
        return;
     }
-    double time_factor = 1.5;   //How long to simulate the system after first breackthrough condition
 
 	//condition for dissolution
 	check_diss_pattern(d_d_dis);
@@ -210,7 +209,7 @@ void Network::check_if_dissolved(){
 		for (int j=0; j<nn->b;j++) if (nn->p[j]->d > d0*d_d_dis && nn->p[j]->x==1){
 			cerr<<"\nSystem is fully dissolved\nSimulation will finish soon."<<endl;
             if_check = false;
-            T_max = sim_step*time_factor;
+            T_max = sim_step*time_factor_after_b;
 			return;}
 	}
 
@@ -221,7 +220,7 @@ void Network::check_if_dissolved(){
         for (int j=0; j<nn->bG;j++) if (nn->g[j]->x>=1){
                 cerr<<"\nPrecipitation pattern has made breakthrough \nSimulation will finish soon."<<endl;
                 if_check = false;
-                T_max = sim_step*time_factor;   //after breackthrough simulate z moment longer
+                T_max = sim_step*time_factor_after_b;   //after breackthrough simulate z moment longer
                 return;}
     }
 
@@ -249,7 +248,7 @@ void Network::check_if_dissolved(){
 	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min){
 		 cerr<<"\nSystem is dissolved: condition for pressure has been fulfilled."<<endl;
              if_check = false;
-             T_max = sim_step*time_factor;
+             T_max = sim_step*time_factor_after_b;
 	 }
 
 
