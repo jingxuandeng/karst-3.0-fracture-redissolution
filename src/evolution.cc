@@ -15,22 +15,22 @@ void Network::evolution(long int T){
 
 	cerr<<"\n\n\nEvolution:"<<endl;
 
-	if (T==0) T = T_max;
+	if (T!=0) T_max = T;
 	double 	t  = 0; //total time
-	int 	s  = 0; //nr of steps
+	sim_step  = 0; //nr of steps done
 
 	if(if_save_txt)     print_net_txt();
 	save_all_data       (true);
 	analyze_diss_pattern(true);
 
-	while(s<T){
+	while(sim_step < T_max){
 		cerr<<endl;
-		cerr<<s<<". step of evolution (t = "<<t<<")"<<endl;
+		cerr << sim_step << ". step of evolution (t = " << t << ")" << endl;
 
 		if(if_leapfrog)  do_one_leapfrog_step();	//do frog leap version (not implemented yet)
 		else			 do_one_euler_step();		//do normal Euler version
 
-		s++; t+=dt;
+		sim_step++; t+=dt;
 		tot_steps++; tot_time+=dt;
 
 		save_all_data();

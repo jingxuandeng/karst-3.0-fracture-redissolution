@@ -192,13 +192,25 @@ void Network::adapt_dt(){
 */
 void Network::check_if_dissolved(){
 
+    static bool if_check = true;
+    if (sim_step > T_max-10) {
+        if_system_dissolved = true;
+        return;
+    }
+    if(!if_check){
+       sim_state = -abs(sim_state);
+       return;
+    }
+    double time_factor = 1.5;   //How long to simulate the system after first breackthrough condition
+
 	//condition for dissolution
 	check_diss_pattern(d_d_dis);
 	for(int i=0;i<N_wo;i++){
 		Node* nn = wo[i];
 		for (int j=0; j<nn->b;j++) if (nn->p[j]->d > d0*d_d_dis && nn->p[j]->x==1){
-			cerr<<"\nSystem is fully dissolved\nSimulation finished."<<endl;
-			if_system_dissolved = true;
+			cerr<<"\nSystem is fully dissolved\nSimulation will finish soon."<<endl;
+            if_check = false;
+            T_max = sim_step*time_factor;
 			return;}
 	}
 
@@ -207,8 +219,9 @@ void Network::check_if_dissolved(){
     for(int i=0;i<N_wo;i++){
         Node* nn = wo[i];
         for (int j=0; j<nn->bG;j++) if (nn->g[j]->x>=1){
-                cerr<<"\nPrecipitation pattern has made breakthrough \nSimulation finished."<<endl;
-                if_system_dissolved = true;
+                cerr<<"\nPrecipitation pattern has made breakthrough \nSimulation will finish soon."<<endl;
+                if_check = false;
+                T_max = sim_step*time_factor;   //after breackthrough simulate z moment longer
                 return;}
     }
 
@@ -216,7 +229,8 @@ void Network::check_if_dissolved(){
     //condition for clogging (new) TODO: check it; FIXME: function find_percolation should not be called twice in one step
     if (find_percolation()>0 && tot_steps>10){
         cerr<<"\nSystem clogged due to d_min percolation.\nSimulation finished."<<endl;
-        if_system_dissolved = true;
+        if_check = false;
+        T_max = sim_step;  //after clogging just end the simulation
         return;}
 
 //	//condition for clogging (old, to be removed) TODO: check if works, seems to be not that stupid
@@ -234,7 +248,8 @@ void Network::check_if_dissolved(){
 	//condition for pressure drop
 	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min){
 		 cerr<<"\nSystem is dissolved: condition for pressure has been fulfilled."<<endl;
-		 if_system_dissolved = true;
+             if_check = false;
+             T_max = sim_step*time_factor;
 	 }
 
 

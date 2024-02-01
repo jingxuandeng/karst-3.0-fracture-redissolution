@@ -89,9 +89,9 @@ void Node::check_preci_pattern(double factor){
     double max_distance = 5;
     for(int i=0;i<bG;i++)
         if(g[i]->bN==3)
-            if(abs(g[i]->n[0]->xy.y-g[i]->n[1]->xy.y<max_distance) &&
-               abs(g[i]->n[1]->xy.y-g[i]->n[2]->xy.y<max_distance) &&
-               abs(g[i]->n[2]->xy.y-g[i]->n[0]->xy.y<max_distance))
+            if(fabs(g[i]->n[0]->xy.y-g[i]->n[1]->xy.y<max_distance) &&
+               fabs(g[i]->n[1]->xy.y-g[i]->n[2]->xy.y<max_distance) &&
+               fabs(g[i]->n[2]->xy.y-g[i]->n[0]->xy.y<max_distance))
                 if(g[i]->Ve > g[i]->Va*factor) { // && g[i]->Ve>0.000001) {
                     g[i]->x = 1;  	//grain has been set as connected to the precipitation pattern
                     x = 2;  		//node is connected to the pattern

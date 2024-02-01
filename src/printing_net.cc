@@ -198,7 +198,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 	stream<<"0 "<<-450./skala<<" moveto"<<endl;
 	stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
 
-    Kolor kkk;
+    Kolor  kkk=Kolor(0.0,0.0,0.0);
 
 	if(S.if_precipitation)         for(int i=0;i<S.NP;i++)                  {
 		kkk = Kolor(0.5,0.5,0.5);
@@ -232,6 +232,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 //        for(int i=0;i<S.N_wi;i++) {S.wi[i]->tmp=1; stream<<*S.wi[i];}
 //        for(int i=0;i<S.N_wo;i++) {S.wi[i]->tmp=0; stream<<*S.wo[i];}
 	}
+
 	else if( S.print_diss_factor)  for(int i=0;i<S.NP;i++) if(S.p[i]->x==1) {S.p[i]->tmp=666; stream<<*S.p[i];}
 	else if(!S.print_diss_factor)  for(int i=0;i<S.NP;i++)                  {S.p[i]->tmp=666; stream<<*S.p[i];}
 

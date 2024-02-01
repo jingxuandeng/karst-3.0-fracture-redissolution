@@ -29,8 +29,8 @@ l_min = 0.01            # minimal pore length
 
 T_max       = 1000000        # maximal number of time steps
 dt          = 0.0001        # time step (in dimensionless units [2 k1 * gamma_1/d0])
-d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
-d_d_min     = 0 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
+d_d_max     = 0.05     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
+d_d_min     = 0.01 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
 d_V_max     = 0.05     	    # (for precipitation only) maximal change of volume in one step (in % if obtained then dt = 2/3 dt)
 d_V_min     = 0.02    	    # (for precipitation only) minimal change of pore Volume in one step (in % if not obtained then dt = 1.2dt)
 d_d_dis     = 2             # minimal dissolution at the outlet to finish simulation (unit d0)
@@ -49,7 +49,7 @@ printing_mode         = grains         # style of printing:
                                                 # "grains_and_diss"
 L_out                 = 1		# printing scale
 pages_tot             = 100		# total nr of pages in the pictures (should be recalculated in future)
-s_save_data           = 0.001          # how often save txt and ps files
+s_save_data           = 0.005          # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving
@@ -88,7 +88,7 @@ max_rand_shift_xy                  = 0       		# if randomness is on this gives 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Model properties
 
-if_precipitation                   = true       # if true the precipitation is added to dissolution
+if_precipitation                   = false       # if true the precipitation is added to dissolution
 if_track_grains                    = true        # if true grains and their volume are tracked (important for merging and precipitation)
 if_dynamical_length                = true        # if true pore length is addapted in each time step
 if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)

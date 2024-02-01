@@ -22,26 +22,25 @@ else
 fi
 
 cd "$current_date_time" || exit
-cp ../../../karst_3.0/simulation_setups/2D/config_small.txt ./config.txt || exit
+cp ../../../karst_3.0/simulation_setups/2D/config_small_diss.txt ./config.txt || exit
 
 
 printf "Running the simulation...\n\n"
 
 Da=0.5
-gamma=0.9
-kappa=1
+
 d0=0.1
-dmin=0.001
+dmin=0.0001
 cut=true
 los=106
 
 
-for gamma in 1 #0.25 0.5 1 #0.1 0.2 0.5 0.75 1 1.25 2 10
+for Da in 0.5 #0.1 0.2 0.5 0.75 1 1.25 2 10
 do
-  for kappa in  1                                #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for d0 in  0.1 0.3                                #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
-                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa
+                param=Da-$Da-d0-$d0-diss
                 printf "Creating variant: %s\n" "$param"
                 mkdir $param
                 cd    $param || exit

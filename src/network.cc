@@ -57,6 +57,7 @@ Network::Network (string input_file_name) {
 
 	//evolution parameters
 	T_max       = 10;     	  //maximal number of time steps
+    sim_step    = 0;          //nr of simulation steps already done
 	tot_steps   = 0;          //total nr of steps in simulation
 	tot_time    = 0;          //total time in simulation
 	dt          = 1;      	  //time step (in dimensionless units [2 k1 * gamma_1/d0])
@@ -105,6 +106,7 @@ Network::Network (string input_file_name) {
 	if_leapfrog                          = false;        //if true frog leap instead of Euler algorithm is used in evolution (not implemented yet)
 	if_full_dissolution                  = true;         //if true evolution stops when system is fully dissolved
 	if_system_dissolved                  = false;        //check if system is dissolved (fulfilling condition given by d_d_diss)
+    sim_state                            = 1;            // 1-ok, 2-warningi, minus - after breackthrough
 	if_adaptive_dt                       = true; 	     //adapting dt according to d_d_max and d_d_min;
 	if_recalculate_physical_parameters   = true;         //if true recalculate physical parameters according to dimensionless one
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps

@@ -113,6 +113,7 @@ class Network
 
 		// evolution parameters
 		int    T_max;	  	///< maximal number of time steps in simulation
+        int    sim_step ;   //nr of step
 		int    tot_steps; 	///< total nr of steps in simulation
 		double tot_time;  	///< total time in simulation
 		double dt;			///< time step (in dimensionless units [2 k1 * gamma_1/d0] or in diffusion limited case 2 DD1*Sh*gamma/d0^2)
@@ -155,6 +156,7 @@ class Network
 		bool if_leapfrog;               ///< if true frog leap instead of Euler algorithm is used in evolution (not implemented yet)
 		bool if_full_dissolution;       ///< if true evolution stops when system is fully dissolved
 		bool if_system_dissolved;       ///< check if system is dissolved (fulfilling condition given by d_d_diss)
+		int sim_state;                  ///< 1-ok, 2-warningi, minus - after breackthrough
 		bool if_adaptive_dt;			///< adapting dt according to d_d_max and d_d_min;
 		bool if_recalculate_physical_parameters;    ///< if true, recalculate physical parameters according to dimensionless one, by now must be true
 		bool if_smarter_calculation_of_pressure;    ///< if true pressure and flow is calculate in two steps

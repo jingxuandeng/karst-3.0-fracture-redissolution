@@ -1,5 +1,6 @@
 #include "network.h"
 
+
 /**
 * This function checks flow balance in the system.
 * If the total inlet flow (flow coming through inlet pores) is not equal total outlet flow the warning is printed.
@@ -41,8 +42,10 @@ void Network::check_flow_balance(){
 	//print_network_for_debugging ("In calculating flow balance ","x","diameter",  "name");
 
 
-	if(fabs(Q_in_tmp-Q_out_tmp)/(Q_in_tmp+Q_out_tmp) > eps)
-		cerr<<"WARNING: Flow is not conserved: Q_in = "<<Q_in_tmp <<" Q_out = "<<Q_out_tmp<<"."<<endl;
+	if(fabs(Q_in_tmp-Q_out_tmp)/(Q_in_tmp+Q_out_tmp) > eps) {
+        cerr << "WARNING: Flow is not conserved: Q_in = " << Q_in_tmp << " Q_out = " << Q_out_tmp << "." << endl;
+        sim_state=_sign(sim_state)*2;
+    }
 	else
 		cerr<<"Flow is conserved: Q_in = "<<Q_in_tmp <<" Q_out = "<<Q_out_tmp<<"."<<endl;
 	if(fabs(Q_in_tmp-Q_out_tmp)/(Q_in_tmp+Q_out_tmp) > 1000*eps) exit(888);
