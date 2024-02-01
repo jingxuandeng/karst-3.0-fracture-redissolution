@@ -23,7 +23,7 @@ void Network::analyze_diss_pattern(bool if_anal_pattern){
 	//now we print pattern properties as we save other data, can be changed later
 	static double Va_old = 0;
 
-	if (s_save_data<0)                                   if_anal_pattern = check_diss_front(print_diss_factor, pages_saved*abs(s_save_data));
+	if (s_save_data<0 and !if_anal_pattern)  if_anal_pattern = check_diss_front(print_diss_factor, pages_saved*abs(s_save_data));
 	else if (s_save_data>=1 && tot_steps%int(s_save_data)==0) if_anal_pattern = true;
 	else if (s_save_data>0 && s_save_data<1){ //check the volume condition!!!
 		if (tot_steps==0) Va_old = Va_tot;
