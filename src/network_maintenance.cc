@@ -192,8 +192,8 @@ void Network::adapt_dt(){
 */
 void Network::check_if_dissolved(){
 
-    static bool if_check = true;
-    if (sim_step > T_max-10) {
+    static bool if_check = true;   //czy sprawdzac trzeba, czy juz wykryto przebicie
+    if (sim_step > T_max) {
         if_system_dissolved = true;
         return;
     }
