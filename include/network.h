@@ -310,8 +310,8 @@ class Network
 		void analyze_diss_pattern(bool if_anal_pattern = false);
 		void write_time_step_properties();
 		void write_pattern_properties();
-		void find_the_largest_tree(double threshold);
-		void find_minimal_spanning_tree(double threshold, Node* root);
+		void find_the_largest_tree(double threshold, bool if_preci_mode=false);
+		void find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode=false);
 		int* find_child_distribution ();
 		void find_forks();
 		double find_reverse_forks();

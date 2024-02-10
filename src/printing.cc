@@ -77,7 +77,7 @@ ostream & operator<< (ostream &os, Kropa kr) {
 	os<<kr.k;
 
 	os<<kr.a<<kr.r<<" 0 360 arc fill closepath"<<endl;
-	os<<Kolor(1,1,1);
+	os<<Kolor(0.8,0,0);
 	os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
 	os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
 	if(if_print_labels){

@@ -20,7 +20,7 @@
 * @author Agnieszka Budek
 * @date 26/04/2020
 */
-void Network::find_minimal_spanning_tree(double threshold, Node* root){
+void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode){
 
 	cerr<<"Finding minimal spanning tree..."<<endl;
 
@@ -30,7 +30,13 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root){
 	//Preparing dissolution pattern
 	for (int i =0;i<NN;i++)   n[i]->x=0;
 	for (int i =0;i<NP;i++)   p[i]->x=0;
-	root->check_diss_pattern(threshold*d0);
+    for (int i =0;i<NG;i++)   g[i]->x=0;
+
+    if (if_preci_mode)
+        root->check_preci_pattern(threshold);
+    else
+        root->check_diss_pattern(threshold*d0);
+
 	for(int i=0; i<NN; i++){
 		if(n[i]->x==1)  n[i]->x=0;
 		if(n[i]->x==2){ n[i]->x=1; nodes_left++;}
@@ -82,7 +88,7 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root){
 * @date 26/04/2020
 */
 
-void Network::find_the_largest_tree(double threshold){
+void Network::find_the_largest_tree(double threshold, bool if_preci_mode){
 
 	int max_root      = 0;
 	Node *n_max_y     = n[0];      //the tip of the longest pattern/tree
@@ -93,7 +99,13 @@ void Network::find_the_largest_tree(double threshold){
 	for (int j=0;j<N_wi;j++){
 		for (int i =0;i<NN;i++)   n[i]->x=0;
 		for (int i =0;i<NP;i++)   p[i]->x=0;
-		wi[j]->check_diss_pattern(threshold*d0);
+        for (int i =0;i<NG;i++)   g[i]->x=0;
+
+        if (if_preci_mode)
+            wi[j]->check_preci_pattern(threshold);
+        else
+		    wi[j]->check_diss_pattern(threshold*d0);
+
 		for(int i=0;i<NN;i++) if(n[i]->x==2) if(n[i]->xy.y>max_y) {
 			max_y=n[i]->xy.y; n_max_y = n[i]; max_root=j;}
 	}
@@ -101,18 +113,23 @@ void Network::find_the_largest_tree(double threshold){
 	//generating the longest pattern
 	for (int i =0;i<NN;i++)   n[i]->x=0;
 	for (int i =0;i<NP;i++)   p[i]->x=0;
-	wi[max_root]->check_diss_pattern(threshold*d0);
+    for (int i =0;i<NG;i++)   g[i]->x=0;
+
+    if (if_preci_mode)
+        wi[max_root]->check_preci_pattern(threshold);
+    else
+        wi[max_root]->check_diss_pattern(threshold*d0);
 
 	//finding the best root
 	double min_r=big_number;
 	for(int i=0;i<N_wi;i++) if(wi[i]->x==2){
 		Node * n_tmp = wi[i];
-		for(int s=0;s<n_tmp->b;s++) if(n_tmp->p[s]->x==1)
-			if(1./n_tmp->p[s]->perm(mu_0)) {min_r = 1./n_tmp->p[s]->perm(mu_0); max_root = i;}
-		}
+        for(int s=0;s<n_tmp->b;s++) if(n_tmp->p[s]->x>=1)
+            if(1./n_tmp->p[s]->perm(mu_0)<min_r) {min_r = 1./n_tmp->p[s]->perm(mu_0); max_root = i;}
+        }
 
 
-	find_minimal_spanning_tree(threshold,wi[max_root]);
+	find_minimal_spanning_tree(threshold,wi[max_root],if_preci_mode);
 }
 
 /**
@@ -133,6 +150,7 @@ double Network::find_minimal_tree_length(){
 		double dist_tmp = distance_to_root(wo[i]);
 		if(dist_tmp<min_dist && dist_tmp>=0) min_dist = dist_tmp;
 	}
+
 	// if tree not connected to the outlet we find the largest child generation
 	if(min_dist==10e10){
 		int x_max=0; Node *n_max=NULL;
@@ -155,9 +173,13 @@ double Network::find_minimal_tree_length(){
 */
 double Network::distance_to_root(Node* n_tmp){
 
-	if(n_tmp->x<=0) return -1;
+    //before distance_to_root the find_the_largest_tree function mus be run to set child orred and so on.
 
-	double	dist = 0;
+	if (n_tmp->x<=0) return -1;
+    if (n_tmp->x==1) return 0;
+
+    double	dist = 0;
+
 	while (n_tmp->x>1)
 		for(int s=0;s<n_tmp->b;s++) if(n_tmp->p[s]->x==2 && n_tmp->n[s]->x== n_tmp->x-1){
 			dist+= point_distance(n_tmp->p[s]->n[0]->xy, n_tmp->p[s]->n[1]->xy);

@@ -84,7 +84,7 @@ Network::Network (string input_file_name) {
 	s_save_data         = 50;                    //how often save txt and ps files (later will be automatized)
 	print_diss_factor   = 4;					   //definition of dissolution pattern for printing; only pores with d>d0*print_diss_factor are printed
 	initial_xy          = NULL;                   //initial position of nodes: for printing in grains style
-	pattern_anal_factor = 3;
+	pattern_anal_factor = 2;
 
 //CONTROL PARAMETERS
 	//type of network

@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 10         # size of the regular network
-N_y = 10         # size of the regular network
+N_x = 50         # size of the regular network
+N_y = 50         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -37,19 +37,19 @@ d_d_dis     = 2             # minimal dissolution at the outlet to finish simula
 d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
 if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = true  # if true evolution stops when system is fully dissolved
-time_factor_after_b = 3
+time_factor_after_b = 1.00
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
 
-printing_mode         = grains         # style of printing:
+printing_mode         = debugging         # style of printing:
                                                 # "debugging", 
                                                 # "dissolution" 
                                                 # "grains"
                                                 # "grains_and_diss"
 L_out                 = 1		# printing scale
 pages_tot             = 100		# total nr of pages in the pictures (should be recalculated in future)
-s_save_data           = -200# 0.001          # how often save txt and ps files
+s_save_data           = -200    # 0.001          # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving

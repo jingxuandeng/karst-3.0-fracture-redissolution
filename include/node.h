@@ -54,7 +54,7 @@ class Node{
 		Point  xy;		///< node position (for visualization purpose mostly)
 	
 		int a;			///< pore number (name)
-		double tmp;		///< temporal informations about the node;
+		double tmp;		///< temporal information's about the node;
 		signed char t;	///< type of node: 1 -inlet node, 0 - normal node, -1 - outlet node
 		int         x;  ///< additional info about pore (if connected to the dissolution pattern)
 

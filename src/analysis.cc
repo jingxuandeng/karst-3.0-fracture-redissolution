@@ -47,17 +47,22 @@ void Network::analyze_diss_pattern(bool if_anal_pattern){
 void Network::write_pattern_properties(){
 
 	if(tot_steps==0){
-			pattern_analysis_out   << "#"                 <<\
-						setw(15)   << "step  "            <<\
-						setw(15)   << "time  "            <<\
-						setw(15)   << "pattern_length "   <<\
-						setw(15)   << "horton "           <<\
+			pattern_analysis_out   << "#"                   <<\
+						setw(15)   << "step  "              <<\
+						setw(15)   << "time  "              <<\
+						setw(15)   << "diss_pattern_l "     <<\
+                        setw(15)   << "preci_pattern_l "    <<\
+						setw(15)   << "horton "             <<\
 						endl;
 			pattern_analysis_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
 		}
 
-	find_the_largest_tree(pattern_anal_factor);
-	int max_horton = find_reverse_forks();
+    find_the_largest_tree(0.5,true);
+    int max_horton = find_reverse_forks();
+    double dist_pre    = find_minimal_tree_length();
+
+    find_the_largest_tree(pattern_anal_factor);
+	max_horton = find_reverse_forks();
 	double dist    = find_minimal_tree_length();
 
 
@@ -66,6 +71,7 @@ void Network::write_pattern_properties(){
 		setw(15) << tot_steps   <<\
 		setw(15) << tot_time    <<\
 		setw(15) << dist        <<\
+        setw(15) << dist_pre    <<\
 		setw(15) << max_horton  <<\
 		endl<<flush;
 

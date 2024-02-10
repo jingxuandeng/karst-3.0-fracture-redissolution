@@ -86,9 +86,9 @@ void Node::check_diss_pattern(double threshold){
 }
 void Node::check_preci_pattern(double factor){
     x = 1;  			//the node has been checked
-    double max_distance = 5;
+    double max_distance = 10;
     for(int i=0;i<bG;i++)
-        if(g[i]->bN==3)
+        if(g[i]->bN==3)             //TODO : Make it work for general bG, not only 3
             if(fabs(g[i]->n[0]->xy.y-g[i]->n[1]->xy.y<max_distance) &&
                fabs(g[i]->n[1]->xy.y-g[i]->n[2]->xy.y<max_distance) &&
                fabs(g[i]->n[2]->xy.y-g[i]->n[0]->xy.y<max_distance))
