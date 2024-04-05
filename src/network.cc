@@ -146,11 +146,14 @@ Network::Network (string input_file_name) {
 	net_g_out .open("net_g.out",      ios_base::out | ios_base::trunc );
     tmp_out   .open("tmp.out",        ios_base::out | ios_base::trunc );
 
-	time_evolution_out     .open("time_evolution.out"     ,ios_base::out | ios_base::trunc );
-	pattern_analysis_out   .open("pattern_analysis.out"   ,ios_base::out | ios_base::trunc );
-	child_distribution_out .open("child_distribution.out" ,ios_base::out | ios_base::trunc );
-	fork_distribution_out  .open("fork_distribution.out"  ,ios_base::out | ios_base::trunc );
-	cluster_size_out       .open("cluster_size.out"       ,ios_base::out | ios_base::trunc );
+	time_evolution_out      .open("time_evolution.out"           ,ios_base::out | ios_base::trunc );
+	pattern_analysis_out    .open("pattern_analysis.out"         ,ios_base::out | ios_base::trunc );
+	child_distribution_out  .open("child_distribution_diss.out"  ,ios_base::out | ios_base::trunc );
+	fork_distribution_out   .open("fork_distribution_diss.out"   ,ios_base::out | ios_base::trunc );
+	cluster_size_out        .open("cluster_size_diss.out"        ,ios_base::out | ios_base::trunc );
+	child_distribution2_out .open("child_distribution_preci.out" ,ios_base::out | ios_base::trunc );
+	fork_distribution2_out  .open("fork_distribution_preci.out"  ,ios_base::out | ios_base::trunc );
+	cluster_size2_out       .open("cluster_size_preci.out"       ,ios_base::out | ios_base::trunc );
 
 
 	if (if_save_table){
@@ -289,6 +292,11 @@ Network:: ~Network (){
 	pattern_analysis_out   .close();
 	child_distribution_out .close();
 	fork_distribution_out  .close();
+	cluster_size_out       .close();
+	child_distribution2_out.close();
+	fork_distribution2_out .close();
+	cluster_size2_out      .close();
+
 
 	if (if_save_table){
 		diameters_out      .close();

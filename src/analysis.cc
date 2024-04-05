@@ -46,38 +46,59 @@ void Network::analyze_diss_pattern(bool if_anal_pattern){
 */
 void Network::write_pattern_properties(){
 
+
 	if(tot_steps==0){
 			pattern_analysis_out   << "#"                   <<\
 						setw(15)   << "step  "              <<\
 						setw(15)   << "time  "              <<\
 						setw(15)   << "diss_pattern_l "     <<\
                         setw(15)   << "preci_pattern_l "    <<\
-						setw(15)   << "horton "             <<\
+						setw(15)   << "horton_diss"         <<\
+                        setw(15)   << "horton_preci"        <<\
 						endl;
 			pattern_analysis_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
 		}
 
-    find_the_largest_tree(0.5,true);
-    int max_horton = find_reverse_forks();
-    double dist_pre    = find_minimal_tree_length();
 
+
+    // 1. precipitation pattern analysis
+	find_the_largest_tree(0.5,true);
+    double max_horton_pre  = find_reverse_forks();
+    double dist_pre        = find_minimal_tree_length();
+
+
+    //finding forks distribution
+    int * child_dist = find_child_distribution();
+    int * fork_dist  = find_fork_distribution();
+
+    child_distribution2_out<<setw(10)<<tot_steps;
+    fork_distribution2_out <<setw(10)<<tot_steps;
+    for(int i=0; i<=child_dist[0]; i++) child_distribution2_out<<setw(8)<<child_dist[i];
+    for(int i=0; i<=fork_dist [0]; i++)  fork_distribution2_out<<setw(8)<< fork_dist[i];
+    child_distribution2_out<<endl<<flush;
+    fork_distribution2_out <<endl<<flush;
+
+    delete [] child_dist;
+    delete [] fork_dist;
+
+
+    //finding cluster size (cluster growing method) (for fractal dimension approximation)
+    cerr<<"Finding clusters size for diss pattern..."<<endl;
+    cluster_size2_out<<setw(10)<<tot_steps;
+    for(int i=3; i<2*int(pow(NN,0.25)); i++) cluster_size2_out<<setw(5)<<i<<setw(12)<<find_cluster_size(i);
+    cluster_size2_out <<endl<<flush;
+
+
+
+    //2. dissolution pattern analysis
     find_the_largest_tree(pattern_anal_factor);
-	max_horton = find_reverse_forks();
-	double dist    = find_minimal_tree_length();
+	double max_horton_diss = find_reverse_forks();
+	double dist_diss       = find_minimal_tree_length();
 
-
-	//printing pattern properties
-	pattern_analysis_out        <<\
-		setw(15) << tot_steps   <<\
-		setw(15) << tot_time    <<\
-		setw(15) << dist        <<\
-        setw(15) << dist_pre    <<\
-		setw(15) << max_horton  <<\
-		endl<<flush;
 
 	//finding forks distribution
-	int * child_dist = find_child_distribution();
-	int * fork_dist  = find_fork_distribution();
+	child_dist = find_child_distribution();
+	fork_dist  = find_fork_distribution();
 
 	child_distribution_out<<setw(10)<<tot_steps;
 	fork_distribution_out <<setw(10)<<tot_steps;
@@ -90,17 +111,31 @@ void Network::write_pattern_properties(){
 	delete [] fork_dist;
 
 	//finding cluster size (cluster growing method) (for fractal dimension approximation)
-	cerr<<"Finding clusters size..."<<endl;
+	cerr<<"Finding clusters size for diss pattern..."<<endl;
 	cluster_size_out<<setw(10)<<tot_steps;
 	for(int i=3; i<2*int(pow(NN,0.25)); i++) cluster_size_out<<setw(5)<<i<<setw(12)<<find_cluster_size(i);
 	cluster_size_out <<endl<<flush;
+
+
+
+    //printing pattern properties for both diss/preci mode
+    pattern_analysis_out        <<\
+		setw(15) << tot_steps   <<\
+		setw(15) << tot_time    <<\
+		setw(15) << dist_diss   <<\
+        setw(15) << dist_pre    <<\
+		setw(15) << max_horton_diss  <<\
+        setw(15) << max_horton_pre   <<\
+		endl<<flush;
+
+
 
 	if(printing_mode=="debugging"){//for debugging only
 				description_note = "At the end of write pattern properties: s = " + to_string(tot_steps);
 				for (int i=0;i<NP;i++) p[i]->tmp = 666;
 				printing_mode = "debugging";
 				net_ps<< *this;
-				//printing_mode = "grains";  FIXME: nie iwem czemu ta ostatnia linijka tutaj
+				//printing_mode = "grains";  //optionally one can switch to the grain printing_mode
 		}
 }
 

@@ -12,7 +12,7 @@ cd ../DATA/2D || exit
 
 # Creating proper directory
 current_date_time=$(date +small_%Y_%m_%d_%H_%M)
-printf $current_date_time
+
 mkdir "$current_date_time"
 if [ -d "$current_date_time" ]; then
   echo "Directory '$current_date_time' created successfully."

@@ -158,15 +158,15 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
 	stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
 
 
-    S.find_the_largest_tree(0.5,true);
+    S.find_the_largest_tree(0.5,true);   ///tylko ten kawalek wywala sie, dla tradycyjnego szukania pataernow jest wszystko ok!!!
+    //S.find_the_largest_tree(2);
 
     for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->x;
 	for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
 	//for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NP;i++) {S.p[i]->tmp=S.p[i]->x;}
+    for(int i=0;i<S.NP;i++) S.p[i]->tmp=S.p[i]->x;
     for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
-    cerr<<"Checking distance for each node..."<<endl;
-    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.distance_to_root(S.n[i]);//S.n[i]->x;
+    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->a; //S.distance_to_root(S.n[i]);//S.n[i]->x;   //FIXME: This will get us in the inf loop
 	for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
 
 	stream << "showpage "<<endl<<flush;
@@ -176,7 +176,7 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
     if(S.if_save_ps==0){ cerr<<"Error during printing ps in debugging style."<<endl; return ;}
 
 
-    cerr<<"Printing network for debugging ..."<<endl;
+    cerr<<"Printing network for debugging part 2..."<<endl;
 //
 //    int N=(S.N_x);
 //    int M=(S.N_y);
@@ -201,21 +201,14 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
     //stream<<"1 -1 scale   0 -300 transform"<<endl;
     //stream<<"1 -1 scale"<<endl;
 
-    //stream<<" 0 0 moveto 0 300 lineto stroke"<<endl;
-
-    //title
-    stream<<Kolor(0,0,0);
-    stream<<"/Times-Bold findfont "<<20./skala<<" scalefont setfont"<<endl;
-    stream<<"0 "<<-450./skala<<" moveto"<<endl;
-    stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
 
     S.find_the_largest_tree(2.);
     //for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->x;
     //for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
     //for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NP;i++) {S.p[i]->tmp=666;}//S.p[i]->x;}
+    for(int i=0;i<S.NP;i++) {S.p[i]->tmp=S.p[i]->x;}
     for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
-    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.distance_to_root(S.n[i]);//S.n[i]->x;
+    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->a;//S.n[i]->x;//S.distance_to_root(S.n[i]);//S.n[i]->x;
     for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
 
     stream << "showpage "<<endl<<flush;
@@ -300,57 +293,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 
 void Print_network_in_debugging_style_tmp (ofstream_ps & stream, Network &S,int nr_tmp){
 
-	if(S.if_save_ps==0){ cerr<<"Error during printing ps in debugging style."<<endl; return ;}
 
-
-	cerr<<"Printing network for debugging ..."<<endl;
-
-	int N=(S.N_x);
-	int M=(S.N_y);
-	double skala  = 400./(S.L_out*max(N,M));     //
-	double x_zero = 100./skala;
-	double y_zero = 750./skala;
-
-
-	if(S.pages_saved==0) stream << "%!PS-Adobe-3.0" << endl<<"%%Pages:"<<S.pages_tot<<endl<<endl;
-
-	stream <<"%%Page: "<<S.pages_saved+1<<" "<<S.pages_saved+1<<endl<<endl;
-
-	//stream << "%%Orientation: Landscape" << endl;
-	//stream << "%%DocumentMedia: a4 595 842 80 () ()" << endl;
-	//stream<<"-1 -1 scale"<<endl;
-	stream <<"1 setlinejoin 1 setlinecap 0.02 setlinewidth"<<endl;
-
-	stream<<skala<<"\t"<<skala<<" scale"<<endl;
-	stream<<x_zero<<"\t"<<y_zero<<" translate"<<endl;
-	stream<<"1 setlinejoin"<<endl;
-	stream<<"1 setlinecap" <<endl;
-	//stream<<"1 -1 scale   0 -300 transform"<<endl;
-	//stream<<"1 -1 scale"<<endl;
-
-	//title
-	stream<<Kolor(0,0,0);
-	stream<<"/Times-Bold findfont "<<20./skala<<" scalefont setfont"<<endl;
-	stream<<"0 "<<-450./skala<<" moveto"<<endl;
-	stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
-
-
-	stream<<Kolor(1,0,1);
-	stream<<" 0 0 moveto 0 -100 lineto 100 -100 lineto 100 0 lineto 0 0 lineto stroke"<<endl;
-	stream<<Kolor(0,0,0);
-
-
-	//for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
-	Node *nn=S.n[nr_tmp];
-	stream<<*nn;
-	for(int bb=0;bb<nn->b;bb++) stream<<*(nn->p[bb]);
-	for(int bb=0;bb<nn->b;bb++)	stream<<*(nn->n[bb]);
-	stream<<*nn;
-
-	//for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
-	//for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
-
-	stream << "showpage "<<endl<<flush;
 }
 
 

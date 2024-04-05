@@ -62,7 +62,7 @@ int test_dissolution(string config_name){
 int main(int argc, char** argv){
 
 	
-	bool if_show_picture = 0 ;  //if true, picture is automatically shown (working on MacOs, Linux to be checked)
+	bool if_show_picture = true ;  //if true, picture is automatically shown (working on MacOs, Linux to be checked)
 	string config_name   = "";  //path to the config file
     string sim_version   = "single_run";
 
@@ -88,7 +88,7 @@ int main(int argc, char** argv){
 //    test_triangulation();
 
 //additional actions (working on MacOs)
-	if(if_show_picture or true){
+	if(if_show_picture){
 		cerr<<"Preparing pictures..."<<endl;
 		system("ps2pdf net.ps");
         system("ps2pdf net_2.ps");

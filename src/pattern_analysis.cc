@@ -22,10 +22,14 @@
 */
 void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode){
 
+
+
 	cerr<<"Finding minimal spanning tree..."<<endl;
 
 	double big_number = 10e100;    //numerical infinity for tree generation algorithm
 	int nodes_left    = 0;   //nr of nodes belonging to the longest pattern
+
+
 
 	//Preparing dissolution pattern
 	for (int i =0;i<NN;i++)   n[i]->x=0;
@@ -42,40 +46,51 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
 		if(n[i]->x==2){ n[i]->x=1; nodes_left++;}
 	}
 
+
 	//finding tree
 	for(int i=0;i<NN;i++) if(n[i]->x==1) n[i]->tmp=big_number;    //setting nod key to inf
 	double min_k_value = big_number;   //minimal nod key
 	Node * min_nod     = root; //first nod is a max root
+
 
 	while(nodes_left>0){
 
 		if(min_nod == root) {
 			min_nod->tmp = 0;               //adding node to the tree
 			min_nod->x   = 1;               //distance from the root+1
+
 		}
+
 		else{
-			int min_s    = abs(min_nod->x)-1;            //pore to connect to the tree
-			min_nod->x   = min_nod->n[min_s]->x+1;       //distance from the root+
-			min_nod->p[min_s]->x=2;	                     //adding pore to the tree;
+
+            int min_s    = abs(min_nod->x)-1;            //pore to connect to the tree
+            min_nod->x   = min_nod->n[min_s]->x+1;        //distance from the root+
+            min_nod->p[min_s]->x=2;	                     //adding pore to the tree;
 		}
+
+
 		//updating keys
 		for (int s=0; s< min_nod->b; s++){
 			Node * nod_tmp = min_nod->n[s];
-			if(nod_tmp->tmp==0)  continue;  //node added to the pattern (root)
-			if(nod_tmp->x>1)     continue;  //node already added to the tree
-			if(nod_tmp->x==0)    continue;  //node dose't belong to the pattern
+			if(nod_tmp->tmp==0)     continue;  //node added to the pattern (root)
+			if(nod_tmp->x>1)        continue;  //node already added to the tree
+			if(nod_tmp->x==0)       continue;  //node doesn't belong to the pattern
+            if(min_nod->p[s]->x!=1) continue;  //pore doesn't belong to the pattern       // WARNING: in the previous version, with diss pattern only, this condition was skipped
 			//double dist    = min_nod->tmp + 1./min_nod->p[s]->perm(mu_0); //weight is a distance from root
-			double dist    = min_nod->tmp + 1./min_nod->p[s]->d; //weight is a distance from root
+			double dist    = min_nod->tmp + 1./(min_nod->p[s]->d+d_min); //weight is a distance from root
 			if(nod_tmp->tmp > dist){ nod_tmp->tmp=dist; nod_tmp->x = -nod_tmp->neighbor_number(min_nod)-1;}
+
 		}
 		nodes_left --;
 		if(nodes_left==0) break;
 		//find new min node
 		min_k_value = big_number;
+
 		for(int i=0;i<NN;i++) if(n[i]->x<0)
 			if (min_k_value > n[i]->tmp){
 				min_nod     = n[i];
 				min_k_value = n[i]->tmp;}
+
 	}
 }
 
@@ -90,10 +105,13 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
 
 void Network::find_the_largest_tree(double threshold, bool if_preci_mode){
 
+
+
 	int max_root      = 0;
 	Node *n_max_y     = n[0];      //the tip of the longest pattern/tree
 	double max_y      = -10e-10;
 	double big_number = 10e100;    //numerical infinity for tree generation algorithm
+
 
 	//looking for the longest  pattern
 	for (int j=0;j<N_wi;j++){
@@ -115,6 +133,7 @@ void Network::find_the_largest_tree(double threshold, bool if_preci_mode){
 	for (int i =0;i<NP;i++)   p[i]->x=0;
     for (int i =0;i<NG;i++)   g[i]->x=0;
 
+
     if (if_preci_mode)
         wi[max_root]->check_preci_pattern(threshold);
     else
@@ -127,7 +146,6 @@ void Network::find_the_largest_tree(double threshold, bool if_preci_mode){
         for(int s=0;s<n_tmp->b;s++) if(n_tmp->p[s]->x>=1)
             if(1./n_tmp->p[s]->perm(mu_0)<min_r) {min_r = 1./n_tmp->p[s]->perm(mu_0); max_root = i;}
         }
-
 
 	find_minimal_spanning_tree(threshold,wi[max_root],if_preci_mode);
 }
@@ -155,9 +173,9 @@ double Network::find_minimal_tree_length(){
 	if(min_dist==10e10){
 		int x_max=0; Node *n_max=NULL;
 		for (int i=0; i<NN; i++) if(n[i]->x > x_max)   {x_max = n[i]->x;     n_max = n[i];}
-		double y_max=0;
+        double y_max=0;
 		for (int i=0; i<NN; i++) if(n[i]->x == x_max && n[i]->xy.y >y_max) {y_max = n[i]->xy.y;  n_max = n[i];}
-		if (n_max != NULL) min_dist = distance_to_root(n_max);
+        if (n_max != NULL) min_dist = distance_to_root(n_max);
 	}
 
 	return min_dist;
@@ -173,7 +191,9 @@ double Network::find_minimal_tree_length(){
 */
 double Network::distance_to_root(Node* n_tmp){
 
-    //before distance_to_root the find_the_largest_tree function mus be run to set child orred and so on.
+    //before distance_to_root the find_the_largest_tree function mus be run to set child order and so on.
+
+
 
 	if (n_tmp->x<=0) return -1;
     if (n_tmp->x==1) return 0;

@@ -94,6 +94,7 @@ void Node::check_preci_pattern(double factor){
                fabs(g[i]->n[2]->xy.y-g[i]->n[0]->xy.y<max_distance))
                 if(g[i]->Ve > g[i]->Va*factor) { // && g[i]->Ve>0.000001) {
                     g[i]->x = 1;  	//grain has been set as connected to the precipitation pattern
+					for (int s=0;s<g[i]->bP; s++) g[i]->p[s]->x = 1;			//pore has been a part of a precipitation pattern
                     x = 2;  		//node is connected to the pattern
                     for (int b=0; b<g[i]->bN;b++)
                         if (g[i]->n[b]->x==0)
