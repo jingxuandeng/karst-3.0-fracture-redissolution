@@ -35,9 +35,9 @@ kappa=0.5
 d0=0.5
 d_min=0.05
 
-for kappa in 0.5 1
+for kappa in 1
 do
-for gamma in 1.5 1   #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for gamma in 1   #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
 for dmin in  0.001
 do
@@ -56,7 +56,7 @@ do
                   echo d_min = $dmin
                 } >> config.txt
 
-                ../../../../karst_3.0/build/karst config.txt >wyjscie.out 2>bledy.out &
+                ../../../../karst_3.0/build/karst #config.txt >wyjscie.out 2>bledy.out &
              )
 done
 done
