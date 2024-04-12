@@ -828,8 +828,8 @@ void Network::dissolve_and_precipitate(){
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0;
-		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)/2*p0->l);
-		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)/2*p0->l);
+		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)*p0->l);
+		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)*p0->l);
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
 		for(int s=0; s<p0->bG;s++) {
 			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;
