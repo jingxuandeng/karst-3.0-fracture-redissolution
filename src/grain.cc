@@ -165,8 +165,6 @@ void Grain::calculate_initial_volume (Network *S){
         for (int i=0;i<bP;i++) d_mean+=p[i]->d/bP;
         //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
         Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Poprawiony wzór na wszystkie poprzeczki ruszające się.
-
-	    cerr<<"Tu w srodku: Va_0 = "<<Va_0<<"   Va = "<<Va<<endl;
     }
 	//WARNING: the general formula should be implemented for cubic network with added random node positions
 	else if(bN==8){
@@ -219,7 +217,6 @@ void Grain::calculate_initial_volume (Network *S){
 		Va = (1-S->Vx_perc)*Va;
 	}
 
-    cerr<<"Va = "<<Va<<endl;
 }
 
 /**

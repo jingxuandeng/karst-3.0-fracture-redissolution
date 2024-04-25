@@ -261,7 +261,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 			g = 1;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
 			b = 0;
 			kkk=Kolor(r,g,b);}
-        if (p.d<=S.d0/10.){// FIXME *(1+0.01) ){
+        if (p.d<=S.d0/5.){// FIXME *(1+0.01) ){
             r = 1;
             g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
             b = 0;

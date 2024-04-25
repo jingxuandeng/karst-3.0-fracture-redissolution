@@ -116,7 +116,12 @@ Network::Network (string input_file_name) {
 	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
     if_cut_d_min                         = false;        //if true the d<=d_min -> d=0
 
-	//output
+    if_dynamic_k2                        = false;        // if true the Da2_eff will be multiplied by sigma function
+    dyn_k2_alpha                         = 2;            //sigma parameters
+    dyn_k2_c0                            = 0.1;          //sigma parameters
+
+
+    //output
 	if_save_ps            = true;     //if true ps pictures are created
 	if_save_txt           = true;     //if true data about network (nodes, pores and grains) is saved in text file
 	if_save_table         = true;     //if true save tables with diameters, flow and concentration

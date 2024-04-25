@@ -96,6 +96,11 @@ if_smarter_calculation_of_pressure = false       # if true pressure and flow is 
 type_of_merging                    = none        # type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
 if_cut_d_min                       = true        # cutting completely pores with d<=d_min
 
+# dynamic k2!!!
+if_dynamic_k2                       = true       # if true the Da2_eff will be multiplied by sigma function
+dyn_k2_alpha                        = 2          # sigma parameters
+dyn_k2_c0                           = 0.1        # sigma parameters
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Initial inlet cut
 

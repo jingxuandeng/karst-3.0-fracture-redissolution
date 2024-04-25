@@ -190,10 +190,16 @@ double Pore::local_Da_eff_2(Network* S){
 
 	if (q==0) return -1;
 	double G = this->local_G_2(S);
+    double Da2local = S->Da2;
 
-	if      (G>0)    return S->Da2*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G2)/(1+G));
-	else if (G==0)   return S->Da2*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
-	else             return S->Da2*(l/S->l0)*(S->q_in_0/fabs(q));
+    if(S->if_dynamic_k2){
+        double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
+        Da2local = Da2local*kappa;
+    }
+
+	if      (G>0)    return Da2local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G2)/(1+G));
+	else if (G==0)   return Da2local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	else             return Da2local*(l/S->l0)*(S->q_in_0/fabs(q));
 }
 
 

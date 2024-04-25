@@ -338,7 +338,21 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else                     cerr<<"WARNING: Wrong value of variable if_streamtube_mixing. Set true or false."<<endl;
 			cerr<< "Setting if_streamtube_mixing = "<<if_streamtube_mixing<<endl;}
 
-		else if(name == "if_save_ps"){
+        else if(name == "if_dynamic_k2"){
+            if      (value == "true" )   if_dynamic_k2  = true;
+            else if (value == "false")   if_dynamic_k2  = false;
+            else                     cerr<<"WARNING: Wrong value of variable if_dynamic_k2. Set true or false."<<endl;
+            cerr<< "Setting if_dynamic_k2 = "<<if_dynamic_k2<<endl;}
+
+        else if(name == "dyn_k2_alpha"){
+            dyn_k2_alpha = stod(value);
+            cerr<< "Setting dyn_k2_alpha = "<<dyn_k2_alpha<<endl;}
+
+        else if(name == "dyn_k2_c0"){
+            dyn_k2_c0 = stod(value);
+            cerr<< "Setting dyn_k2_c0 = "<<dyn_k2_c0<<endl;}
+
+        else if(name == "if_save_ps"){
 			if      (value == "true" )   if_save_ps  = true;
 			else if (value == "false")   if_save_ps  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_save_ps. Set true or false."<<endl;

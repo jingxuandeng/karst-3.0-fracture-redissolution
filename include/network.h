@@ -166,6 +166,9 @@ class Network
 		bool if_streamtube_mixing;					///< if true and we have square lattice  stream-tube mixing is performed while calculating the species B concentration
         bool if_cut_d_min;                          ///< if true, d<=d_min -> d=0;
 
+        bool if_dynamic_k2; ///< if true the Da2_eff will be multiplied by sigma function
+        double dyn_k2_alpha;  ///<sigma parameters
+        double dyn_k2_c0;     ///< sigma parameters
 
 		// output
 		bool if_save_ps;                          ///< if true ps pictures are created
