@@ -29,15 +29,14 @@ cp ../../../../karst_3.0/simulation_setups/k2_dyn/config1D.txt config.txt || exi
 
 printf "Running the simulation...\n\n"
 
-Da=0.02
-gamma=1
-kappa=0.5
+Da=0.5
 d0=0.3
-d_min=0.05
+alpha=2
+c0=0.1
 
 for kappa in 1
 do
-for gamma in 0.5 #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for gamma in   0.5 #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
 for dmin in  0.0001
 do
@@ -54,6 +53,8 @@ do
                   echo Da    = $Da
                   echo d0    = $d0
                   echo d_min = $dmin
+                  echo dyn_k2_alpha = $alpha
+                  echo dyn_k2_c0    = $c0
                 } >> config.txt
 
                 ../../../../../karst_3.0/build/karst config.txt >wyjscie.out 2>bledy.out &
