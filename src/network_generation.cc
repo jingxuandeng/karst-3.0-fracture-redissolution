@@ -20,7 +20,7 @@ void Network::calculate_initial_d0_and_l0 (){
 
 	double d_tmp = 0, l_tmp = 0;
 	int    i_tmp = 0;
-	for(int i=0;i<NP;i++) if(p[i]->d>0) {d_tmp+=p[i]->d; l_tmp+=p[i]->l; i_tmp++;}
+	for(int i=0;i<NP;i++) if(p[i]->d>0 && p[i]->d<5*d0) {d_tmp+=p[i]->d; l_tmp+=p[i]->l; i_tmp++;}
 	d0 = d_tmp/i_tmp;
 	l0 = l_tmp/i_tmp;
 	mu_0 = M_PI*pow(d0,4)/(128.*l0);

@@ -133,6 +133,7 @@ Network::Network (string input_file_name) {
 	inlet_cut_factor = 1;      //factor of an inlet cut (in a cut: d = d*factor)
 	inlet_cut_w = 0;           //width of an inlet cut
 	inlet_cut_l = 0;		   //length of aGn inlet cut
+    add_well    = false;       //if true additional cut will be added
 
 
 //Reading from the config. file
@@ -220,6 +221,8 @@ Network::Network (string input_file_name) {
 	//inlets cuts
 	if(inlet_cut_factor!=1) create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
 	create_an_initial_pattern();
+
+
 
 //calculating initial Va volume for grains
 	if(if_track_grains){

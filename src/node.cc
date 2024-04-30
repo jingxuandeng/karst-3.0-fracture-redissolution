@@ -308,7 +308,7 @@ bool Node::is_clogged() {
 
 ostream & operator << (ostream & stream, Node &n){
 
-	stream<<"Node("<<n.a<<"):b = "<<n.b<<" bG = "<<n.bG<<" n = (";
+	stream<<"Node("<<n.a<<"): t = "<<int(n.t)<< " b = "<<n.b<<" bG = "<<n.bG<<" n = (";
 	for(int k=0;k<n.b;k++){
 		stream<<n.n[k]->a;
 		if(k<n.b-1) stream<<",";}

@@ -78,10 +78,11 @@ ofstream_ps & operator  << (ofstream_ps & stream, Node &n){
 	//stream<<Kropka(n.xy,n.tmp,Kolor(1,0,0),0.1);
 	if(n.xy.z != z_to_print) return stream;
     Kolor k;
-    if (n.tmp<2)
-        k = (0.5,0.5,0.5);
-    else
-        k = (1,0,0);
+    k=(0,0,0);
+//    if (n.t==0) k = (0.5,0.5,0.5); this is set later in stream<<Kropa
+//    if (n.t==1) k = (1,0,0);
+//    if (n.t==-1) k = (0,0,1);
+
 	stream<<Kropa(n.xy,&n,k,0.1);
 	return stream;}
 
@@ -90,8 +91,8 @@ ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
 	Kolor kkk(0.9,0.9,0.9);    //FIXMW: defaoult color Kolor kkk(0.5,0.5,0.5);
 
 
-	if(p.x==1) kkk=Kolor(0.5,0.5,0.5);  //FIXME: default (0.5,0.5,0.5);
-	if(p.x==2) kkk=Kolor(0,0.5,0);        //FIXME: default colors (0,0,0);
+	//if(p.x==1) kkk=Kolor(0.5,0.5,0.5);  //FIXME: default (0.5,0.5,0.5);
+	if(p.d>0.2) kkk=Kolor(0,0.5,0);        //FIXME: default colors (0,0,0);
 
 	bool if_debug=true;
 	if(p.n[0]->xy - p.n[1]->xy < max_distance && p.d<300&& p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print){
@@ -206,9 +207,9 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
     //for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->x;
     //for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
     //for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NP;i++) {S.p[i]->tmp=S.p[i]->x;}
+    for(int i=0;i<S.NP;i++) {S.p[i]->tmp=S.p[i]->q;}
     for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
-    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->a;//S.n[i]->x;//S.distance_to_root(S.n[i]);//S.n[i]->x;
+    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->u;//S.n[i]->x;//S.distance_to_root(S.n[i]);//S.n[i]->x;
     for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
 
     stream << "showpage "<<endl<<flush;

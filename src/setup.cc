@@ -447,7 +447,14 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			inlet_cut_l = stod(value);
 			cerr<< "Setting inlet_cut_l = "<<inlet_cut_l<<endl;}
 
-		else if(name == "random_seed"){
+        else if(name == "add_well"){
+            if      (value == "true" )   add_well  = true;
+            else if (value == "false")   add_well  = false;
+            else                     cerr<<"WARNING: Wrong value of variable add_well. Set true or false."<<endl;
+            cerr<< "Setting add_well = "<<add_well<<endl;}
+
+
+        else if(name == "random_seed"){
 			random_seed = stod(value);
 			cerr<< "Setting random_seed = "<<random_seed<<endl;}
 

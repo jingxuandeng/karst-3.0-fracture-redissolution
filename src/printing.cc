@@ -66,12 +66,12 @@ ostream & operator<< (ostream &os, Kropka kr) {
 ostream & operator<< (ostream &os, Kropa kr) {
 	
 	if     (kr.nod->t==0) 	kr.k=Kolor(0.7,0.7,0.7);
-	else if(kr.nod->t==-1) 	kr.k=Kolor(0,0,0);
+	else if(kr.nod->t==-1) 	kr.k=Kolor(1,0,0);
 	else if(kr.nod->t== 1) 	kr.k=Kolor(0,0,1);
-	if     (kr.nod->t==0 && kr.nod->cb==1) kr.k=Kolor(0,1,0); //for stream-tube mixing
+	//if     (kr.nod->t==0 && kr.nod->cb==1) kr.k=Kolor(0,1,0); //for stream-tube mixing
 
-	if(kr.nod->x>=1)   kr.k=Kolor(0.8,0.2,0.2);
-	if(kr.nod->tmp>=0) kr.k=Kolor(0.2,0.2,0.8);
+//	if(kr.nod->x>=1)   kr.k=Kolor(0.8,0.2,0.2);
+//	if(kr.nod->tmp>=0) kr.k=Kolor(0.2,0.2,0.8);
 
 
 	os<<kr.k;

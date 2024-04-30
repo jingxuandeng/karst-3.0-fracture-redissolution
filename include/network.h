@@ -194,6 +194,10 @@ class Network
 		double inlet_cut_factor;       ///< factor of an inlet cut (in a cut: d = d*factor)
 		int    inlet_cut_w;            ///< width of an inlet cut
 		int    inlet_cut_l;			   ///< length of an inlet cut
+        bool   add_well;               ///< if true an additional cut will be created at x=0=N_x
+
+
+
 
 	public:
 		Network  (string input_file_name);

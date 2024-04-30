@@ -459,7 +459,7 @@ void Network::print_tables_txt(){
 			for(int b=0; b<3;b++) diameters_out  <<setprecision(7)<<setw(12)<<p[i*3+b]->d;
 			for(int b=0; b<3;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*3+b]->q;
 //			for(int b=0; b<3;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
-//			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
+			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
 			concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
 			concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
 			for(int b=0; b<2;b++)VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Va;

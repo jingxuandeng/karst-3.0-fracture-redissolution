@@ -245,7 +245,7 @@ void Network::check_if_dissolved(){
 //	}
 
 	//condition for pressure drop
-	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min){
+	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min && !add_well || add_well && wi[0]->u * Q_tot < u_min){
 		 cerr<<"\nSystem is dissolved: condition for pressure has been fulfilled."<<endl;
              if_check = false;
              T_max = sim_step*time_factor_after_b;
