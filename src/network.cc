@@ -134,7 +134,7 @@ Network::Network (string input_file_name) {
 	inlet_cut_w = 0;           //width of an inlet cut
 	inlet_cut_l = 0;		   //length of aGn inlet cut
     add_well    = false;       //if true additional cut will be added
-
+	point_inlet = false;	   // if true the inlet and outlet is a point at the top of the crack
 
 //Reading from the config. file
 
