@@ -34,12 +34,12 @@ dmin=0.001
 cut=true
 los=107
 
-Da=0.5
+Da=0.1
 d0=0.1
 
 for kappa in 1 #0.1 0.
 do
-  for gamma in   0.5 0.1 1    #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in   0.75 2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa

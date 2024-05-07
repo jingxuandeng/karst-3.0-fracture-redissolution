@@ -453,6 +453,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
             else                     cerr<<"WARNING: Wrong value of variable add_well. Set true or false."<<endl;
             cerr<< "Setting add_well = "<<add_well<<endl;}
 
+        else if(name == "point_inlet"){
+            if      (value == "true" )   point_inlet  = true;
+            else if (value == "false")   point_inlet  = false;
+            else                     cerr<<"WARNING: Wrong value of variable point_inlet. Set true or false."<<endl;
+            cerr<< "Setting point_inlet = "<<point_inlet<<endl;}
+
 
         else if(name == "random_seed"){
 			random_seed = stod(value);

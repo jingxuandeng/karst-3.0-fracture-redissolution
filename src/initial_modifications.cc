@@ -15,9 +15,9 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
 
 	cerr<<"Adding an inlet cut..."<<endl;
 
-	if(cut_l >=N_y) {cerr<<"WARNING : Cut length is to large. No cut is made."<<endl; return;}
+	//if(cut_l >=N_y) {cerr<<"WARNING : Cut length is to large. No cut is made."<<endl; return;}
 
-    // clearing ingo about inlet and outlet
+    // clearing info about inlet and outlet
     if(add_well || point_inlet){
         cerr<<"Changing inlets/outlets (well mode)..."<<endl;
         if(type_of_topology != "hexagonal") {
@@ -35,14 +35,13 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
                     N_wi++;
                     cerr << "Dodaje do inletow " << *n[i] << "  N_wi = " << N_wi << endl;
                 }
+            wi = new Node *[N_wi];
+            int j = 0;
+            for (int i = 0; i < NN; i++) if (n[i]->t == 1) wi[j++] = n[i];
+            if (j != N_wi)
+                cerr << "WARNING: Problem with setting new inlets: N_wi = " << N_wi << "   j = " << j << endl;
 
-            if (add_well) {
-                wi = new Node *[N_wi];
-                int j = 0;
-                for (int i = 0; i < NN; i++) if (n[i]->t == 1) wi[j++] = n[i];
-                if (j != N_wi)
-                    cerr << "WARNING: Problem with setting new inlets: N_wi = ." << N_wi << "   j = " << j << endl;
-
+            if (add_well) {//setting new outlet for point outlets
                 //adding new outlet
                 delete[] wo;
                 for (int i = 0; i < NN; i++)
@@ -55,14 +54,16 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
                 j = 0;
                 for (int i = 0; i < NN; i++) if (n[i]->t == -1) wo[j++] = n[i];
                 if (j != N_wo)
-                    cerr << "WARNING: Problem with setting new outlets: N_wo = ." << N_wo << "   j = " << j << endl;
+                    cerr << "WARNING: Problem with setting new outlets: N_wo = " << N_wo << "   j = " << j << endl;
             }
             else{
                 //setting new outlet for point outlets
+                for (int i = 0; i < NN; i++) if (n[i]->t == -1) n[i]->t = 0;
                 N_wo = 0;
                 delete[] wo;
                 for (int i = 0; i < NN; i++)
-                    if (n[i]->xy.y < 3 && n[i]->xy.x >= (N_x / 2. - cut_w / 2.) &&
+                    if (n[i]->xy.y >N_y - 4 &&
+                        n[i]->xy.x >= (N_x / 2. - cut_w / 2.) &&
                         n[i]->xy.x < (N_x / 2. + cut_w / 2.))  //check if 3 is ok in this equation
                     {
                         n[i]->t = -1;
@@ -73,7 +74,7 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
                     int j = 0;
                     for (int i = 0; i < NN; i++) if (n[i]->t == -1) wo[j++] = n[i];
                     if (j != N_wo)
-                        cerr << "WARNING: Problem with setting new outlets: N_wo = ." << N_wo << "   j = " << j << endl;
+                        cerr << "WARNING: Problem with setting new outlets: N_wo = " << N_wo << "   j = " << j << endl;
 
             }
         }
