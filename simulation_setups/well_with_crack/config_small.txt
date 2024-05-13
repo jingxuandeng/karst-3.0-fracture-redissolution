@@ -37,7 +37,7 @@ d_d_dis     = 5             # minimal dissolution at the outlet to finish simula
 d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
 if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = true  # if true evolution stops when system is fully dissolved
-time_factor_after_b = 1.5
+time_factor_after_b = 2
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
@@ -99,12 +99,12 @@ if_cut_d_min                       = true        # cutting completely pores with
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Initial inlet cut
 
-inlet_cut_factor = 2     # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
+inlet_cut_factor = 2      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
 inlet_cut_w = 2           # width of an inlet cut (for triangulation ot must be at least 2, for hexagonal network 1 is enough)
 inlet_cut_l = 100		  # length of an inlet cut
-add_well = false           # add well
+add_well = false          # add well
 point_inlet = true
-
+point_outlet = false
 
 
 

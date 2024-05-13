@@ -38,7 +38,7 @@ void Network::calculate_initial_d0_and_l0 (){
 */
 void Network::calculate_initial_mean_flow(){   //important for physical parameter calculations
 
-	if (Q_tot!=0){    //constant flow through the system
+	if (Q_tot!=0 and false){    //constant flow through the system WARNING: This is not convenient for a ; I try too calculate the real medium flow
 		int N_inlet_pores=0;
 		for(int i=0;i<N_wi;i++){
 			Node* n_tmp = wi[i];
@@ -51,9 +51,8 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 		int N_inlet_pores=0;
 		calculate_pressures();
 		calculate_flows();
-		for(int i=0;i<N_wi;i++){
-			Node* n_tmp = wi[i];
-			for (int j=0; j<n_tmp->b;j++) if (n_tmp->p[j]->d>0) {N_inlet_pores++; Q_tot_tmp += fabs(n_tmp->p[j]->q);}
+		for(int j=0;j<NP;j++){
+			 if (p[j]->d>0) {N_inlet_pores++; Q_tot_tmp += fabs(p[j]->q);}
 		}
 		q_in_0=Q_tot_tmp/N_inlet_pores;
 	}

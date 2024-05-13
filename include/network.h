@@ -195,7 +195,8 @@ class Network
 		int    inlet_cut_w;            ///< width of an inlet cut
 		int    inlet_cut_l;			   ///< length of an inlet cut
         bool   add_well;               ///< if true an additional cut will be created at x=0=N_x
-		bool   point_inlet;			  ///< if true the inlet and outlet is a point at the top of the crack
+		bool   point_inlet;			   ///< if true the inlet  is a point at the top of the crack
+        bool   point_outlet;		   ///< if true the outlet is a point at the top of the crack
 
 
 
