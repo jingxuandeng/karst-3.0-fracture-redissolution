@@ -33,7 +33,7 @@ d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if 
 d_d_min     = 0 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
 d_V_max     = 0.05     	    # (for precipitation only) maximal change of volume in one step (in % if obtained then dt = 2/3 dt)
 d_V_min     = 0.02    	    # (for precipitation only) minimal change of pore Volume in one step (in % if not obtained then dt = 1.2dt)
-d_d_dis     = 5             # minimal dissolution at the outlet to finish simulation (unit d0)
+d_d_dis     =  6            # minimal dissolution at the outlet to finish simulation (unit d0)
 d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
 if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = true  # if true evolution stops when system is fully dissolved
@@ -96,10 +96,18 @@ if_smarter_calculation_of_pressure = false       # if true pressure and flow is 
 type_of_merging                    = none        # type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
 if_cut_d_min                       = true        # cutting completely pores with d<=d_min
 
+
+
+# dynamic k2!!!
+if_dynamic_k2                       = false       # if true the Da2_eff will be multiplied by sigma function
+dyn_k2_alpha                        = 2          # sigma parameters
+dyn_k2_c0                           = 0.1        # sigma parameters
+
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Initial inlet cut
 
-inlet_cut_factor = 2      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
+inlet_cut_factor = 5      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
 inlet_cut_w = 2           # width of an inlet cut (for triangulation ot must be at least 2, for hexagonal network 1 is enough)
 inlet_cut_l = 100		  # length of an inlet cut
 add_well = false          # add well
