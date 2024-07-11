@@ -11,7 +11,6 @@
 
 
 class ofstream_ps  : public std::ofstream {};  ///< output PostScript file
-class ofstream_ps2 : public std::ofstream {};  ///< output PostScript file
 class ofstream_txt : public std::ofstream {};  ///< output text file
 
 

@@ -523,7 +523,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	P_out = 0;	     //pressure at the outlet, always should be set to zero
 	NN    = N_x * N_y;
 	Da2   = kappa * Da;
-	G2    = theta * G1;
+	G2    = theta * G1;  //TODO: Tu mogloby być G2 = kappa*theta*G1
 
 
 	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;

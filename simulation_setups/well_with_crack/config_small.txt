@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 100         # size of the regular network
-N_y = 100         # size of the regular network
+N_x = 20         # size of the regular network
+N_y = 20         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -20,7 +20,7 @@ gamma = 1       # parameters of precipitation: V_pre/V_diss
 theta = 1       # parameters of precipitation: G_pre / G_diss
 kappa = 0.5     # parameters of precipitation: Da_pre / Da_diss
 
-d_min = 0.01            # minimal pore diameter
+d_min = 0.0001            # minimal pore diameter
 l_min = 0.01            # minimal pore length
 
 
@@ -37,7 +37,7 @@ d_d_dis     =  6            # minimal dissolution at the outlet to finish simula
 d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
 if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = true  # if true evolution stops when system is fully dissolved
-time_factor_after_b = 2
+time_factor_after_b = 1
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
@@ -99,7 +99,7 @@ if_cut_d_min                       = true        # cutting completely pores with
 
 
 # dynamic k2!!!
-if_dynamic_k2                       = false       # if true the Da2_eff will be multiplied by sigma function
+if_dynamic_k2                       = true       # if true the Da2_eff will be multiplied by sigma function
 dyn_k2_alpha                        = 2          # sigma parameters
 dyn_k2_c0                           = 0.1        # sigma parameters
 
@@ -109,10 +109,11 @@ dyn_k2_c0                           = 0.1        # sigma parameters
 
 inlet_cut_factor = 5      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
 inlet_cut_w = 2           # width of an inlet cut (for triangulation ot must be at least 2, for hexagonal network 1 is enough)
-inlet_cut_l = 100		  # length of an inlet cut
+inlet_cut_l = 20		  # length of an inlet cut
 add_well = false          # add well
 point_inlet = true
 point_outlet = false
 
 
-
+Per_max=1    # maximum permeability (relatively to the initial one) if Da is changing in time, if zero this option is turn off  # TODO: to be implemented
+Per_min=0.1  # minimum permeability (relatively to the initial one) if Da is changing in time, if zero this option is turn off  # TODO: to be implemented
