@@ -38,8 +38,12 @@ Network::Network (string input_file_name) {
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 
 
+    K_0      = 1;
+    Perm_min = 0;    //minimal permeability
+    Perm_max = 0;    //maximal permeability
 
-	//physical parameters -> should be set after choosing dimenssionless one
+
+    //physical parameters -> should be set after choosing dimenssionless one
 	
 	k1	= 10e-8;		//reaction rate for dissolution
 	k2	= 1;			//reaction rate for precipitation

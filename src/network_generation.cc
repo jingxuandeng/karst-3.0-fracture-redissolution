@@ -55,6 +55,7 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 			 if (p[j]->d>0) {N_inlet_pores++; Q_tot_tmp += fabs(p[j]->q);}
 		}
 		q_in_0=Q_tot_tmp/N_inlet_pores;
+        K_0 = Q_tot_tmp/P_in;
 	}
 	cerr<<"Initial mean Q in inlet pore has been calculated, q_in_0 = "<<q_in_0<<endl;
 }

@@ -266,10 +266,11 @@ void Network::calculate_flows(){ //version without pore merging
         if_system_dissolved=true;}
 	
 
-	// additionally we can neglect extremely small q as they can cause numerical problems (equivalent to neglect to small d in precipitation)
+	// additionally we can neglect tiny q as they can cause numerical problems (equivalent to neglect to small d in precipitation)
 	// if (q_min>0) for(int i=0;i<NP;i++) if (fabs(p[i]->q) < q_min) p[i]->q = 0;
 
-	if(Q_tot!=0) recalculate_flows_to_keep_Q_tot("outlet");
+    if(Perm_max!=0 or Perm_min !=0) recalculate_flows_to_keep_Perm();
+    if(Q_tot!=0)   recalculate_flows_to_keep_Q_tot("outlet");
 
 	double Q_tot_tmp=0;
 	for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++) Q_tot_tmp+= fabs(wi[i]->p[s]->q);
@@ -342,12 +343,23 @@ void Network::recalculate_flows_to_keep_Q_tot(string type){
 		double factor = Q_tot/Q_tmp;
 		for(int i=0;i<NP;i++) p[i]->q *=factor;   //rescaling all flows
 		for(int i=0;i<NN;i++) n[i]->u *=factor;   //rescaling all pressures
+        P_in = P_in*factor;
 	}
 	else {
 		cerr<<"ERROR: wrong value of type in function \
 				Network::recalculate_flows_to_keep_Q_tot(string type), use \"inlet\" or \"outlet\"."<<endl;
         if_system_dissolved=true;
 	}
+
+}
+
+void Network::recalculate_flows_to_keep_Perm() {
+
+    double K_tmp = Q_tot/P_in;
+    double Perm_tmp = K_tmp/K_0;
+
+    if(Perm_tmp > Perm_max and Perm_max !=0) Q_tot = Q_tot/1.1;
+    if(Perm_tmp < Perm_min and Perm_min !=0) Q_tot = Q_tot*1.1;
 
 }
 

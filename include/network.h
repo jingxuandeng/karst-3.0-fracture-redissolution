@@ -110,6 +110,10 @@ class Network
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double l_min;   ///< minimal pore length (for numerical reason)
 
+        double K_0;         ///<initial permeability
+        double Perm_min;    ///<minimal permeability
+        double Perm_max;    ///<maximal permeability
+
 
 		// evolution parameters
 		int    T_max;	  	///< maximal number of time steps in simulation
@@ -228,7 +232,8 @@ class Network
 
 		void adapt_dt();												///< part of adapting the time step, for the dissolution to be not too slow not too fast
 		void recalculate_flows_to_keep_Q_tot(string type_of_nodes);     ///< when total flow through the system is kept the flow field must be rescaled in each time step
-		void set_adaptive_dt(double dd, double dV);                     ///< the time dt will be adapted in each time step according to the speed of dissolution and precipitation
+        void recalculate_flows_to_keep_Perm();                          ///< recalculating flow to keep permeability in given rage
+        void set_adaptive_dt(double dd, double dV);                     ///< the time dt will be adapted in each time step according to the speed of dissolution and precipitation
 		void check_if_dissolved();										///< checks if the system is dissolved, if yes the simulation stops
 
 		//Properties of particular pores
