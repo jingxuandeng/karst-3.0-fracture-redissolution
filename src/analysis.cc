@@ -189,7 +189,7 @@ void Network::write_time_step_properties(){
 	time_evolution_out <<setw(15)<<\
 			tot_steps  <<setw(15)<<\
 			tot_time   <<setw(15)<<\
-			Q_tot      <<setw(15)<<\
+			Q_tot_tmp  <<setw(15)<<\
 			wi[0]->u   <<setw(15)<<\
 			Va_tot     <<setw(15)<<\
 			Ve_tot     <<setw(15)<<\

@@ -269,10 +269,10 @@ void Network::calculate_flows(){ //version without pore merging
 	// additionally we can neglect tiny q as they can cause numerical problems (equivalent to neglect to small d in precipitation)
 	// if (q_min>0) for(int i=0;i<NP;i++) if (fabs(p[i]->q) < q_min) p[i]->q = 0;
 
-    if(Perm_max!=0 or Perm_min !=0) recalculate_flows_to_keep_Perm();
+    if(Perm_max!=0 or Perm_min !=0) if(sim_step %20==0) recalculate_flows_to_keep_Perm();
     if(Q_tot!=0)   recalculate_flows_to_keep_Q_tot("outlet");
 
-	double Q_tot_tmp=0;
+	Q_tot_tmp=0;
 	for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++) Q_tot_tmp+= fabs(wi[i]->p[s]->q);
 	cerr<<"Q_tot = "<<Q_tot_tmp<< "    Pressure drop = " << wi[0]->u<<endl;
 	//additional printing for debugging
@@ -355,11 +355,28 @@ void Network::recalculate_flows_to_keep_Q_tot(string type){
 
 void Network::recalculate_flows_to_keep_Perm() {
 
+
+    //TODO: dodać tutaj wrażliwość na pierwszą (a być może i drugą) pochodną
+
+    static double Perm_old = 1;
+
+    cerr<<endl<<"Recalculating Q for Permeability:"<<endl;
     double K_tmp = Q_tot/P_in;
     double Perm_tmp = K_tmp/K_0;
 
-    if(Perm_tmp > Perm_max and Perm_max !=0) Q_tot = Q_tot/1.1;
-    if(Perm_tmp < Perm_min and Perm_min !=0) Q_tot = Q_tot*1.1;
+    cerr<<"K_0 = "<<K_0<<endl;
+    cerr<<"K_tmp = "<<K_tmp<<endl;
+
+    cerr<<"Perm_tmp = "<<Perm_tmp<<endl;
+    cerr<<"Perm_max = "<<Perm_max<<endl;
+    cerr<<"Perm_min = "<<Perm_min<<endl<<endl;
+
+
+
+    if(Perm_tmp > Perm_max and Perm_max !=0 and Q_tot > N_x*1e-3) Q_tot = Q_tot/1.5;
+    if(Perm_tmp < Perm_min and Perm_min !=0 and Q_tot < N_x*1e3)  Q_tot = Q_tot*1.5;
+
+    Perm_old = Perm_tmp;
 
 }
 

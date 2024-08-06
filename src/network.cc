@@ -15,6 +15,7 @@ Network::Network (string input_file_name) {
 	P_in   = N_y-1;   //pressure at the inlet (must by positive)
 	P_out  = 0;	      //pressure at the outlet, always should be set to zero
 	Q_tot  = 2*N_x;   //total flow through the system (if == 0 the constant pressure is kept)
+    Q_tot_tmp =0;     // total flow calculated in each time step, can differ form Q_tot if const P is set
 	Va_tot = 0;       //total volume of dissolving species
 	Ve_tot = 0;       //total volume of precipitating species
 	Vx_tot = 0;       //total amount of non reacting species

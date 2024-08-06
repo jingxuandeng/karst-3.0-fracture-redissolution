@@ -74,6 +74,7 @@ class Network
 		double P_in;		///< pressure at the inlet (by default equal to N_y, don't change when Q_tot!=0) (must by positive)
 		double P_out;		///< pressure at the outlet (by default equal to N_y, don't change when Q_tot!=0) (should be set to zero)
 		double Q_tot;		///< total flow through the system
+        double Q_tot_tmp;	///< total flow through the system calculated in each time step
 		double Va_tot;		///< total amount of volume of dissolving species
 		double Ve_tot;		///< total amount of volume of precipitating species
 		double Vx_tot;      ///< total amount of non reacting
