@@ -111,9 +111,12 @@ class Network
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double l_min;   ///< minimal pore length (for numerical reason)
 
-        double K_0;         ///<initial permeability
-        double Perm_min;    ///<minimal permeability
-        double Perm_max;    ///<maximal permeability
+        double K_goal       = 0;    ///< our goal permeability
+        double K_0          = 0;    ///< permeability at the beggining of the simulation
+        double K_tmp        = 0;    ///< best approx of temporal permeability
+        double K_tmp_old    = 0;    ///< best approx of last permeability
+        double K_f0         = 0;    ///< stabilizing force, proportional to Perm_goal-P_tmp
+        double K_f1         = 0;    ///< stabilizing force, proportional to P_tmp(0)
 
 
 		// evolution parameters

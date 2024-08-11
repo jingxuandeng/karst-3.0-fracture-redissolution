@@ -407,15 +407,20 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			L_out = stod(value);
 			cerr<< "Setting L_out = "<<L_out<<endl;}
 
-        else if(name == "Perm_min"){
-            Perm_min = stod(value);
-            cerr<< "Setting Perm_min = "<<Perm_min<<endl;}
+        else if(name == "K_goal"){
+            K_goal = stod(value);
+            cerr<< "Setting K_goal = "<<K_goal<<endl;}
 
-        else if(name == "Perm_max"){
-            Perm_max = stod(value);
-            cerr<< "Setting Perm_max = "<<Perm_max<<endl;}
 
-		else if(name == "s_save_data"){
+        else if(name == "K_f0"){
+            K_f0 = stod(value);
+            cerr<< "Setting K_f0 = "<<K_f0<<endl;}
+
+        else if(name == "K_f1"){
+            K_f1 = stod(value);
+            cerr<< "Setting K_f1 = "<<K_f1<<endl;}
+
+        else if(name == "s_save_data"){
 			s_save_data = stod(value);
 			cerr<< "Setting s_save_data = "<<s_save_data<<endl;}
 

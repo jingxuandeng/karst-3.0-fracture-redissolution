@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 10         # size of the regular network
-N_y = 10         # size of the regular network
+N_x = 100         # size of the regular network
+N_y = 50         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -113,6 +113,14 @@ inlet_cut_l = 200		  # length of an inlet cut
 add_well = false          # add well
 point_inlet = true
 point_outlet = false
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  Initial inlet cut
+
+ K_goal       = 0   # our goal permeability
+ K_f0         = 1   # stabilizing force, proportional to Perm_goal-P_tmp
+ K_f1         = 1   # stabilizing force, proportional to P_tmp(0)
 
 
 

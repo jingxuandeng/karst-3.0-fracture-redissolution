@@ -33,8 +33,9 @@ kappa=1000
 dmin=0.001
 cut=true
 los=107
-Perm_min=0 #0.001;
-Perm_max=0 #0.005;
+K_f0=1
+K_f1=1
+K_goal=0
 
 Da=0.01
 d0=0.02
@@ -63,8 +64,10 @@ do
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
                   echo if_dynamic_k2 = $if_dynamic_k2
-                  echo Perm_min = $Perm_min
-                  echo Perm_max = $Perm_max
+                  echo K_f0 = $K_f0
+                  echo K_f1 = $K_f1
+                  echo K_goal = $K_goal
+                  echo Q_tot = 0
 
                 } >> config.txt
 

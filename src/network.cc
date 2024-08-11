@@ -39,9 +39,12 @@ Network::Network (string input_file_name) {
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 
 
-    K_0      = 1;
-    Perm_min = 0;    //minimal permeability
-    Perm_max = 0;    //maximal permeability
+    K_goal       = 0;    // our goal permeability
+    K_0          = 0;    //Permeability at the beginning of the simulation
+    K_tmp        = 0;    // best approx of temporal permeability
+    K_tmp_old    = 0;    // best approx of last permeability
+    K_f0         = 0;    // stabilizing force, proportional to Perm_goal-P_tmp
+    K_f1         = 0;    // stabilizing force, proportional to P_tmp(0)
 
 
     //physical parameters -> should be set after choosing dimenssionless one
