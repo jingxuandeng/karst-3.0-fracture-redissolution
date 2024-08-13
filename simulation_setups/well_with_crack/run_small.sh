@@ -33,9 +33,9 @@ kappa=1000
 dmin=0.001
 cut=true
 los=107
-K_f0=1
-K_f1=1
-K_goal=0
+K_f0=10
+K_f1=5
+K_goal=1
 
 Da=0.01
 d0=0.02
@@ -67,11 +67,11 @@ do
                   echo K_f0 = $K_f0
                   echo K_f1 = $K_f1
                   echo K_goal = $K_goal
-                  echo Q_tot = 0
+
 
                 } >> config.txt
 
-                ../../../../../karst_3.0/build/karst config.txt #  >wyjscie.out 2>bledy.out &
+                ../../../../../karst_3.0/build/karst config.txt    >wyjscie.out 2>bledy.out &
 
              )
 done

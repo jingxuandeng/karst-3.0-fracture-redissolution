@@ -47,15 +47,17 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 		q_in_0=Q_tot/N_inlet_pores;
 	}
 	else{			  //constant pressure in the system
-		double Q_tot_tmp = 0;
-		int N_inlet_pores=0;
+		double q_tot_tmp = 0;
+		int N_pores=0;
 		calculate_pressures();
 		calculate_flows();
 		for(int j=0;j<NP;j++){
-			 if (p[j]->d>0) {N_inlet_pores++; Q_tot_tmp += fabs(p[j]->q);}
+			 if (p[j]->d>0) {N_pores++; q_tot_tmp += fabs(p[j]->q);}
 		}
-		q_in_0=Q_tot_tmp/N_inlet_pores;
+		q_in_0=q_tot_tmp/N_pores;
         K_0 = Q_tot_tmp/P_in;
+        cerr<<"Q_tot_tmp = "<<Q_tot_tmp << "    P_in = " << P_in<< endl;
+        cerr << "Calculated K0 first time K_0 = " <<K_0 << endl;
 	}
 	cerr<<"Initial mean Q in inlet pore has been calculated, q_in_0 = "<<q_in_0<<endl;
 }

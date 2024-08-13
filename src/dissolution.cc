@@ -257,11 +257,11 @@ void Network::calculate_flows(){ //version without pore merging
 
 	cerr<<"Calculating flows..."<<endl;
 	if (if_system_dissolved) return;
-
 	for(int i=0;i<NP;i++) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(mu_0);
 	for(int i=0;i<NP;i++) if(not isfinite(p[i]->q)) {
 		cerr<<"Problem with flow through the system. Check if the system is not clogged."<<endl;
 		s_save_data = 1;
+        exit(666);
 		save_all_data();
         if_system_dissolved=true;}
 	
@@ -274,7 +274,8 @@ void Network::calculate_flows(){ //version without pore merging
 
 	Q_tot_tmp=0;
 	for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++) Q_tot_tmp+= fabs(wi[i]->p[s]->q);
-	cerr<<"Q_tot = "<<Q_tot_tmp<< "    Pressure drop = " << wi[0]->u<<endl;
+	cerr<<"Q_tot_tmp = "<<Q_tot_tmp<< "    Pressure drop = " << wi[0]->u<<endl;
+    cerr<<"Q_tot = "<<Q_tot<< "    Pressure drop = " << wi[0]->u<<endl;
 	//additional printing for debugging
 	print_network_for_debugging ("After calculating flows ","pressure", "flow");
 }
@@ -355,18 +356,32 @@ void Network::recalculate_flows_to_keep_Q_tot(string type){
 
 void Network::recalculate_flows_to_keep_Perm() {
 
+
+
     cerr<<endl<<"Recalculating Q for Permeability:"<<endl;
+
+    if(K_0 == 0) {
+        cerr<<endl<<"Quiting since the K_0 not calculated yet."<<endl;
+        return;}
+
+
     K_tmp_old = K_tmp;
     K_tmp = Q_tot/P_in/K_0;
 
 
+    cerr<<"Q_tot = "<<Q_tot<<endl;
     cerr<<"K_0 = "<<K_0<<endl;
     cerr<<"K_tmp = "<<K_tmp<<endl;
-    cerr<<"K_tmp = "<<K_tmp_old<<endl;
-    cerr<<"K_tmp = "<<K_goal<<endl;
+    cerr<<"K_tmp_old = "<<K_tmp_old<<endl;
+    cerr<<"K_goal = "<<K_goal<<endl;
 
-
-    if( K_goal/K_tmp < N_x*1e3)  Q_tot = Q_tot - K_f0*(K_tmp-K_goal)*dt*dt - K_f1 * (K_tmp-K_tmp_old)*dt;
+    double delta_Q = 0;
+    if( K_goal/K_tmp < N_x*1e3)
+        delta_Q =  - K_f0*(K_tmp-K_goal)*dt*dt - K_f1 * (K_tmp-K_tmp_old)*dt;
+    if(Q_tot + delta_Q > 0 && Q_tot + delta_Q  < N_x*1e3)
+        Q_tot = Q_tot + delta_Q;
+    else
+        cerr << "Problem with delta_Q = " << delta_Q+Q_tot << endl;
 
 }
 
