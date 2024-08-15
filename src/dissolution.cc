@@ -395,12 +395,13 @@ void Network::recalculate_flows_to_keep_Perm() {
 */
 double Network::outlet_c_b (Pore *p0){
 
-    if(!p0->is_active)                              return 1;
+
 	if(p0->q==0 || p0->d == 0) 						return 0;    //pores with no flow
 	if(p0->l==l_min)           						return 1;    //no reaction in tiny pore
 	if(if_track_grains && !(p0->is_Va_left()))      return 1;    //no dissolution if there is no A material
+    if(!p0->is_active)                              return 1;
 
-	double f = p0->local_Da_eff(this);      //effective reaction rate (taking into account both reaction and transversal diffusion)
+    double f = p0->local_Da_eff(this);      //effective reaction rate (taking into account both reaction and transversal diffusion)
 
 	return exp(-f);
 }   

@@ -253,7 +253,7 @@ double Pore::default_dd_minus(Network*S){
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l==S->l_min)    return 0;   //no reaction in tiny grain
 	if(d<=S->d_min && (!is_Va_left())) return 0;
-    if(is_active)      return 0;
+    if(!is_active)      return 0;
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);
