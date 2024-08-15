@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 30         # size of the regular network
-N_y = 30         # size of the regular network
+N_x = 20         # size of the regular network
+N_y = 20         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -112,7 +112,7 @@ inlet_cut_factor = 5      # factor of an inlet cut (in a cut: d = d*factor) if==
 inlet_cut_w = 4           # width of an inlet cut (for triangulation ot must be at least 2, for hexagonal network 1 is enough for tilted 4 is minimum)
 inlet_cut_l = 200		  # length of an inlet cut
 add_well = false          # add well
-point_inlet = true
+point_inlet = false
 point_outlet = false
 if_tilted_cut = false
 if_reactions_in_the_fracture = true

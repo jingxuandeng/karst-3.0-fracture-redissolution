@@ -846,7 +846,7 @@ void Network::dissolve_and_precipitate(){
 
 
 		Pore* p0 = p[i];
-		if (p0->q == 0 || p0->d == 0 || p0->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+		if (p0->q == 0 || p0->d == 0 || p0->l==l_min)  continue;    //no reaction in tiny grain or in pore with no flow
 		if (p0->d<=d_min && (!(p0->is_Va_left())))     continue;    //no reactions at all in this pore
         if(!p0->is_active)                             continue;
 

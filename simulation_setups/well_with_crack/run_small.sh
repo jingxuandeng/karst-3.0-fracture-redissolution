@@ -21,7 +21,10 @@ else
   exit 1
 fi
 
-cd "$current_date_time" || exit
+#cd "$current_date_time" || exit
+mkdir debuging_tmp
+cd debuging_tmp || exit
+
 cp ../../../../karst_3.0/simulation_setups/well_with_crack/config_small.txt ./config.txt || exit
 
 
@@ -31,19 +34,18 @@ Da=0.5
 gamma=0.0000001
 kappa=1000
 dmin=0.001
-cut=true
 los=107
 #K_f0=1
 #K_f1=50
 #K_goal=1
-if_tilted_cut="true"
+if_tilted_cut="false"
 if_reactions_in_the_fracture="true"
 
 Da=0.5
 d0=0.05
 for if_dynamic_k2 in "true" # "false"
 do
-for inlet_cut_factor in 2 #3 4 5
+for inlet_cut_factor in 1 #3 4 5
 do
 for kappa in 100 #0.1 0.
 do
@@ -54,6 +56,7 @@ do
                 printf "Creating variant: %s\n" "$param"
                 mkdir $param
                 cd    $param || exit
+                rm *.gz *.pdf
                 cp ../config.txt .
 
                 {
