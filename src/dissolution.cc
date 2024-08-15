@@ -394,7 +394,8 @@ void Network::recalculate_flows_to_keep_Perm() {
 * @date 25/09/2019
 */
 double Network::outlet_c_b (Pore *p0){
-	
+
+    if(!p0->is_active)                              return 1;
 	if(p0->q==0 || p0->d == 0) 						return 0;    //pores with no flow
 	if(p0->l==l_min)           						return 1;    //no reaction in tiny pore
 	if(if_track_grains && !(p0->is_Va_left()))      return 1;    //no dissolution if there is no A material
@@ -420,6 +421,7 @@ double Network::outlet_c_c_1 (Pore *p0){
 	if(p0->q==0 || p0->d ==0) return 0;   //pore with no flow
 	if(!(p0->is_Va_left()))   return 0;   //no contribution if there is no A material
 	if(p0->l == l_min)        return 0;   //no reaction in tiny grain
+    if(!p0->is_active)        return 0;
 
 
 	double f1 = p0->local_Da_eff   (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
@@ -464,6 +466,7 @@ double Network::outlet_c_c_2 (Pore *p0){
 	if(p0->q==0 || p0->d ==0) 				   return 0;      //pore with no flow
 	if(p0->l==l_min)          				   return 1;	  //no reactions in tiny grain
 	if(p0->d<=d_min && (!(p0->is_Va_left())))  return 1;
+    if(!p0->is_active)                         return 1;
 
 
 	double f2       = p0->local_Da_eff_2  (this);
@@ -804,7 +807,7 @@ void Network::dissolve(){
 
 		double dd  = p0->default_dd_plus (this);
 
-		//calculation updates for grain volumes
+		//calculate updates for grain volumes
 		int bG_tmp=0;
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp++;
 		if(if_track_grains && bG_tmp>0) for(int s=0; s<p0->bG;s++) p0->g[s]->tmp-=(M_PI*(p0->d)*(dd*d0)/2*p0->l)/p0->bG;
@@ -843,8 +846,9 @@ void Network::dissolve_and_precipitate(){
 
 
 		Pore* p0 = p[i];
-		if (p0->q == 0 || p0->d == 0 || p0->l==l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+		if (p0->q == 0 || p0->d == 0 || p0->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
 		if (p0->d<=d_min && (!(p0->is_Va_left())))     continue;    //no reactions at all in this pore
+        if(!p0->is_active)                             continue;
 
 		double d_old    = p0->d;
 		double dd_plus  = p0->default_dd_plus (this);

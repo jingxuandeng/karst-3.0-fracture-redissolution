@@ -452,6 +452,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			inlet_cut_factor = stod(value);
 			cerr<< "Setting inlet_cut_factor = "<<inlet_cut_factor<<endl;}
 
+
 		else if(name == "inlet_cut_w"){
 			inlet_cut_w = stod(value);
 			cerr<< "Setting inlet_cut_w = "<<inlet_cut_w<<endl;}
@@ -478,6 +479,17 @@ void::Network::read_setup_file(ifstream& fp_setup){
             else                     cerr<<"WARNING: Wrong value of variable point_outlet. Set true or false."<<endl;
             cerr<< "Setting point_outlet = "<<point_outlet<<endl;}
 
+        else if(name == "if_tilted_cut"){
+            if      (value == "true" )   if_tilted_cut  = true;
+            else if (value == "false")   if_tilted_cut  = false;
+            else                     cerr<<"WARNING: Wrong value of variable point_outlet. Set true or false."<<endl;
+            cerr<< "Setting if_tilted_cut = "<<if_tilted_cut<<endl;}
+
+        else if(name == "if_reactions_in_the_fracture"){
+            if      (value == "true" )   if_reactions_in_the_fracture  = true;
+            else if (value == "false")   if_reactions_in_the_fracture  = false;
+            else                     cerr<<"WARNING: Wrong value of variable if_reactions_in_the_fracture. Set true or false."<<endl;
+            cerr<< "Setting if_reactions_in_the_fracture = "<<if_reactions_in_the_fracture<<endl;}
 
 
         else if(name == "random_seed"){

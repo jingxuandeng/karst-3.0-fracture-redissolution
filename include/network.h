@@ -200,11 +200,13 @@ class Network
 
 		// addition inlet cut
 		double inlet_cut_factor;       ///< factor of an inlet cut (in a cut: d = d*factor)
+        double if_tilted_cut;          ///< if tru the cut is across the system
 		int    inlet_cut_w;            ///< width of an inlet cut
 		int    inlet_cut_l;			   ///< length of an inlet cut
         bool   add_well;               ///< if true an additional cut will be created at x=0=N_x
 		bool   point_inlet;			   ///< if true the inlet  is a point at the top of the crack
         bool   point_outlet;		   ///< if true the outlet is a point at the top of the crack
+        bool if_reactions_in_the_fracture; ///< if false there is no reaction in the fracture
 
 
 
@@ -272,6 +274,7 @@ class Network
 		void createRandomTrianglesNetwork(int N1, int M2);			    ///< creating random network of pores;
 		void createSquareNetwork(int N, int M);							///<  creating 2D square network (check if works)
 		void create_an_inlet_cut(int cut_w, int cut_l, double factor);	///< adding one central cut
+		void create_tilted_fracture (int cut_w, double factor);         ///<adding fracture with other angle
 		void create_an_initial_pattern();                               ///< creating initial pattern for debugging purpose
 		void add_randomness_to_regular_network(double d_sigma, double max_nodes_shift);   ///< Add random node position shift or random initial diameters for hexagonal network
 		void add_information_about_grains_in_nodes();					///< if tracking grains is necessary we need info of grain in connected nodes

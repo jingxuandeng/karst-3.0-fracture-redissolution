@@ -5,7 +5,7 @@
 
 Pore::Pore (double dd, double ll, float name, int bb){
 	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
-
+    is_active = true;
 	n[0]=NULL; n[1]=NULL;	
 	if(bG>0){
 		g = new Grain*[bG];
@@ -220,6 +220,7 @@ double Pore::default_dd_plus(Network*S){
 	if(S->if_track_grains && !is_Va_left())  return 0;   //no reaction if there is no A species available
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
+    if(!is_active)     return 0;
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);
@@ -252,6 +253,7 @@ double Pore::default_dd_minus(Network*S){
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l==S->l_min)    return 0;   //no reaction in tiny grain
 	if(d<=S->d_min && (!is_Va_left())) return 0;
+    if(is_active)      return 0;
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);

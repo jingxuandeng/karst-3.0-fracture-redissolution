@@ -48,6 +48,7 @@ class Pore{
 		double q;		///< flow through the pore
 		double c_in;	///< concentration at the pore inlet
 		int    a;       ///< pore number (name)
+		bool is_active; ///< if false reactions doesn't take place in it
 
 		int bG;		    ///< number of grains in vicinity
 

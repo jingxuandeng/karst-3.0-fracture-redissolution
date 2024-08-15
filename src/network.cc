@@ -139,11 +139,13 @@ Network::Network (string input_file_name) {
 
 	//addition inlet cut
 	inlet_cut_factor = 1;      //factor of an inlet cut (in a cut: d = d*factor)
+    if_tilted_cut = 0;
 	inlet_cut_w = 0;           //width of an inlet cut
 	inlet_cut_l = 0;		   //length of aGn inlet cut
     add_well    = false;       //if true additional cut will be added
 	point_inlet = false;	   // if true the inlet is a point at the top of the crack
     point_outlet = false;	   // if true the outlet is a point at the top of the crack
+    if_reactions_in_the_fracture = true;
 
 //Reading from the config. file
 
@@ -228,8 +230,9 @@ Network::Network (string input_file_name) {
 
 //additional options
 	//inlets cuts
-	if(inlet_cut_factor!=1) create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
-	create_an_initial_pattern();
+	if(inlet_cut_factor!=1 && ! if_tilted_cut) create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
+	if(if_tilted_cut && inlet_cut_factor!=1) create_tilted_fracture(inlet_cut_w,inlet_cut_factor);
+    create_an_initial_pattern();
 
 
 

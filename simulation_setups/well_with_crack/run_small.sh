@@ -33,12 +33,14 @@ kappa=1000
 dmin=0.001
 cut=true
 los=107
-K_f0=10
-K_f1=5
-K_goal=1
+#K_f0=1
+#K_f1=50
+#K_goal=1
+if_tilted_cut="true"
+if_reactions_in_the_fracture="true"
 
-Da=0.01
-d0=0.02
+Da=0.5
+d0=0.05
 for if_dynamic_k2 in "true" # "false"
 do
 for inlet_cut_factor in 2 #3 4 5
@@ -64,14 +66,16 @@ do
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
                   echo if_dynamic_k2 = $if_dynamic_k2
-                  echo K_f0 = $K_f0
-                  echo K_f1 = $K_f1
-                  echo K_goal = $K_goal
+                  echo if_tilted_cut = $if_tilted_cut
+                  echo if_reactions_in_the_fracture = $if_reactions_in_the_fracture
+#                  echo K_f0 = $K_f0
+#                  echo K_f1 = $K_f1
+#                  echo K_goal = $K_goal
 
 
                 } >> config.txt
 
-                ../../../../../karst_3.0/build/karst config.txt    >wyjscie.out 2>bledy.out &
+                ../../../../../karst_3.0/build/karst config.txt  #  >wyjscie.out 2>bledy.out &
 
              )
 done

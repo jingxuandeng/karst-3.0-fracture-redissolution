@@ -6,7 +6,7 @@ N_y = 2000      # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
-# Q_tot = 2*N_x   # total flow through the system (if Q_tot == 0 the constant pressure is kept), rigth now Q_tot is set autoamtically after setting N_x
+# Q_tot = 2*N_x   # total flow through the system (if Q_tot == 0 the constant pressure is kept), right now Q_tot is set autoamtically after setting N_x
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

@@ -88,14 +88,102 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
 //    for(int i=0;i<N_wo;i++) cerr<<*wo[i]<<endl;
 
 
-		for(int i=0;i<NN;i++){
-			if(n[i]->xy.y <cut_l && n[i]->xy.x >= (N_x/2. - cut_w/2.) && n[i]->xy.x< (N_x/2. + cut_w/2.))
-				for(int j=0;j<n[i]->b;j++) if(n[i]->p[j]->d>0) n[i]->p[j]->d = d0*factor;}
+		for(int i=0;i<NN;i++) {
+            if (n[i]->xy.y < cut_l && n[i]->xy.x >= (N_x / 2. - cut_w / 2.) && n[i]->xy.x < (N_x / 2. + cut_w / 2.))
+                for (int j = 0; j < n[i]->b; j++)
+                    if (n[i]->p[j]->d > 0){
+                        n[i]->p[j]->d = d0 * factor;
+                        if(!if_reactions_in_the_fracture) n[i]->p[j]->is_active = false;
+                    }
+        }
 
         if(add_well) {
             for(int i=0;i<NN;i++){
                 if(n[i]->xy.y <cut_l && n[i]->xy.x >= (- cut_w/2.) && n[i]->xy.x< (+ cut_w/2.))
-                    for(int j=0;j<n[i]->b;j++) if(n[i]->p[j]->d>0) n[i]->p[j]->d = d0*factor;}
+                    for(int j=0;j<n[i]->b;j++) if(n[i]->p[j]->d>0) {
+                            n[i]->p[j]->d = d0 * factor;
+                            if(!if_reactions_in_the_fracture) n[i]->p[j]->is_active = false;
+                        }
+            }
+        }
+
+}
+
+
+void Network::create_tilted_fracture(int cut_w, double factor){
+
+        cerr<<"Adding a tilted fracture..."<<endl;
+
+        //if(cut_l >=N_y) {cerr<<"WARNING : Cut length is to large. No cut is made."<<endl; return;}
+
+        // clearing info about inlet and outlet
+        if( point_inlet){
+            cerr<<"Changing inlets/outlets (well mode)..."<<endl;
+            //clearing old inlets
+            for (int i = 0; i < NN; i++) if (n[i]->t == 1) n[i]->t = 0;
+
+            //setting new inlet
+            N_wi = 0;
+            delete[] wi;
+            for (int i = 0; i < NN; i++)
+                if (n[i]->xy.y < 3 && n[i]->xy.x >= (N_x*2./3. - cut_w / 2.) &&
+                    n[i]->xy.x < (N_x*2./3. + cut_w / 2.))  //check if 3 is ok in this equation
+                {
+                    n[i]->t = 1;
+                    N_wi++;
+                    cerr << "Dodaje do inletow " << *n[i] << "  N_wi = " << N_wi << endl;
+                }
+            wi = new Node *[N_wi];
+            int j = 0;
+            for (int i = 0; i < NN; i++) if (n[i]->t == 1) wi[j++] = n[i];
+            if (j != N_wi)
+                cerr << "WARNING: Problem with setting new inlets: N_wi = " << N_wi << "   j = " << j << endl;
+
+        }
+
+
+        if(point_outlet) {
+            //setting new outlet for point outlets
+            for (int i = 0; i < NN; i++) if (n[i]->t == -1) n[i]->t = 0;
+            N_wo = 0;
+            delete[] wo;
+            for (int i = 0; i < NN; i++)
+                if (n[i]->xy.y >N_y - 4 &&
+                    n[i]->xy.x >= (N_x*2./3. - cut_w/2.) &&
+                    n[i]->xy.x < (N_x*2./3. + cut_w/2.))  //check if 3 is ok in this equation
+                {
+                    n[i]->t = -1;
+                    N_wo++;
+                    cerr << "Dodaje do outletow " << *n[i] << "  N_wi = " << N_wi << endl;
+                }
+
+            wo = new Node *[N_wo];
+            int j = 0;
+            for (int i = 0; i < NN; i++) if (n[i]->t == -1) wo[j++] = n[i];
+            if (j != N_wo)
+                cerr << "WARNING: Problem with setting new outlets: N_wo = " << N_wo << "   j = " << j << endl;
+
+        }
+
+//    cerr<< "Wypisuje wszystkie nody wejsciowe: "<<endl;
+//    for(int i=0;i<N_wi;i++) cerr<<*wi[i]<<endl;
+//
+//    cerr<< "Wypisuje wszystkie nody wyjsciowe: "<<endl;
+//    for(int i=0;i<N_wo;i++) cerr<<*wo[i]<<endl;
+
+
+        for(int i=0;i<NN;i++){
+            if( n[i]->xy.x >= (4./3.*N_x/N_y*(N_y/2. - n[i]->xy.y) - cut_w/2.) &&  n[i]->xy.x< (4./3.*N_x/N_y*(N_y/2. - n[i]->xy.y)  + cut_w/2.))
+                for(int j=0;j<n[i]->b;j++) if(n[i]->p[j]->d>0){
+                    n[i]->p[j]->d = d0*factor;
+                    if(!if_reactions_in_the_fracture) n[i]->p[j]->is_active = false;
+                    }
+
+            if( n[i]->xy.x >= 4./3.*N_x/N_y*(n[i]->xy.y - N_y/2.) - cut_w/2. && n[i]->xy.x< (4./3.*N_x/N_y*(n[i]->xy.y - N_y/2.)) + cut_w/2.)
+                for(int j=0;j<n[i]->b;j++) if(n[i]->p[j]->d>0){
+                    n[i]->p[j]->d = d0*factor;
+                    if(!if_reactions_in_the_fracture) n[i]->p[j]->is_active = false;
+                    }
         }
 
 }
