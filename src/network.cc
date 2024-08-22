@@ -140,7 +140,7 @@ Network::Network (string input_file_name) {
 	//addition inlet cut
 	inlet_cut_factor = 1;      //factor of an inlet cut (in a cut: d = d*factor)
     if_tilted_cut = 0;
-	inlet_cut_w = 0;           //width of an inlet cut
+	inlet_cut_w = 0;           //width of an inlet cut, if 0 the single layer fracture is created (the best option)
 	inlet_cut_l = 0;		   //length of aGn inlet cut
     add_well    = false;       //if true additional cut will be added
 	point_inlet = false;	   // if true the inlet is a point at the top of the crack

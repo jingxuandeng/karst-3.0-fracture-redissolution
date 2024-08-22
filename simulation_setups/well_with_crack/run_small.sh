@@ -21,9 +21,9 @@ else
   exit 1
 fi
 
-#cd "$current_date_time" || exit
-mkdir debuging_tmp
-cd debuging_tmp || exit
+cd "$current_date_time" || exit
+#mkdir debuging_tmp
+#cd debuging_tmp || exit
 
 cp ../../../../karst_3.0/simulation_setups/well_with_crack/config_small.txt ./config.txt || exit
 
@@ -42,14 +42,14 @@ if_tilted_cut="false"
 if_reactions_in_the_fracture="true"
 
 Da=0.5
-d0=0.05
+d0=0.1
 for if_dynamic_k2 in "true" # "false"
 do
-for inlet_cut_factor in 1 #3 4 5
+for inlet_cut_factor in 1.2 #3 4 5
 do
-for kappa in 100 #0.1 0.
+for kappa in 10  #0.1 0.
 do
-  for gamma in   1.01  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in   0.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2

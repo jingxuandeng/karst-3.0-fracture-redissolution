@@ -20,7 +20,7 @@
 * @author Agnieszka Budek
 * @date 26/04/2020
 */
-void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode){
+void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode, bool if_length_mode){
 
 
 
@@ -28,8 +28,6 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
 
 	double big_number = 10e100;    //numerical infinity for tree generation algorithm
 	int nodes_left    = 0;   //nr of nodes belonging to the longest pattern
-
-
 
 	//Preparing dissolution pattern
 	for (int i =0;i<NN;i++)   n[i]->x=0;
@@ -68,7 +66,6 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
             min_nod->p[min_s]->x=2;	                     //adding pore to the tree;
 		}
 
-
 		//updating keys
 		for (int s=0; s< min_nod->b; s++){
 			Node * nod_tmp = min_nod->n[s];
@@ -77,7 +74,11 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
 			if(nod_tmp->x==0)       continue;  //node doesn't belong to the pattern
             if(min_nod->p[s]->x!=1) continue;  //pore doesn't belong to the pattern       // WARNING: in the previous version, with diss pattern only, this condition was skipped
 			//double dist    = min_nod->tmp + 1./min_nod->p[s]->perm(mu_0); //weight is a distance from root
-			double dist    = min_nod->tmp + 1./(min_nod->p[s]->d+d_min); //weight is a distance from root
+			double dist;
+            if (if_length_mode)
+                dist = min_nod->tmp + min_nod->p[s]->l; //length is a distance from root
+            else
+                dist = min_nod->tmp + 1./(min_nod->p[s]->d+d_min); //width is a distance from root
 			if(nod_tmp->tmp > dist){ nod_tmp->tmp=dist; nod_tmp->x = -nod_tmp->neighbor_number(min_nod)-1;}
 
 		}
@@ -85,7 +86,6 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
 		if(nodes_left==0) break;
 		//find new min node
 		min_k_value = big_number;
-
 		for(int i=0;i<NN;i++) if(n[i]->x<0)
 			if (min_k_value > n[i]->tmp){
 				min_nod     = n[i];
@@ -209,6 +209,40 @@ double Network::distance_to_root(Node* n_tmp){
 	return dist;
 
 }
+
+/**
+ * Function markrs the shortest path between node n_1 and n_2.
+ * By marking we mean setting p->tmp = 1 and n->tmp = 1 for all pores and nodes belonging to the shortest path.
+ * @param n_1
+ * @param n_2
+ * @return
+ */
+
+
+void Network::find_shortest_path(Node* n_1, Node* n_2){
+
+    //before distance_to_root the find_the_largest_tree function mus be run to set child order and so on.
+    cerr<<"Finding the shortest path..."<<endl;
+
+    find_minimal_spanning_tree(d_min, n_1, false, true);
+
+    //Preparing dissolution pattern
+    for (int i =0;i<NN;i++)   n[i]->tmp=0;
+    for (int i =0;i<NP;i++)   p[i]->tmp=0;
+    for (int i =0;i<NG;i++)   g[i]->tmp=0;
+
+    Node * n_tmp = n_2;
+    while(n_tmp!=n_1)
+        for(int s=0;s<n_tmp->b;s++) if(n_tmp->p[s]->x==2 && n_tmp->n[s]->x == n_tmp->x-1){
+                n_tmp->n[s]->tmp = 1;
+                n_tmp->p[s]->tmp = 1;
+                n_tmp = n_tmp->n[s];
+        }
+
+    cerr<<"The shortest path has been set..."<<endl;
+
+}
+
 
 /**
 * This function returns child distribution: it gives nr of children in n-th generation.

@@ -332,7 +332,7 @@ class Network
 		void write_time_step_properties();
 		void write_pattern_properties();
 		void find_the_largest_tree(double threshold, bool if_preci_mode=false);
-		void find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode=false);
+		void find_minimal_spanning_tree(double threshold, Node* root, bool if_preci_mode=false, bool if_length_mode=false);
 		int* find_child_distribution ();
 		void find_forks();
 		double find_reverse_forks();
@@ -340,6 +340,9 @@ class Network
 		int* find_fork_distribution();
 		double find_minimal_tree_length();
 		double distance_to_root(Node *);  ///< Returns distance to the root of the tree, if node does't belongs to the tree -1 is returned.
+		void find_shortest_path(Node *, Node *); ///< Returns the shortest path between two nodes
+        void create_a_fracture(double factor, Node * n_1 = nullptr, Node * n_2 = nullptr );  ///< A single - layer fracture will be created form n_1 to n_2, by default the fracture will start from the center of the system
+
 
 //other output generation (for Rishabh)
 		void write_vtk_data();

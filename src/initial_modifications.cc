@@ -1,6 +1,73 @@
 #include "network.h"
 #include "printing.h"
 
+void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
+
+
+    cerr<<"Creating a single - layer fracture"<<endl;
+
+    //1. Optionally finding the inlet at the center of the system:
+    if (n_1 == nullptr){
+        n_1 = wi[0];
+        Point center = {N_x/2.,0.0};
+        cerr<<"MOj center to: "<<center<<endl;
+        double dist_min = n_1->xy - center;
+        for (int i=0;i<N_wi;i++){
+            cerr<<"szukam srodkowego wejscia: "<<wi[i]->xy - center << " dla xy = "<<wi[i]->xy<<endl;
+            if(wi[i]->xy - center < dist_min){
+                n_1 = wi[i];
+                dist_min = wi[i]->xy - center;
+            }
+        }
+    }
+
+    //2. Optionally finding the outlet at the center of the system:
+    if (n_2 == nullptr){
+        n_2 = wo[0];
+        Point center = {N_x/2.,N_y/1.};
+        double dist_min = n_2->xy - center;
+        for (int i=0;i<N_wo;i++){
+            if(wo[i]->xy - center < dist_min){
+                n_2 = wo[i];
+                dist_min = wo[i]->xy - center;
+            }
+        }
+    }
+
+    find_shortest_path(n_1,n_2);
+
+    for (int i=0;i<NP;i++)
+        if(p[i]->tmp==1) p[i]->d = p[i]->d * factor;
+
+
+
+    if(point_inlet) {
+        cerr<<"Setting point inlet..."<<endl;
+        //setting new outlet for point outlets
+        for (int i = 0; i < N_wi; i++)  wi[i]->t =0;
+        delete[] wi;
+        N_wi = 1;
+        wi = new Node *[N_wi];
+        wi[0] = n_1;
+        n_1->t = 1;
+    }
+
+    if(point_outlet) {
+        cerr<<"Setting point outlet..."<<endl;
+        //setting new outlet for point outlets
+        for (int i = 0; i < N_wo; i++)  wo[i]->t =0;
+
+        delete[] wo;
+        N_wo = 1;
+        wo = new Node *[N_wo];
+        wo[0] = n_2;
+        n_2->t = -1;
+
+    }
+
+    }
+
+
 /**
 * This function creates initial cut in the network
 * - the region connected to the inlet of the system with different permeability that the rest of the system.
@@ -15,7 +82,10 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
 
 	cerr<<"Adding an inlet cut..."<<endl;
 
-	//if(cut_l >=N_y) {cerr<<"WARNING : Cut length is to large. No cut is made."<<endl; return;}
+    /// in this scenario the single-layer fracture form the middle of the system to the nearest outlet will be created;
+    if(cut_w == 0) return create_a_fracture(factor);
+
+	//if(cut_l >=N_y) {cerr<<"WARNING : Cut length is too large. No cut is made."<<endl; return;}
 
     // clearing info about inlet and outlet
     if(add_well || point_inlet){
