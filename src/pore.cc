@@ -123,7 +123,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
 	if(l<=S->l_min) l = S->l_min;
 
-	if(l<=S->l_min) {                                                   //FIXME: OPCJA: raz zarośnięty por powinien mieć opcjęby się odetkać?
+	if(l<=S->l_min) {                                                   //FIXME: OPCJA: maleńkie ziarno powinnno miec opcje wtornego osadzania
 		if(S->if_verbose) cerr<<"l = l_min for Pore:"<<*this<<endl;
 		for (int s=0; s<bG; s++){
 			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\

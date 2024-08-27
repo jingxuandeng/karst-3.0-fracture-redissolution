@@ -162,7 +162,10 @@ void Grain::calculate_initial_volume (Network *S){
 
 		double Va_0 = sqrt(P*(P-x)*(P-y)*(P-z));
         double d_mean = 0;
-        for (int i=0;i<bP;i++) d_mean+=p[i]->d/bP;
+        for (int i=0;i<bP;i++) {
+            if (S->inlet_cut_factor != 1 || p[i]->d < S->d0 * S->inlet_cut_factor)  d_mean += p[i]->d / bP;
+            else                                                                    d_mean += S->d0 / bP;
+        }
         //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
         Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Poprawiony wzór na wszystkie poprzeczki ruszające się.
     }
