@@ -5,7 +5,7 @@
 
 Pore::Pore (double dd, double ll, float name, int bb){
 	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
-    is_active = true;
+    is_active = true; is_fracture = false;
 	n[0]=NULL; n[1]=NULL;	
 	if(bG>0){
 		g = new Grain*[bG];
@@ -126,7 +126,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 	if(l<=S->l_min) {                                                   //FIXME: OPCJA: maleńkie ziarno powinnno miec opcje wtornego osadzania
 		if(S->if_verbose) cerr<<"l = l_min for Pore:"<<*this<<endl;
 		for (int s=0; s<bG; s++){
-			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\
+			if(S->if_verbose or true) cerr<<"The following gains is going to be empty."<<endl\
 					<<"Grain:"<<*g[s]<<endl;
 			S->Va_tot -= g[s]->Va; g[s]->Va =0;
             S->Ve_tot -= g[s]->Ve; g[s]->Ve =0;
@@ -144,6 +144,8 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 */
 double Pore::local_G(Network* S){
 
+    //double d_tmp = min(1,d);  //possible feature for a fracture
+
 	if     (S->G1==0)	return	0;						         // reaction limited case, G = 0
 	else if(S->G1>0 )	return  S->G1*d/S->d0;	             // mixed case: k1 ~ DD1
 	else			    return  -1;							     // diffusion limited case, convention: G<0 => G = Inf
@@ -157,6 +159,8 @@ double Pore::local_G(Network* S){
 * @date 25/09/2019
 */
 double Pore::local_G_2(Network* S){
+
+    //double d_tmp = min(1,d);   //possible feature for a fracture
 
 	if     (S->G2==0)	return	0;						         // reaction limited case, G = 0
 	else if(S->G2>0 )	return  S->G2*d/S->d0;	             // mixed case: k1 ~ DD1
@@ -175,6 +179,8 @@ double Pore::local_Da_eff(Network* S){
 	if (q==0) return -1;
 	double G = this->local_G(S);
 
+    //double d_tmp = min(1,d);   //possible feature for a fracture
+
 	if      (G>0)    return S->Da*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G1)/(1+G));
 	else if (G==0)   return S->Da*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
 	else             return S->Da*(l/S->l0)*(S->q_in_0/fabs(q));
@@ -191,6 +197,8 @@ double Pore::local_Da_eff_2(Network* S){
 	if (q==0) return -1;
 	double G = this->local_G_2(S);
     double Da2local = S->Da2;
+
+    //double d_tmp = min(1,d);     //possible feature for a fracture
 
     if(S->if_dynamic_k2){
         if(abs(S->dyn_k2_alpha)>100){
@@ -230,7 +238,7 @@ double Pore::default_dd_plus(Network*S){
 	else                        c0 = calculate_inlet_cb();
 
 	double dd_plus = 0; 		//diameter change
-
+    //double d_tmp = min(1,d);       //possible feature for a fracture
 
 	//finding dissolution contribution
 	if      (f1==0)      dd_plus = 0;

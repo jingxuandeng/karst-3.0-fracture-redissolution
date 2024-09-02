@@ -4,8 +4,6 @@
 #include "network.h"
 
 
-
-
 /**
 * @brief Constructor for defoult case.
 * @author Agnieszka Budek
@@ -162,12 +160,13 @@ void Grain::calculate_initial_volume (Network *S){
 
 		double Va_0 = sqrt(P*(P-x)*(P-y)*(P-z));
         double d_mean = 0;
-        for (int i=0;i<bP;i++) {
-            if (S->inlet_cut_factor != 1 || p[i]->d < S->d0 * S->inlet_cut_factor)  d_mean += p[i]->d / bP;
-            else                                                                    d_mean += S->d0 / bP;
-        }
-        //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
-        Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Poprawiony wzór na wszystkie poprzeczki ruszające się.
+        for (int i=0;i<bP;i++)
+            if (!p[i]->is_fracture)  d_mean += p[i]->d / bP;
+
+        //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Felerny błąd ze wzorem \Delta d/ 2 : Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
+        //Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Felerny błąd ze wzorem \Delta d/ 2 : Poprawiony wzór na wszystkie poprzeczki ruszające się.
+        Va = (pow(4. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(8);           //wersja 2D, wszystkie poprzeczki się ruszają
+        Va = (pow(6. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(6.*sqrt(6));   //Wersja 1D dla "rombow"
     }
 	//WARNING: the general formula should be implemented for cubic network with added random node positions
 	else if(bN==8){
@@ -298,8 +297,13 @@ double Grain::calculate_maximal_volume (Network *S){
 * @date 25/09/2019
 */
 bool Grain::to_be_merge(){
-	if	(Va+Ve+Vx<=0)   	 		return true;
-	else						return false;
+    bool if_fracture = false;
+    for (int i=0; i<bP;i++)
+            if (p[i]->is_fracture) if_fracture = true;
+
+    if (!if_fracture)               return false;
+	if (Va+Ve+Vx<=0)   	 		    return true;
+	else						    return false;
 }
 
 
@@ -510,6 +514,8 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
 		p_master->d = 2.*pow((4.*S->mu_0*s)/(M_PI*M_PI*r),0.2);
 		p_master->l = 0.5*pow( (r*pow(s,4))/(4.*S->mu_0*pow(M_PI,3)),0.2);
 	}
+
+    p_master->is_fracture = true;           //make sure the pore is tagged as a part of a fracture
 
 }
 

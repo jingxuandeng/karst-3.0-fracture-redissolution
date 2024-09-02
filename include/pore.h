@@ -49,6 +49,7 @@ class Pore{
 		double c_in;	///< concentration at the pore inlet
 		int    a;       ///< pore number (name)
 		bool is_active; ///< if false reactions doesn't take place in it
+		bool is_fracture;  ///< if true the pore belongs to the fracture and behave differently
 
 		int bG;		    ///< number of grains in vicinity
 
@@ -66,7 +67,12 @@ class Pore{
 		Pore (double dd = 0.02, double ll = 1, float name=0, int bb=2);
 		~Pore ()						{if(bG>0) delete[] g; g=NULL; }
 
-		double perm(double mu_0){return M_PI*pow(d,4)/(128*mu_0*l);}	///< permeability of a particular pore
+		double perm(double mu_0){
+            if(d<1.)
+                return M_PI*pow(d,4)/(128*mu_0*l);   ///< permeability of a particular pore
+            else
+                return M_PI*d/(128*mu_0*l);          ///WARNING: the tube can not have the diameter larger than 1, later the formula for
+        }
 		//void   diss (double Va, double Ve);							///< precipitation and dissolution of the material: calculate change of d and l
 		double calculate_inlet_cb();									///< calculate inlet concentration of the species B
 		double calculate_outlet_cb();									///< calculate outlet concentration of the species B

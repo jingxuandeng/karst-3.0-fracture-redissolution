@@ -10,10 +10,9 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
     if (n_1 == nullptr){
         n_1 = wi[0];
         Point center = {N_x/2.,0.0};
-        cerr<<"MOj center to: "<<center<<endl;
         double dist_min = n_1->xy - center;
         for (int i=0;i<N_wi;i++){
-            cerr<<"szukam srodkowego wejscia: "<<wi[i]->xy - center << " dla xy = "<<wi[i]->xy<<endl;
+
             if(wi[i]->xy - center < dist_min){
                 n_1 = wi[i];
                 dist_min = wi[i]->xy - center;
@@ -37,7 +36,10 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
     find_shortest_path(n_1,n_2);
 
     for (int i=0;i<NP;i++)
-        if(p[i]->tmp==1) p[i]->d = p[i]->d * factor;
+        if (p[i]->tmp == 1){
+            p[i]->d = p[i]->d * factor;   //the initial diameter is larger for a fracture
+            p[i]->is_fracture = true;              //the fracture can be implemented in different way that the regular pore
+        }
 
 
 
