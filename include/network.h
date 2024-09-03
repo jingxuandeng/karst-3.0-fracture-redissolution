@@ -69,6 +69,7 @@ class Network
 		int N_y;			///< size of regular network (for hexagonal and triangularization but should be set (the average value) for printing ps)
 		int N_wi;			///< number of inlet nodes
 		int N_wo;			///< number of outlet nodes
+		double H_z;         ///< height of the system for 2D networks
 
 		// physical parameters
 		double P_in;		///< pressure at the inlet (by default equal to N_y, don't change when Q_tot!=0) (must by positive)

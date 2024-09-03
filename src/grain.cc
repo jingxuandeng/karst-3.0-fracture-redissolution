@@ -158,14 +158,14 @@ void Grain::calculate_initial_volume (Network *S){
 		double z = S->node_distance(n[2], n[0]);
 		double P = (x+y+z)/2;
 
-		double Va_0 = sqrt(P*(P-x)*(P-y)*(P-z));
+		double Va_0 = sqrt(P*(P-x)*(P-y)*(P-z))*S->H_z;    //additional parameter
         double d_mean = 0;
         for (int i=0;i<bP;i++)
             if (!p[i]->is_fracture)  d_mean += p[i]->d / bP;
 
         //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Felerny błąd ze wzorem \Delta d/ 2 : Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
         //Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Felerny błąd ze wzorem \Delta d/ 2 : Poprawiony wzór na wszystkie poprzeczki ruszające się.
-        Va = (pow(4. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(8);           //wersja 2D, wszystkie poprzeczki się ruszają
+        Va = (pow(4. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(8);             //wersja 2D, wszystkie poprzeczki się ruszają
         //Va = (pow(6. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(6.*sqrt(6));   //Wersja 1D dla "rombow"
     }
 	//WARNING: the general formula should be implemented for cubic network with added random node positions

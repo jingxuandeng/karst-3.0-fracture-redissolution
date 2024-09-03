@@ -11,6 +11,7 @@ Network::Network (string input_file_name) {
 
 	N_x = 10;		//size of regular network
 	N_y = 10;		//size of regular network
+    H_z = 0.5;      //height of the system for 2D networks, once was set to 1, now its defoult value is 0.5 (to be consistent with the error with dV formula)
 
 	P_in   = N_y-1;   //pressure at the inlet (must by positive)
 	P_out  = 0;	      //pressure at the outlet, always should be set to zero
