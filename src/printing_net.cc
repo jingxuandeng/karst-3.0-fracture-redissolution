@@ -45,7 +45,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	for (int i=0;i<b;i++) {p[i] = PP[i];  p0 = p0+p[i];}
 	p0 = (1./b)*p0;
 	Point p00 = (-1.)*p0;
-	double factr = (g.Va + g.Ve + g.Vx)/g.calculate_maximal_volume(&S);
+	double factr = (g.Va + g.Ve + g.Vx)/g.calculate_maximal_volume(&S)/S.H_z;
 	if (factr<0)   factr = 0;
 	if (factr>1)   factr = 1;
 	if (!(factr>=0)) factr=0;

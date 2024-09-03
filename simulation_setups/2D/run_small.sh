@@ -28,7 +28,7 @@ cp ../../../karst_3.0/simulation_setups/2D/config_small.txt ./config.txt || exit
 printf "Running the simulation...\n\n"
 
 Da=0.5
-gamma=0.0000001
+gamma=1
 kappa=1000
 dmin=0.001
 cut=true
