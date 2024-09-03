@@ -93,7 +93,7 @@ if_track_grains                    = true        # if true grains and their volu
 if_dynamical_length                = true        # if true pore length is addapted in each time step
 if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)
 if_smarter_calculation_of_pressure = false       # if true pressure and flow is calculate in two steps
-type_of_merging                    = merge_empty_grains        # type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
+type_of_merging                    = none        # type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
 if_cut_d_min                       = true        # cutting completely pores with d<=d_min
 
 

@@ -33,9 +33,9 @@ Da=0.02
 d0=0.3
 
 
-for kappa in 100000
+for kappa in 0.1
 do
-for gamma in 1.1   #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for gamma in  1  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
 for dmin in  0.0001
 do

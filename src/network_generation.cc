@@ -189,6 +189,10 @@ void Network::createHexagonalNetwork(int N, int M){
 	for(int i=0;i<N;i++) for(int k=0;k<wi[i]->b;k++) if(wi[i]->p[k]->n[0]->tmp<0 && wi[i]->p[k]->n[1]->tmp<0) wi[i]->p[k]->d=0;
 	for(int i=0;i<N;i++) for(int k=0;k<wo[i]->b;k++) if(wo[i]->p[k]->n[0]->tmp<0 && wo[i]->p[k]->n[1]->tmp<0) wo[i]->p[k]->d=0;
 
+    //setiing semi-diamond shape for debugging 1D perposes (to be changed later)
+    //for(int j=0;j<M;j++) for(int i=0;i<N;i++) 	p[(N*j+i)*3+2]->d 	= 0;
+
+
 
 	//setting initial pore length and optionally adding randomness and
 	if(if_randomness_in_regular_net) add_randomness_to_regular_network(gauss_sigma_d,max_rand_shift_xy);
