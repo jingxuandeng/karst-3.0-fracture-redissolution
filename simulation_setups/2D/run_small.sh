@@ -39,7 +39,7 @@ d0=0.1
 
 for kappa in 1 #0.1 0.
 do
-  for Da in  0.25 0.3 0.8 0.75 1.25   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  0.75 #0.25 0.3 0.8 0.75 1.25   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa
