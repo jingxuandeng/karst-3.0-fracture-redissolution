@@ -93,6 +93,9 @@ void Node::check_preci_pattern(double factor){
                fabs(g[i]->n[1]->xy.y-g[i]->n[2]->xy.y<max_distance) &&
                fabs(g[i]->n[2]->xy.y-g[i]->n[0]->xy.y<max_distance))
                 if(g[i]->Ve > g[i]->Va*factor) { // && g[i]->Ve>0.000001) {
+                    bool if_fracture=false;
+                    for(int j=0;j<g[i]->bP;j++) if(g[i]->p[j]->is_fracture) if_fracture=true;
+                    if(if_fracture) continue;
                     g[i]->x = 1;  	//grain has been set as connected to the precipitation pattern
 					for (int s=0;s<g[i]->bP; s++) g[i]->p[s]->x = 1;			//pore has been a part of a precipitation pattern
                     x = 2;  		//node is connected to the pattern

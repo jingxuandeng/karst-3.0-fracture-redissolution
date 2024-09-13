@@ -126,7 +126,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 	if(l<=S->l_min) {                                                   //FIXME: OPCJA: maleńkie ziarno powinnno miec opcje wtornego osadzania
 		if(S->if_verbose) cerr<<"l = l_min for Pore:"<<*this<<endl;
 		for (int s=0; s<bG; s++){
-			if(S->if_verbose or true) cerr<<"The following gains is going to be empty."<<endl\
+			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\
 					<<"Grain:"<<*g[s]<<endl;
 			S->Va_tot -= g[s]->Va; g[s]->Va =0;
             S->Ve_tot -= g[s]->Ve; g[s]->Ve =0;

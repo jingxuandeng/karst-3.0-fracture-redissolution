@@ -44,7 +44,7 @@ void Network::check_flow_balance(){
 
 	if(fabs(Q_in_tmp-Q_out_tmp)/(Q_in_tmp+Q_out_tmp) > eps) {
         cerr << "WARNING: Flow is not conserved: Q_in = " << Q_in_tmp << " Q_out = " << Q_out_tmp << "." << endl;
-        sim_state=_sign(sim_state)*2;
+        sim_state=_sign(sim_state)*10;
     }
 	else
 		cerr<<"Flow is conserved: Q_in = "<<Q_in_tmp <<" Q_out = "<<Q_out_tmp<<"."<<endl;
