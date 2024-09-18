@@ -21,7 +21,7 @@ void Network::evolution(long int T){
 
 	if(if_save_txt)     print_net_txt();
 	save_all_data       (true);
-	analyze_diss_pattern(true);
+	//analyze_diss_pattern(true);
 
 	while(sim_step < T_max){
 		cerr<<endl;
@@ -34,18 +34,18 @@ void Network::evolution(long int T){
 		tot_steps++; tot_time+=dt;
 
 		save_all_data();
-		analyze_diss_pattern();
+		//analyze_diss_pattern();
 
 		if(if_system_dissolved){
 			save_all_data       (true);
-			analyze_diss_pattern(true);
+			//analyze_diss_pattern(true);
 			break;
 		}
 
 
 	}
 	save_all_data(true);
-	analyze_diss_pattern(true);
+	//analyze_diss_pattern(true);
 }
 
 /**
@@ -70,7 +70,8 @@ void Network::evolution(long int T){
 * @date 25/09/2019
 */
 void Network::do_one_euler_step(){
-	
+
+    static bool if_percolation = false;
 
 	if(if_smarter_calculation_of_pressure)	{calculate_pressures_and_flows_smarter(d_max_for_u);}
 	else 									{calculate_pressures();           calculate_flows();}
@@ -100,6 +101,14 @@ void Network::do_one_euler_step(){
 
 	if(if_adaptive_dt)      adapt_dt();           //adapt dt
 	if(if_full_dissolution) check_if_dissolved(); //check if the system is dissolved
+    //condition for clogging (new) TODO: check it; FIXME: function find_percolation should not be called twice in one step
+    //checking percolation
+    if (!if_percolation && find_percolation()>0 && tot_steps>10){
+        cerr<<"\nSystem clogged due to d_min percolation.\nSimulation finished."<<endl;
+        if_percolation = true;
+        if_system_dissolved=true;
+        T_max = sim_step;  //after clogging just end the simulation
+        return;}
 
 }
 /**

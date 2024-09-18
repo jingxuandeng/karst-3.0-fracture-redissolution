@@ -71,7 +71,7 @@ class Pore{
             if(d<1.)
                 return M_PI*pow(d,4)/(128*mu_0*l);   ///< permeability of a particular pore
             else
-                return M_PI*d/(128*mu_0*l);          ///WARNING: the tube can not have the diameter larger than 1, later the formula for
+                return M_PI*d/(128*mu_0*l);          ///WARNING: the tube can not have the diameter larger than 1, later the formula for H_z = l_Z = 1
         }
 		//void   diss (double Va, double Ve);							///< precipitation and dissolution of the material: calculate change of d and l
 		double calculate_inlet_cb();									///< calculate inlet concentration of the species B

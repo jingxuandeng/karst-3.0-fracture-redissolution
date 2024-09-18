@@ -432,6 +432,7 @@ ostream & operator << (ostream & stream, Pore &p){
 		if(b<p.bG-1) stream<<",";
 	}
 	stream<<")";
+    stream << "   Properties: ("<<" d = "<<p.d<<" l = "<<p.l<<" q = "<<p.q<<" is-f = "<<p.is_fracture<<")";
 	return stream;
 
 }

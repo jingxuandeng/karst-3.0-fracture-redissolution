@@ -175,12 +175,16 @@ void Network::write_time_step_properties(){
 
 	//calculating maximal pore diameter at the outlet
 	double d_out_max = 0;double d_in_max = 0;
-	for(int i=0;i<N_wi;i++) for(int s=0;s<wi[i]->b;s++)
-		if(d_in_max<wi[i]->p[s]->d)
-            d_in_max=wi[i]->p[s]->d;
-	for(int i=0;i<N_wo;i++) for(int s=0;s<wo[i]->b;s++)
-		if(d_out_max<wo[i]->p[s]->d)
-            d_out_max=wo[i]->p[s]->d;
+	for(int i=0;i<N_wi;i++)
+        for(int s=0;s<wi[i]->b;s++)
+            if(d_in_max<wi[i]->p[s]->d)
+                d_in_max=wi[i]->p[s]->d;
+
+    for(int i=0;i<N_wo;i++)
+        for(int s=0;s<wo[i]->b;s++)
+            if(d_out_max<wo[i]->p[s]->d)
+                d_out_max=wo[i]->p[s]->d;
+
 
     double percolation = find_percolation();
 

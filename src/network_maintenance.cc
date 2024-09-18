@@ -225,12 +225,7 @@ void Network::check_if_dissolved(){
     }
 
 
-    //condition for clogging (new) TODO: check it; FIXME: function find_percolation should not be called twice in one step
-    if (find_percolation()>0 && tot_steps>10){
-        cerr<<"\nSystem clogged due to d_min percolation.\nSimulation finished."<<endl;
-        if_check = false;
-        T_max = sim_step;  //after clogging just end the simulation
-        return;}
+
 
 //	//condition for clogging (old, to be removed) TODO: check if works, seems to be not that stupid
 //	int nr_of_red_grains=0;
@@ -245,11 +240,11 @@ void Network::check_if_dissolved(){
 //	}
 
 	//condition for pressure drop
-	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min && !add_well || add_well && wi[0]->u * Q_tot < u_min){
-		 cerr<<"\nSystem is dissolved: condition for pressure has been fulfilled."<<endl;
-             if_check = false;
-             T_max = sim_step*time_factor_after_b;
-	 }
+//	 if(Q_tot>0 && u_min>0) if (wi[0]->u/N_y * Q_tot/(2*N_x)<u_min && !add_well || add_well && wi[0]->u * Q_tot < u_min){
+//		 cerr<<"\nSystem is dissolved: condition for pressure has been fulfilled."<<endl;
+//             if_check = false;
+//             T_max = sim_step*time_factor_after_b;
+//	 }
 
 
 
@@ -314,6 +309,8 @@ bool Network::check_diss_front(double threshold, int row){
 * @date 25/09/2019
 */
 void Network::clear_unconeccted_pores(){
+
+    if(if_verbose) cerr<<"Clearing unconnected pores"<<endl;
 
 	check_diss_pattern(0);
 	for(int i=0;i<NP;i++) if(p[i]->x == 0) p[i]->d=0;

@@ -40,7 +40,24 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
             p[i]->d = p[i]->d * factor;   //the initial diameter is larger for a fracture
             p[i]->is_fracture = true;              //the fracture can be implemented in different way that the regular pore
         }
+    for (int i=0;i<NN;i++)
+        if (n[i]->tmp == 1)
+            n[i]->is_fracture=true;
 
+
+    // Moving node positions to visualize a fracture better
+    //Preparing network
+
+    int i=0;
+    while (n[i]->t!=0 || n[i]->xy.x>N_x/3. || n[i]->is_fracture) i++;
+    find_R_half(n[i]);
+    for (int i=0;i<NG;i++){
+        int tmp_lhs=0;
+        for(int b=0;b<g[i]->bN;b++)
+            if(g[i]->n[b]->is_LHS) tmp_lhs++;
+        if(tmp_lhs>0)
+            g[i]->is_lhs=true;
+    }
 
 
     if(point_inlet) {
@@ -68,6 +85,17 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
     }
 
     }
+
+void Network::find_R_half(Node *n0) {
+        n0->is_LHS=1;
+    for (int i=0;i<n0->b;i++)
+        if(n0->n[i]->is_LHS==0 and n0->p[i]->d!=0 and !n0->n[i]->is_fracture and n0->n[i]->xy-n0->xy<N_x/3. ){
+            find_R_half(n0->n[i]);
+        }
+
+
+
+}
 
 
 /**

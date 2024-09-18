@@ -60,7 +60,7 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 
 	Va = 0; 	Ve=0;      Vx=0;
-	tmp = name; a = name; tmp2=0; x=1;
+	tmp = name; a = name; tmp2=0; x=1; is_lhs=false;
 	bN=4; bP=4;
 
 	n = new Node*[4];
@@ -84,7 +84,7 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 Grain::Grain (Grain &g){
 
 	Va  = g.Va;  Ve = g.Ve;   Vx = g.Vx;
-	tmp = g.tmp; a  = g.a; tmp2=0; x=g.x;
+	tmp = g.tmp; a  = g.a; tmp2=0; x=g.x; is_lhs=g.is_lhs;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -99,7 +99,7 @@ Grain::Grain (Grain &g){
 Grain& Grain::operator = (Grain &g){
 
 
-	Va  = g.Va;  Ve = g.Ve;  Vx = g.Vx;
+	Va  = g.Va;  Ve = g.Ve;  Vx = g.Vx; is_lhs=g.is_lhs;
 	tmp = g.tmp; a  = g.a; tmp2=g.tmp2; x=g.x;
 	bN  = g.bN;  bP = g.bP;
 
@@ -120,7 +120,7 @@ Grain& Grain::operator = (Grain &g){
 Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 
 	Va = 0; 	Ve=0;     Vx=0;
-	tmp = name; a = name; tmp2=0; x=1;
+	tmp = name; a = name; tmp2=0; x=1; is_lhs=false;
 	bN=bbN; bP=bbP;
 
 	n = new Node*[bN];
@@ -132,7 +132,7 @@ Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 
 Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_x_tmp, int bb_N, int bb_P){
 	Va = V_a_tmp; 	Ve = V_e_tmp;   Vx = V_x_tmp;
-	tmp = name; a = name; tmp2=0; x=1;
+	tmp = name; a = name; tmp2=0; x=1; is_lhs=false;
 	bN=bb_N; bP=bb_P;
 
 	n = new Node*[bN];
@@ -161,7 +161,8 @@ void Grain::calculate_initial_volume (Network *S){
 		double Va_0 = sqrt(P*(P-x)*(P-y)*(P-z))*S->H_z;    //additional parameter
         double d_mean = 0;
         for (int i=0;i<bP;i++)
-            if (!p[i]->is_fracture)  d_mean += p[i]->d / bP;
+            if (!(p[i]->is_fracture))  d_mean += p[i]->d / bP;
+            else                       d_mean += S->d0 / bP;
 
         //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Felerny błąd ze wzorem \Delta d/ 2 : Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
         //Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Felerny błąd ze wzorem \Delta d/ 2 : Poprawiony wzór na wszystkie poprzeczki ruszające się.
@@ -244,7 +245,7 @@ double Grain::calculate_maximal_volume (Network *S){
 		double z = S->point_distance(pp[2], pp[0]);
 		double P = (x+y+z)/2;
 
-		Va_tmp = sqrt(P*(P-x)*(P-y)*(P-z));
+		Va_tmp = sqrt(P*(P-x)*(P-y)*(P-z))*S->H_z;
 	}
 
 	//WARNING: the general formula should be implemented for cubic network with added random node positions
@@ -252,8 +253,9 @@ double Grain::calculate_maximal_volume (Network *S){
 		Va_tmp = 1;
 	}
 
-	else if (bN==2){
-		Va_tmp = 0;
+	else if (bN<3){
+        Va_tmp =  2*(S->l0*S->H_z*sqrt(3.)/4.);//*(n[0]->xy - n[1]->xy);
+
 	}
 
 	else if (bN==4){
@@ -296,12 +298,14 @@ double Grain::calculate_maximal_volume (Network *S){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-bool Grain::to_be_merge(){
+bool Grain::to_be_merge(Network *S){
     bool if_fracture = false;
     for (int i=0; i<bP;i++)
             if (p[i]->is_fracture) if_fracture = true;
 
     if (!if_fracture)               return false;
+    //if((Va+Ve+Vx)/calculate_maximal_volume(S)<S->merge_factor) return true;  //we are getting an artificial spread of merging
+    if((Va+Ve+Vx)/(sqrt(3)/4.*S->l0*S->H_z) < S->merge_factor) return true;
 	if (Va+Ve+Vx<=0)   	 		    return true;
 	else						    return false;
 }
@@ -316,9 +320,10 @@ bool Grain::to_be_merge(){
 * @date 25/09/2019
 */
 bool Grain::is_pathological (){		//condition for pathological grain, this kind of grain is merged automatically
-	if (bN==2 && bP>1) 	return true;
-	if (bP==0)			return true;
-	return false;
+	if (bN<2) 	    return true; // fixme: Before (bN==2&& bP>1)
+	if (bP<=2)		return true; //fixme: Before bP ==0
+	if(bN == 2) if(n[0]->xy-n[1]->xy > 3.) return true;     //avoid long thin grains
+    return false;
 }
 
 /**
@@ -477,46 +482,77 @@ void Grain::change_pores(Pore *p_old,Pore * p_new){
 * @date 25/09/2019
 */
 void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
+
+    cerr<<"Setting effective d and l for "<<*p_master<<endl;
+
 	double s = 0; 			//reaction surface in a grain
 	double r = 0;			//effective resistance in a grain
-	double u_min = 1e10; 	//the smallest pressure in a grain
-	double u_max = 0;		//the largest pressure in a grain
 	double q_max = 0;		//flow in a grain (calculated for u_max)
 	double q_min = 0;		//flow in a grain (calculated for u_min)
+    int   is_there_a_fracture = 0;
 	Node *n_min=NULL;		//node with u_min
 	Node *n_max=NULL;		//node with u_max
 
 	//choosing n and u max/min
-	for(int b=0;b<bN;b++){
-		if (n[b]->u <= u_min) {n_min = n[b]; u_min = n[b]->u;}
-		if (n[b]->u >= u_max) {n_max = n[b]; u_max = n[b]->u;}
-	}
+
+    if (p_master->n[0]->u < p_master->n[1]->u) {n_min = p_master->n[0]; n_max = p_master->n[1];}
+    else                                       {n_min = p_master->n[1]; n_max = p_master->n[0];}
+
 	//calculating s and q_max/min
 	for(int b=0;b<bP;b++){
 		s+=p[b]->l*p[b]->d*M_PI;
-		if(p[b]->n[0]==n_max) q_max += fabs(p[b]->q);
-		if(p[b]->n[0]==n_min) q_min += fabs(p[b]->q);
+		if(p[b]->n[0]==n_max||p[b]->n[1]==n_max) q_max += fabs(p[b]->q);
+		if(p[b]->n[0]==n_min||p[b]->n[1]==n_min) q_min += fabs(p[b]->q);
+        if(p[b]->is_fracture) is_there_a_fracture++;
 	}
 
 	if(q_max+q_min <=0) {
 		cerr<<"ERROR: Problem with calculating q_max and q_min in setting effective d and l."<<endl<<*this<<endl;
-		cerr<<"q_max = "<<q_max<<endl;
+		cerr<<"p_master : "<<*p_master<<endl;
+        cerr<<"q_max = "<<q_max<<endl;
 		cerr<<"q_min = "<<q_min<<endl<<endl;
+        cerr<<"n_min = "<<*n_min<<endl;
+        cerr<<"n_max = "<<*n_max<<endl;
 		for(int b=0;b<bP;b++) cerr<<*p[b]<<endl;
-
+        //exit(876);
 	}
-
-	else   r = (u_max - u_min)/(q_max+q_min)/2;
+    double delta_P=0;
+    if(n_max->u - n_min->u > 0) delta_P = n_max->u - n_min->u;
+    else{
+        for(int b=0;b<bN;b++)
+            if(n[b]->u != n_max->u)
+                delta_P = fabs(n[b]->u - n_max->u);
+    }
+    if(delta_P==0) {cerr<<"ERROR: problem with presuure dron in the grain while meging."<<endl; }//exit(123321);}
+    if(!delta_P==0 and q_max+q_min <=0)
+        r = delta_P/((q_max+q_min)/2.);
 
 	if(s<0 || r<0) cerr<<"ERROR: Problem with calculating r and s in setting effective d and l."<<endl<<*this<<endl;
 	//calculating new d and l
 	if(r>0 && s>0) {
-		p_master->d = 2.*pow((4.*S->mu_0*s)/(M_PI*M_PI*r),0.2);
-		p_master->l = 0.5*pow( (r*pow(s,4))/(4.*S->mu_0*pow(M_PI,3)),0.2);
-	}
+        if(r<(128*S->mu_0*S->l0)/M_PI) {
+            //old formulas for cylinger
+            p_master->d = 2. * pow((4. * S->mu_0 * s) / (M_PI * M_PI * r), 0.2);
+            p_master->l = 0.5 * pow((r * pow(s, 4)) / (4. * S->mu_0 * pow(M_PI, 3)), 0.2);
+        }
+        else {
+            //new formulas for a fracture
+            p_master->d = (8. / M_PI) * sqrt(2 * s * S->mu_0 / r);
+            p_master->l = (1 / 8.) * sqrt(r * s / (2 * S->mu_0));
+        }
 
-    p_master->is_fracture = true;           //make sure the pore is tagged as a part of a fracture
+        if(p_master->d < 1)
+            cerr<<"WARNING: P_master is tiny: "<<p_master->d<< endl;
+        if(p_master->d <= S->d_min || p_master->l <= S->l_min) {
+            cerr << "ERROR: P_master has problem with d = " << p_master->d << "   l = " << p_master->d << endl;
+            p_master->d=0;
+            //S->clear_unconeccted_pores();
+        }
 
+    }
+
+    if(is_there_a_fracture==1) p_master->is_fracture = true;           //make sure the pore is tagged as a part of a fracture but do not create false fracture pores
+    //else p_master->is_fracture = false;
 }
 
 /**

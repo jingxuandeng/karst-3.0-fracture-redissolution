@@ -31,7 +31,9 @@ void Network::do_merging(){
 	else                               						cerr<<"WARNING: type_of_merging: "<<type_of_merging<<" not implemented yet."<<endl;
 
 	//checking network connections
-	if(type_of_merging != "none")     check_network_connections();
+	if(type_of_merging != "none")     {
+        //clear_unconeccted_pores();
+        check_network_connections();}
 
 
 }
@@ -53,7 +55,7 @@ void Network::merge_empty_grains(){
 
 	if(if_debugging_printing && if_verbose) debugging_for_merging ("Before merging one grain: s = " + to_string(tot_steps));
 
-	for(int i=0;i<NG;i++) if(g[i]->to_be_merge()) { //condition for merging, can be adapted later
+	for(int i=0;i<NG;i++) if(g[i]->to_be_merge(this)) { //condition for merging, can be adapted later
 		cerr<<"I am merging this guy: "<<*g[i]<<endl;
 
 		if(g[i]->bP<=1) merge_one_pore_grain(g[i]);
@@ -110,9 +112,17 @@ void Network::merge_one_pore_grain (Grain *gg){
 
 	//updating the total volume of A species
 	if (gg->bP>0){
-		if(gg->p[0]->bG>0)  for(int i=0; i<p[0]->bG;i++) p[0]->g[i]->Va+=gg->Va/p[0]->bG;
-		else 				Va_tot -= gg->Va;}
-	else          			Va_tot -= gg->Va;
+		if(gg->p[0]->bG>0)
+            for(int i=0; i<p[0]->bG;i++){
+                if(g[i]!=gg){
+                    p[0]->g[i]->Va+=gg->Va/p[0]->bG;
+                    p[0]->g[i]->Ve+=gg->Ve/p[0]->bG;
+                    }
+                }
+		else 				{Va_tot -= gg->Va; Ve_tot -= gg->Ve;}
+    }
+
+	else          			{Va_tot -= gg->Va; Ve_tot -= gg->Ve;}
 	move_grain_to_the_end(gg->tmp,NG);
 
 }
@@ -128,14 +138,31 @@ void Network::merge_one_pore_grain (Grain *gg){
 void Network::merge_one_grain(Grain *gg){
 
 
-	if(if_verbose)cerr<<endl<<endl<<"Merging grain: "<<*gg<<endl;
-	//choose main pore
+	if(if_verbose) {
+        cerr << endl << endl << "Merging grain: " << *gg << endl;
+        cerr  << "Pores belonging to it: "<<endl;
+        for(int b=0;b<gg->bP;b++)
+            cerr<<*(gg->p[b])<<endl;
+        cerr <<endl << "Nodes belonging to it: "<<endl;
+        for(int b=0;b<gg->bN;b++)
+            cerr<<*(gg->n[b])<<endl;
+        cerr<<endl;
+    }
+
+    //choose main pore
 	Pore *p1=NULL;  //master pore (the one that will remain)
-	double q_max=0;
-	for(int b=0; b<gg->bP;b++) if(fabs(gg->p[b]->q)>=q_max){
-		p1 = gg->p[b];
-		q_max = fabs(gg->p[b]->q);
-	}
+
+    for(int b=0; b<gg->bP;b++)
+        if(gg->p[b]->is_fracture)
+            p1 = gg->p[b];
+
+    if(p1==NULL) {
+        double q_max=0;
+        for(int b=0; b<gg->bP;b++) if(fabs(gg->p[b]->q)>=q_max){
+            p1 = gg->p[b];
+            q_max = fabs(gg->p[b]->q);
+        }
+    }
 	if(if_verbose)cerr<<"Master pore is "<<*p1<<endl;
 	gg->set_effective_d_and_l(p1,this);  //calculate d and l basing on S and R of the entire pore
 
@@ -188,8 +215,12 @@ void Network::merge_one_grain(Grain *gg){
 	//cerr<<"Glupie element niedaleko konca: "<<*glupi_element<<endl<<flush;
 
 
-	if (p1->bG>0) for(int i=0;i<p1->bG;i++) p1->g[i]->Va+=gg->Va/p1->bG;
-	else          Va_tot -= gg->Va;
+	if (p1->bG>0)
+        for(int i=0;i<p1->bG;i++) {
+            p1->g[i]->Va+=gg->Va/p1->bG;
+            p1->g[i]->Ve+=gg->Ve/p1->bG;}
+	else          {Va_tot -= gg->Va; Ve_tot -= gg->Ve;}
+
 	move_grain_to_the_end(gg->tmp,NG);
 
 }
@@ -273,6 +304,7 @@ void Network::merge_nodes(Node *n1, Node *n2){
 		n1->xy = ((2*q1/(q1+q2)) * n1->xy) * ((2*q2/(q1+q2))*n2->xy);
 	}
 
+    if(n2->is_fracture) n1->is_fracture = true;
 	//change type of master node if necessary
 	if(n2->t!=0){
 		if(n1->t==0){

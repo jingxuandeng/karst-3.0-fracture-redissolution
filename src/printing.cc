@@ -43,8 +43,8 @@ ofstream_txt & operator<< (ofstream_txt &os, Point p) {
 
 //double operator - (Point &p1, Point &p2) {return sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)+pow(p1.z-p2.z,2));} //return distance between two points
 double operator - (Point  p1, Point  p2) {return sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)+pow(p1.z-p2.z,2));} //return distance between two points
-Point  operator * (Point &p1, Point &p2) {return Point((p1.x+p2.x)/2,(p1.y+p2.y)/2,(p1.z+p2.z)/2);}         //return middle of two points
-Point  operator * (Point p1,  Point p2)  {return Point((p1.x+p2.x)/2,(p1.y+p2.y)/2,(p1.z+p2.z)/2);}         //return middle of two points
+Point  operator * (const Point &p1, const Point &p2) {return Point((p1.x+p2.x)/2,(p1.y+p2.y)/2,(p1.z+p2.z)/2);}         //return middle of two points
+//Point  operator * (Point p1,  Point p2)  {return Point((p1.x+p2.x)/2,(p1.y+p2.y)/2,(p1.z+p2.z)/2);}         //return middle of two points
 //Point  operator + (Point &p1, Point &p2) {return Point((p1.x+p2.x),(p1.y+p2.y),(p1.z+p2.z));}               //return sum of two points
 Point  operator + (Point  p1, Point  p2) {return Point((p1.x+p2.x),(p1.y+p2.y),(p1.z+p2.z));}               //return sum of two points
 Point  operator * (double a,  Point &p ) {return Point(a*p.x,a*p.y,a*p.z);}
@@ -64,15 +64,16 @@ ostream & operator<< (ostream &os, Kropka kr) {
 	return os;}
 
 ostream & operator<< (ostream &os, Kropa kr) {
-	
-	if     (kr.nod->t==0) 	kr.k=Kolor(0.7,0.7,0.7);
-	else if(kr.nod->t==-1) 	kr.k=Kolor(1,0,0);
-	else if(kr.nod->t== 1) 	kr.k=Kolor(0,0,1);
-	//if     (kr.nod->t==0 && kr.nod->cb==1) kr.k=Kolor(0,1,0); //for stream-tube mixing
 
-//	if(kr.nod->x>=1)   kr.k=Kolor(0.8,0.2,0.2);
-//	if(kr.nod->tmp>=0) kr.k=Kolor(0.2,0.2,0.8);
+    if(kr.nod) {
+        if (kr.nod->t == 0) kr.k = Kolor(0.7, 0.7, 0.7);
+        else if (kr.nod->t == -1) kr.k = Kolor(1, 0, 0);
+        else if (kr.nod->t == 1) kr.k = Kolor(0, 0, 1);
+        //if     (kr.nod->t==0 && kr.nod->cb==1) kr.k=Kolor(0,1,0); //for stream-tube mixing
 
+        //	if(kr.nod->x>=1)   kr.k=Kolor(0.8,0.2,0.2);
+        //	if(kr.nod->tmp>=0) kr.k=Kolor(0.2,0.2,0.8);
+    }
 
 	os<<kr.k;
 
@@ -80,9 +81,9 @@ ostream & operator<< (ostream &os, Kropa kr) {
 	os<<Kolor(0.8,0,0);
 	os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
 	os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
-	if(if_print_labels){
+	if(if_print_labels and kr.nod){
 		if (kr.nod->tmp != 666) os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
-	else os << "stroke"<<endl;
+	else os << " stroke"<<endl;
 	
 	return os;}
 

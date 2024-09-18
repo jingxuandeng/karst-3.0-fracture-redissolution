@@ -441,6 +441,7 @@ void Network::print_net_txt(){
 */
 void Network::print_tables_txt(){
 
+
 	diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	concentration_out  <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
@@ -519,7 +520,6 @@ void Network::print_tables_txt(){
                 VE_out             <<endl;
                 VX_out             <<endl;
 			}
-
 			for(int b=0;b<n[i]->b;b++) {
 
                 diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
@@ -530,7 +530,7 @@ void Network::print_tables_txt(){
                 concentration2_out << setprecision(5) << setw(12) << n[i]->cc;
                 pressure_out << setprecision(5) << setw(12) << n[i]->u;
             }
-            for(int b=0;b<n[i]->b;b++)  if(if_track_grains) {
+            for(int b=0;b<n[i]->bG;b++)  if(if_track_grains) {
                 VA_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Va;
                 VE_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Ve;
                 VX_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Vx;
@@ -580,6 +580,8 @@ void Network::print_tables_txt(){
 */
 void Network::  save_all_data(bool if_save_now){
 
+    cerr<<"Saving basic data..."<<endl;
+
 
 	static double Va_old = 0;
 
@@ -616,6 +618,8 @@ void Network::reprint_pictures(string& output_file_name){
  * Unused right now.
  * TODO: Naive implementation assuming the files consists of only one system snapshot. Think of rewriting it into proper reading entire file for long simulation.
  */
+
+    cerr<<"Reprint pictures..."<<endl;
     net_ps    .open(output_file_name+"_grains.ps",	      ios_base::out | ios_base::trunc );
     net_ps2   .open(output_file_name+"_pores.ps",	      ios_base::out | ios_base::trunc );
 

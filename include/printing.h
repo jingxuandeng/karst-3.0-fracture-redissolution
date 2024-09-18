@@ -177,8 +177,8 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 double operator - (Point   p1, Point  p2); ///< return distance between two points
 ///< Point  operator + (Point  &p1, Point &p2); ///< return sum of two points
 Point  operator + (Point   p1, Point  p2); ///< return sum of two points
-Point  operator * (Point  &p1, Point &p2); ///< return middle of two points
-Point  operator * (Point   p1, Point  p2); ///< return middle of two points
+Point  operator * (const Point  &p1, const Point &p2); ///< return middle of two points
+//Point  operator * (Point   p1, Point  p2); ///< return middle of two points
 Point  operator * (double a,  Point &p );  ///< multiply point by double
 
 

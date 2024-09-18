@@ -3,6 +3,7 @@
 
 Node::Node (int bb, float name)	{
 	b=bb; a=name; tmp=name; t=0; x=1;
+    is_fracture=false; is_LHS=false;
 	cb=0; cc=0; u=0;
 	bG = 0; g=NULL;
 	n = new Node*[b];
@@ -15,6 +16,7 @@ Node::Node (int bb, float name)	{
 
 Node::Node  (int name, int b_tmp, int t_tmp, Point point){
 	b=b_tmp; a=name; tmp=name; t=t_tmp; x=1;
+    is_fracture=false; is_LHS=false;
 	cb=0; cc=0; u=0;
 	bG = 0; g=NULL;
 	xy = point;
@@ -324,7 +326,7 @@ ostream & operator << (ostream & stream, Node &n){
 		stream<<n.g[k]->a;
 		if(k<n.bG-1) stream<<",";}
 	stream<<")";
-//  stream<<"Node("<<n.tmp<<"): u = "<<n.u;
+  stream<<  "  u = "<<n.u;
 
 	return stream;
 }

@@ -885,7 +885,10 @@ void Network::dissolve_and_precipitate(){
 		for (int i=0;i<NG;i++)  g[i]->Ve+=g[i]->tmp2;
 	}
 
-    if(if_cut_d_min)        for(int i=0; i<NP; i++) if(p[i]->d <= d_min) p[i]->d = 0;
+    if(if_cut_d_min) {
+        for(int i=0; i<NP; i++) if(p[i]->d <= d_min) p[i]->d = 0;
+        //if(type_of_merging=="merge_empty_grains") clear_unconeccted_pores();
+        }
 	if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
 
 

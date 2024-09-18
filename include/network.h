@@ -80,6 +80,7 @@ class Network
 		double Ve_tot;		///< total amount of volume of precipitating species
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
+		double merge_factor;
 
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
 
@@ -132,7 +133,7 @@ class Network
 		double d_V_max;     ///< (only for precipitation)  maximal change of pore volume in one step (if obtained the dt = 2/3dt)
 		double d_V_min;     ///< (only for precipitation)  minimal change of pore volume in one step (if not obtained the dt = 1.2dt)
 		double d_d_dis; 	///< minimal dissolution at the outlet to finish simulation (unit d0)
-		double u_min;       ///< minimal pressure drop to finish simulation.
+		double u_min;       ///< minimal pressure drop to finish simulation. (turned off)
 		int    set_new_dt;  ///< 0-don't change dt; 1 - increase dt by factor 1.2; -1 - decrease dt by factor 0.75
         double time_factor_after_b; ///< how much longer run the simulation after breakthrough
 		
@@ -343,7 +344,7 @@ class Network
 		double distance_to_root(Node *);  ///< Returns distance to the root of the tree, if node does't belongs to the tree -1 is returned.
 		void find_shortest_path(Node *, Node *); ///< Returns the shortest path between two nodes
         void create_a_fracture(double factor, Node * n_1 = nullptr, Node * n_2 = nullptr );  ///< A single - layer fracture will be created form n_1 to n_2, by default the fracture will start from the center of the system
-
+        void find_R_half(Node*n);
 
 //other output generation (for Rishabh)
 		void write_vtk_data();

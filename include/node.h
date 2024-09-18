@@ -57,6 +57,8 @@ class Node{
 		double tmp;		///< temporal information's about the node;
 		signed char t;	///< type of node: 1 -inlet node, 0 - normal node, -1 - outlet node
 		int         x;  ///< additional info about pore (if connected to the dissolution pattern)
+		bool is_fracture;
+        bool is_LHS;        ///< for better printing only (with a fracture)
 
 	public:
 

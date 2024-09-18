@@ -2,8 +2,8 @@
 
 printf "Preparing the simulation...\n\n"
 
-bash ./build.sh
-if ! bash ./build.sh; then
+bash ~/Desktop/KARST/karst_3.0/build.sh
+if ! bash ~/Desktop/KARST/karst_3.0/build.sh; then
     echo "Problem with compilation."
     exit 1
 fi
@@ -41,19 +41,20 @@ los=107
 if_tilted_cut="false"
 if_reactions_in_the_fracture="true"
 
-Da=0.8
+Da=0.7
 d0=0.3
 for if_dynamic_k2 in "true" # "false"
 do
-for inlet_cut_factor in 3 #3 4 5
+for inlet_cut_factor in 2 #3 4 5
 do
-for kappa in 100  #0.1 0.
+for kappa in 0.01  #0.1 0.
 do
-  for gamma in  0.9  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  1.2  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2
                 printf "Creating variant: %s\n" "$param"
+                pwd
                 mkdir $param
                 cd    $param || exit
                 rm *.gz *.pdf
@@ -78,7 +79,7 @@ do
 
                 } >> config.txt
 
-                ../../../../../karst_3.0/build/karst config.txt  #  >wyjscie.out 2>bledy.out &
+                ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
 
              )
 done

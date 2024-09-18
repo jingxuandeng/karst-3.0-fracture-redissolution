@@ -61,9 +61,11 @@ class Grain{
 		int bN;          ///< numbers of nodes in vicinity (used for non-triangular network)
 		int bP;          ///< numbers of pores in vicinity (used for non-triangular network)
         int x;           ///< additional info about grain (if connected to the dissolution pattern)
+        bool is_lhs;
 
 		Node **n;		///< node list
 		Pore **p;		///< pore list
+
 
 
 	public:
@@ -87,7 +89,7 @@ class Grain{
 		void   add_Pore   (Pore *p);
 		void   remove_Node(Node *n);
 		void   add_Node   (Node *n);
-		bool   to_be_merge();
+		bool   to_be_merge(Network *);
 		bool   do_contain_Node(Node *n_tmp);
 		bool   do_contain_Pore(Pore *p_tmp);
 		bool   is_pathological ();
