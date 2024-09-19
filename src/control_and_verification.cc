@@ -47,7 +47,7 @@ void Network::check_flow_balance(){
         sim_state=_sign(sim_state)*10;
     }
 	else
-		cerr<<"Flow is conserved: Q_in = "<<Q_in_tmp <<" Q_out = "<<Q_out_tmp<<"."<<endl;
+		cerr<<"Flow is conserved: Q_in = "<<setprecision(10)<<Q_in_tmp <<" Q_out = "<<setprecision(10)<<Q_out_tmp<<"."<<endl;
 	if(fabs(Q_in_tmp-Q_out_tmp)/(Q_in_tmp+Q_out_tmp) > 1000*eps) exit(888);
 }
 
@@ -107,7 +107,7 @@ void Network::check_acid_balance(){
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
 		{cerr<<"WARNING: Mass is not conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<Va_delta<<setprecision(10)<<"."<<endl;}
 	else
-		cerr<<"Mass is conserved: Vb_delta = "<<Vb_delta <<" Va_delta = "<<Va_delta<<"."<<endl;
+		cerr<<"Mass is conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<setprecision(10)<<Va_delta<<"."<<endl;
 	if(!if_precipitation) Va_tot=Va_tot_tmp;
 
 }

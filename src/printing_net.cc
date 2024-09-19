@@ -84,7 +84,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
         p0 = p0+p[i];}
 	p0 = (1./b)*p0;
 	Point p00 = (-1.)*p0;
-	double factr = sqrt((g.Va + g.Ve + g.Vx)/g.calculate_maximal_volume(&S)/S.H_z);
+	double factr = (g.Va + g.Ve + g.Vx)/g.calculate_maximal_volume(&S)/S.H_z;  //consider using sqrt?
 	if (factr<0)   factr = 0;
 	if (factr>1)   factr = 1;
 	if (!(factr>=0)) factr=0;
@@ -324,7 +324,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 
 
 		p.tmp=666;  // no printing names
-		if(p.n[0]->xy - p.n[1]->xy < S.N_x*2./3 && p.d<S.N_x*2&& p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print){
+		if(p.is_fracture || (p.n[0]->xy - p.n[1]->xy < S.N_x*2./3  && p.d<S.N_x*2 && p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print)){
 			//if (p.x == 1)           stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
 			//else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
             double ww = 0.1;
@@ -370,7 +370,7 @@ void Print_network_in_grain_style (ofstream_ps & stream, Network &S){
 	if(S.pages_saved==0) stream << "%!PS-Adobe-3.0" << endl<<"%%Pages:"<<S.pages_tot<<endl<<endl;
 
 	stream <<"%%Page: "<<S.pages_saved+1<<" "<<S.pages_saved+1<<endl<<endl;
-	stream <<"1 setlinejoin 1 setlinecap 0.02 setlinewidth"<<endl;
+	stream <<"1 setlinejoin 1 setlinecap 0.001 setlinewidth"<<endl;
 
 	stream<<skala<<"\t"<<skala<<" scale"<<endl;
 	stream<<x_zero<<"\t"<<y_zero<<" translate"<<endl;

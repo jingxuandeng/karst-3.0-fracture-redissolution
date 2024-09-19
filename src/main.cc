@@ -92,7 +92,7 @@ int main(int argc, char** argv){
 		cerr<<"Preparing pictures..."<<endl;
 		system("ps2pdf net.ps");
         system("ps2pdf net_2.ps");
-        //system("rm *ps");
+        system("rm *ps");
 		system("gzip -q *.out");
         system("gzip -q *.txt");
 

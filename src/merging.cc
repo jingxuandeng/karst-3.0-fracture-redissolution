@@ -55,7 +55,7 @@ void Network::merge_empty_grains(){
 
 	if(if_debugging_printing && if_verbose) debugging_for_merging ("Before merging one grain: s = " + to_string(tot_steps));
 
-	for(int i=0;i<NG;i++) if(g[i]->to_be_merge(this)) { //condition for merging, can be adapted later
+	for(int i=NG-1;i>=0;i--) if(g[i]->to_be_merge(this)) { //condition for merging, can be adapted later
 		cerr<<"I am merging this guy: "<<*g[i]<<endl;
 
 		if(g[i]->bP<=1) merge_one_pore_grain(g[i]);
@@ -135,93 +135,106 @@ void Network::merge_one_pore_grain (Grain *gg){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::merge_one_grain(Grain *gg){
+void Network::merge_one_grain(Grain *gg) {
 
 
-	if(if_verbose) {
+    if (if_verbose) {
         cerr << endl << endl << "Merging grain: " << *gg << endl;
-        cerr  << "Pores belonging to it: "<<endl;
-        for(int b=0;b<gg->bP;b++)
-            cerr<<*(gg->p[b])<<endl;
-        cerr <<endl << "Nodes belonging to it: "<<endl;
-        for(int b=0;b<gg->bN;b++)
-            cerr<<*(gg->n[b])<<endl;
-        cerr<<endl;
+        cerr << "Pores belonging to it: " << endl;
+        for (int b = 0; b < gg->bP; b++)
+            cerr << *(gg->p[b]) << endl;
+        cerr << endl << "Nodes belonging to it: " << endl;
+        for (int b = 0; b < gg->bN; b++)
+            cerr << *(gg->n[b]) << endl;
+        cerr << endl;
     }
 
     //choose main pore
-	Pore *p1=NULL;  //master pore (the one that will remain)
+    Pore *p1 = NULL;  //master pore (the one that will remain)
 
-    for(int b=0; b<gg->bP;b++)
-        if(gg->p[b]->is_fracture)
+    for (int b = 0; b < gg->bP; b++)
+        if (gg->p[b]->is_fracture)
             p1 = gg->p[b];
 
-    if(p1==NULL) {
-        double q_max=0;
-        for(int b=0; b<gg->bP;b++) if(fabs(gg->p[b]->q)>=q_max){
-            p1 = gg->p[b];
-            q_max = fabs(gg->p[b]->q);
+    if (p1 == NULL) {
+        double q_max = 0;
+        for (int b = 0; b < gg->bP; b++)
+            if (fabs(gg->p[b]->q) >= q_max) {
+                p1 = gg->p[b];
+                q_max = fabs(gg->p[b]->q);
+            }
+    }
+    if (if_verbose)cerr << "Master pore is " << *p1 << endl;
+    gg->set_effective_d_and_l(p1, this);  //calculate d and l basing on S and R of the entire pore
+
+
+    //temporary list of grains
+    int b_tmp = 0;
+    for (int b = 0; b < gg->bP; b++) { b_tmp += gg->p[b]->bG; }
+    Grain **g_tmp = new Grain *[b_tmp];
+    b_tmp = 0;
+    for (int b = 0; b < p1->bG; b++) if (p1->g[b] != gg) { g_tmp[b_tmp++] = p1->g[b]; } //copy list of pores and nodes
+
+    //clearing unnecessary pores
+    Grain gg_copy = *gg;
+    for (int b = 0; b < gg_copy.bP; b++)
+        if (gg_copy.p[b] != p1) {
+            Pore *p_tmp = gg_copy.p[b];
+            //checking if new grain will be attached to p1 (if p_tmp nodes are not projected to the same p1 node)
+            Node *n1_tmp = p1->find_closest_node(p_tmp->n[0]);
+            Node *n2_tmp = p1->find_closest_node(p_tmp->n[1]);
+            //adding new grains to the list of p1 grains
+            if (n1_tmp != n2_tmp)
+                for (int bb = 0; bb < p_tmp->bG; bb++) {
+                    bool if_new = true;
+                    if (p_tmp->g[bb] == gg) if_new = false;
+                    for (int j = 0; j < b_tmp; j++) if (p_tmp->g[bb] == g_tmp[j]) if_new = false;
+                    if (if_new) {
+                        g_tmp[b_tmp++] = p_tmp->g[bb];
+                        p_tmp->g[bb]->change_pores(p_tmp, p1);
+                    }
+                }
+            //adding info about flow to master pore (for better printing only)
+            p1->q = p1->q + _sign(p1->q) * abs(p_tmp->q) / 3;
+
+            //clearing unused pore
+            if (if_verbose) cerr << "Clearing pore: " << *p_tmp << endl;
+            p_tmp->remove_info_from_attached_nodes();
+            p_tmp->remove_info_from_attached_grains();
+            move_pore_to_the_end(p_tmp->tmp, NP);
+        }
+
+    p1->bG = b_tmp;
+    delete[] p1->g;
+    p1->g = g_tmp;
+
+
+    //merging all nodes but two (p1->n[0] and p1->n[1])
+    gg_copy = *gg;
+    for (int b = 0; b < gg_copy.bN; b++)
+        if (gg_copy.n[b] != p1->n[0] && gg_copy.n[b] != p1->n[1]) {
+            Node *n_master = p1->find_closest_node(gg_copy.n[b]);    //closer p1 node
+            merge_nodes(n_master, gg_copy.n[b]);
+        }
+    //changing info about grains in master nodes
+    p1->n[0]->remove_Grain(gg);
+    p1->n[1]->remove_Grain(gg);
+
+    int ng_tmp=0;
+    for (int i = 0; i < p1->bG; i++) if(p1->g[i]->Va>0 && gg->is_lhs == g[i]->is_lhs) ng_tmp++;
+    if (ng_tmp>0) {
+        for (int i = 0; i < p1->bG; i++) {
+            p1->g[i]->Va += gg->Va / ng_tmp;
+            p1->g[i]->Ve += gg->Ve / ng_tmp;
         }
     }
-	if(if_verbose)cerr<<"Master pore is "<<*p1<<endl;
-	gg->set_effective_d_and_l(p1,this);  //calculate d and l basing on S and R of the entire pore
-
-
-	//temporary list of grains
-	int b_tmp=0;
-	for(int b=0;b<gg->bP;b++){b_tmp+=gg->p[b]->bG;}
-	Grain **g_tmp = new Grain *[b_tmp];
-	b_tmp=0;
-	for(int b=0;b<p1->bG;b++) if(p1->g[b]!=gg){ g_tmp[b_tmp++]=p1->g[b]; } //copy list of pores and nodes
-
-	//clearing unnecessary pores
-	Grain gg_copy = *gg;
-	for(int b=0;b<gg_copy.bP;b++) if(gg_copy.p[b]!=p1) {
-		Pore * p_tmp=gg_copy.p[b];
-		//checking if new grain will be attached to p1 (if p_tmp nodes are not projected to the same p1 node)
-		Node *n1_tmp  = p1->find_closest_node(p_tmp->n[0]);
-		Node *n2_tmp  = p1->find_closest_node(p_tmp->n[1]);
-		//adding new grains to the list of p1 grains
-		if(n1_tmp!=n2_tmp) for(int bb=0;bb<p_tmp->bG;bb++) {
-			bool if_new = true;
-			if(p_tmp->g[bb]==gg)								if_new = false;
-			for(int j=0;j<b_tmp;j++) if(p_tmp->g[bb]==g_tmp[j]) if_new = false;
-			if(if_new) { g_tmp[b_tmp++] = p_tmp->g[bb]; p_tmp->g[bb]->change_pores(p_tmp,p1);}
-		}
-		//adding info about flow to master pore (for better printing only)
-		p1->q = p1->q + _sign(p1->q)*abs(p_tmp->q)/3;
-
-		//clearing unused pore
-		if(if_verbose) cerr<<"Clearing pore: "<<*p_tmp<<endl;
-		p_tmp->remove_info_from_attached_nodes ();
-		p_tmp->remove_info_from_attached_grains();
-		move_pore_to_the_end(p_tmp->tmp,NP);
-	}
-
-	p1->bG = b_tmp;
-	delete [] p1->g;  p1->g = g_tmp;
-	//cerr<<"Glupi element po usuwaniu porow: "<<*glupi_element<<endl;
-
-	//merging all nodes but two (p1->n[0] and p1->n[1])
-	gg_copy = *gg;
-	for(int b=0;b<gg_copy.bN;b++) if(gg_copy.n[b]!=p1->n[0] && gg_copy.n[b]!=p1->n[1]) {
-		Node * n_master = p1->find_closest_node(gg_copy.n[b]);    //closer p1 node
-		merge_nodes(n_master,gg_copy.n[b]);
-	}
-	//cerr<<"Glupi element po laczeniu nodow: "<<*glupi_element<<endl<<flush;
-	//changing info about grains in master nodes
-	p1->n[0]->remove_Grain(gg);
-	p1->n[1]->remove_Grain(gg);
-	//cerr<<"Glupie element niedaleko konca: "<<*glupi_element<<endl<<flush;
-
-
-	if (p1->bG>0)
-        for(int i=0;i<p1->bG;i++) {
-            p1->g[i]->Va+=gg->Va/p1->bG;
-            p1->g[i]->Ve+=gg->Ve/p1->bG;}
-	else          {Va_tot -= gg->Va; Ve_tot -= gg->Ve;}
+        else{
+            Va_tot -= gg->Va;
+            Ve_tot -= gg->Ve;
+        }
 
 	move_grain_to_the_end(gg->tmp,NG);
+
 
 }
 

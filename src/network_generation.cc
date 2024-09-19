@@ -52,7 +52,8 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 		calculate_pressures();
 		calculate_flows();
 		for(int j=0;j<NP;j++){
-			 if (p[j]->d>0) {N_pores++; q_tot_tmp += fabs(p[j]->q);}
+			// if (p[j]->d>0 and !p[j]->is_fracture) {N_pores++; q_tot_tmp += fabs(p[j]->q);}
+            if (p[j]->d>0 ) {N_pores++; q_tot_tmp += fabs(p[j]->q);}        //It is better to calculate q taking fracture into account
 		}
 		q_in_0=q_tot_tmp/N_pores;
         K_0 = Q_tot_tmp/P_in;
