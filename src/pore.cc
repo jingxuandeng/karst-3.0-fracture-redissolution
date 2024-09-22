@@ -5,7 +5,7 @@
 
 Pore::Pore (double dd, double ll, float name, int bb){
 	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
-    is_active = true; is_fracture = false;
+    is_active = true; is_fracture = false; l0=0;
 	n[0]=NULL; n[1]=NULL;	
 	if(bG>0){
 		g = new Grain*[bG];
@@ -70,28 +70,6 @@ bool Pore::is_Va_left(){
 }
 
 
-/**
-* This function returns the maximal length the pore can obtain taking into account geometric constrains.
-*
-* WARTNING: Periodic boundary conditions are traced correctly for "hexagonal" and "triangulation" type of topology.
-* Other geometries need their own tracing of periodicity.
-*
-* ATTENTION: Maximal length can be exceed by the pore when merging in on
-* -- the geometric constrains are less important to us than the local reaction area and resistivity of the system
-* @param S pointer to the network
-* @param l_max maximal length for the network, important for periodic boundary conditions
-* @param l_0 characteristic pore's length, if there is a problem with calculation max length l_0 is returned
-* @author Agnieszka Budek
-* @date 25/09/2019
-*/
-void Pore::calculate_maximal_length(Network *S, double l_max, double l_0){
-
-	cerr<<"WARNING: function calculate_maximal_lengthid is deprecated, use Network::point_distance(Piont*, Piont *) insted."<<endl;
-	return;
-
-	l = S->point_distance(n[0]->xy, n[1]->xy);
-
-}
 
 /**
 * This function returns the actual length the pore if the if_dynamical_length flag is on.
@@ -105,7 +83,8 @@ void Pore::calculate_maximal_length(Network *S, double l_max, double l_0){
 */
 void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
-	l = S->point_distance(n[0]->xy, n[1]->xy);
+
+	l = S->point_distance(n[0]->xy, n[1]->xy);  //l0;
 
 	if (d == 0) return;
 
@@ -113,7 +92,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
 	double factor=0; double V_max=0; double V_act=0;
 	for (int s=0; s<bG; s++){
-		V_max = g[s]->calculate_maximal_volume(S);
+		V_max = g[s]->V0;
 		V_act = g[s]->Va + g[s]->Ve + g[s]->Vx;
 		if(V_max>0 && V_act>0) factor += pow(V_act/V_max,1./3);  //One may ask about exponent for semi 2D network, maybe it should be two?
 		}

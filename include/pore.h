@@ -45,6 +45,7 @@ class Pore{
 
 		double d;		///< pore diameter
 		double l;		///< pore length
+        double l0;		///< maximal length
 		double q;		///< flow through the pore
 		double c_in;	///< concentration at the pore inlet
 		int    a;       ///< pore number (name)
@@ -79,7 +80,6 @@ class Pore{
 		double calculate_inlet_cc();									///< calculate inlet concentration of the species C
 		double calculate_outlet_cc();									///< calculate outlet concentration of the species C
 
-		void   calculate_maximal_length(Network *S = NULL, double l_max=10, double l_0=1);	///< calculate maximal pore length
 		void   calculate_actual_length (Network *S = NULL, double l_max=10, double l_0=1);	///< calculate initial pore length
 		double local_G        (Network* S);			///< dissolution parameters
 		double local_Da_eff   (Network* S); 		///< dissolution parameter

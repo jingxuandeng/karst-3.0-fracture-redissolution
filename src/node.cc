@@ -48,6 +48,12 @@ double Node::total_pores_d(){
 	return d_tmp;
 }
 
+double Node::total_pores_q(){
+    double q_tmp = 0;
+    for(int i=0; i<b; i++) q_tmp+= fabs(p[i]->q);
+    return q_tmp;
+}
+
 /**
 * This function removes node form input/output list of nodes.
 * @param S pointer to the network
@@ -326,7 +332,7 @@ ostream & operator << (ostream & stream, Node &n){
 		stream<<n.g[k]->a;
 		if(k<n.bG-1) stream<<",";}
 	stream<<")";
-  stream<<  "  u = "<<n.u;
+  stream<<  "  u = "<<n.u << "  is-f = "<<n.is_fracture;
 
 	return stream;
 }

@@ -867,15 +867,15 @@ void Network::dissolve_and_precipitate(){
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0;
-		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2.;      ///FIXME: tu powinna być jednak dwujka(?), którą wcześńiej wykasowałam!!!!
-		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2.;      ///FIXME: tu powinna być jednak dwujka(?), którą wcześńiej wykasowałam!!!!
+		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2.;
+		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2.;
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
 		for(int s=0; s<p0->bG;s++) {
 			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;
 			if (true)           p0->g[s]->tmp2+=d_V_E/p0->bG;
 		}
 
-		if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus)*d0/p0->d, d_V_A + d_V_E);
+		if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus)*d0/p0->d, fabs(d_V_A) + fabs(d_V_E));
 	}
 
 

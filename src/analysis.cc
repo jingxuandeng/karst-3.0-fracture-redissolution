@@ -130,7 +130,7 @@ void Network::write_pattern_properties(){
 
 
 
-	if(printing_mode=="debugging"){//for debugging only
+	if(printing_mode=="debugging" ){//for debugging only
 				description_note = "At the end of write pattern properties: s = " + to_string(tot_steps);
 				for (int i=0;i<NP;i++) p[i]->tmp = 666;
 				printing_mode = "debugging";

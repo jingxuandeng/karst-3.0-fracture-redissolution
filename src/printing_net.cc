@@ -5,7 +5,6 @@ double max_distance = 6;
 
 
 
-
 ofstream_ps & operator << (ofstream_ps & stream, Grain &g){
 	if(g.bN!=3)  return stream;
 	if(g.n[0]->xy-g.n[1]->xy<max_distance && g.n[1]->xy-g.n[2]->xy<max_distance && g.n[2]->xy-g.n[0]->xy<max_distance)
@@ -17,8 +16,8 @@ ofstream_ps & operator << (ofstream_ps & stream, Grain &g){
         auto k = Kolor(0.9,0.9,0.9);
         if (g.tmp==1)      k = Kolor(1,0,0);
         else if (g.tmp==2) k = Kolor(0,1,0);
-        else if (g.tmp==0) k = Kolor(0.9,0.9,0.9);
-        else          k = Kolor(0.1,0.1,0.1);
+        else if (g.tmp==0) k = Kolor(0.1,0.1,0.1);
+        else          k = Kolor(0.6,0.6,0.6);
 
 		stream<<Trojkacik(g.n[0]->xy,g.n[1]->xy,g.n[2]->xy,g.tmp,k)<<endl;
     }
@@ -41,15 +40,25 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
           //wariant z linia zamiast kropki....
             double factor = 2.;
             auto color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
-            double factr = (g.Va + g.Ve + g.Vx)/(sqrt(3.)/4.);
+            double factr = (g.Va + g.Ve + g.Vx)/(g.V0)/2;
+            if (factr<0)   factr = 0;
+            if (factr>1)   factr = 1;
+            if (!(factr>=0)) factr=0;
+
             Point p_1 = g.n[0]->xy;
             Point p_2 = g.n[1]->xy;
+
+            Point p0 = (p_1+p_2)*(1./2.);  Point p00 = (-1.0)*p0;
+            p_1  = factr*(p_1 + p00) + p0;
+            p_2  = factr*(p_2 + p00) + p0;
+
+
             if (g.is_lhs) {
                 p_1 = p_1 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1), 0);
                 p_2 = p_2 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1), 0);
             }
             double r_tmp = factr/3.*S.l0;//*(g.n[0]->xy - g.n[1]->xy)/4.;
-            stream<<"stroke "<<Porek(p_1,p_2,r_tmp,666,color)<<endl;
+            if(p_1-p_2 < S.N_x*2/3.) stream<<"stroke "<<Porek(p_1,p_2,r_tmp,666,color)<<endl;
 
 
 //wariant z kulka
@@ -203,10 +212,10 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
     S.find_the_largest_tree(0.5,true);   ///tylko ten kawalek wywala sie, dla tradycyjnego szukania pataernow jest wszystko ok!!!
     //S.find_the_largest_tree(2);
 
-    for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->x;
+    for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->a;
 	for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
 	//for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NP;i++) S.p[i]->tmp=S.p[i]->x;
+    for(int i=0;i<S.NP;i++) S.p[i]->tmp=S.p[i]->a;
     for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
     for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->a; //S.distance_to_root(S.n[i]);//S.n[i]->x;   //FIXME: This will get us in the inf loop
 	for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
@@ -353,7 +362,6 @@ void Print_network_in_debugging_style_tmp (ofstream_ps & stream, Network &S,int 
 
 
 void Print_network_in_grain_style (ofstream_ps & stream, Network &S){
-
 	if(S.if_save_ps==0){ cerr<<"Error during printing ps in dissolution style."<<endl; return ;}
 
 	cerr<<"Printing network in grain style..."<<endl;

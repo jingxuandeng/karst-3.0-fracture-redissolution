@@ -193,7 +193,7 @@ void Network::adapt_dt(){
 void Network::check_if_dissolved(){
 
     static bool if_check = true;   //czy sprawdzac trzeba, czy juz wykryto przebicie
-    if (sim_step > T_max) {
+    if (tot_time > T_max) {
         if_system_dissolved = true;
         return;
     }
@@ -208,7 +208,7 @@ void Network::check_if_dissolved(){
 			cerr<<"\nSystem is fully dissolved\nSimulation will finish soon."<<endl;
             if_check = false;
             sim_state = -1;
-            T_max = sim_step*time_factor_after_b;
+            T_max = tot_time*time_factor_after_b;
 			return;}
 	}
 
@@ -220,7 +220,7 @@ void Network::check_if_dissolved(){
                 cerr<<"\nPrecipitation pattern has made breakthrough \nSimulation will finish soon."<<endl;
                 if_check = false;
                 sim_state=-2;
-                T_max = sim_step*time_factor_after_b;   //after breackthrough simulate z moment longer
+                T_max = tot_time*time_factor_after_b;   //after breackthrough simulate z moment longer
                 return;}
     }
 

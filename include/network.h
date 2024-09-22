@@ -122,8 +122,7 @@ class Network
 
 
 		// evolution parameters
-		int    T_max;	  	///< maximal number of time steps in simulation
-        int    sim_step ;   //nr of step
+		double    T_max;	///< Total time of simulation, if Q=const it measures the amount of c_B injected into the system
 		int    tot_steps; 	///< total nr of steps in simulation
 		double tot_time;  	///< total time in simulation
 		double dt;			///< time step (in dimensionless units [2 k1 * gamma_1/d0] or in diffusion limited case 2 DD1*Sh*gamma/d0^2)
@@ -222,7 +221,7 @@ class Network
 	public:
 
 // evolution of the system
-		void evolution(long int T = 0);				///< make whole evolution
+		void evolution(double T = 0);				///< make whole evolution
 		void do_one_leapfrog_step();				///< do one leap-frog step, WARNING: not implemented yet
 		void do_one_euler_step();					///< do one euler step, simplest numerical method for integrating differential equation of the system evolution
 		void calculate_pressures();					///< calculate pressure field for the whose network
@@ -302,8 +301,9 @@ class Network
 		void do_merging();										///< do standard merging
 		void merge_empty_grains();								///< merge empty (Va + Ve <=0) grains
 		void merge_nodes(Node *n1, Node *n2);					///< merge two nodes, this is a pert of merging one grain function
-		void merge_one_grain(Grain *g);							///<  the main function responsible of merging grains
+		void merge_one_grain(Grain *g, Grain* g2=NULL);							///<  the main function responsible of merging grains
 		void merge_one_pore_grain (Grain *g);					///< merging special type of grain, the one-pore one
+        void merge_the_other_pore_grain (Grain *g);					///< merging special type of grain, the one-pore one
 		void debugging_for_merging(string text="In merging");	///< Extra debugging for merging
 
 

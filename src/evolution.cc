@@ -11,27 +11,26 @@
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::evolution(long int T){
+void Network::evolution(double T){
 
 	cerr<<"\n\n\nEvolution:"<<endl;
 
-	if (T!=0) T_max = T;
-	double 	t  = 0; //total time
-	sim_step  = 0; //nr of steps done
+	if (T!=0) T_max = T*dt_unit;
+    else      T_max = T_max*dt_unit;    //WARING: switching to propoer time units./
 
 	if(if_save_txt)     print_net_txt();
 	save_all_data       (true);
 	//analyze_diss_pattern(true);
 
-	while(sim_step < T_max){
+	while(tot_time < T_max){
 		cerr<<endl;
-		cerr << sim_step << ". step of evolution (t = " << t << ")" << endl;
+		cerr << tot_steps << ". step of evolution, tot_time = " << tot_time << " (t = "<<tot_time/dt_unit<< ")" << endl;
 
 		if(if_leapfrog)  do_one_leapfrog_step();	//do frog leap version (not implemented yet)
 		else			 do_one_euler_step();		//do normal Euler version
 
-		sim_step++; t+=dt;
-		tot_steps++; tot_time+=dt;
+		tot_steps++;
+        tot_time+=dt;
 
 		save_all_data();
 		//analyze_diss_pattern();
@@ -106,7 +105,7 @@ void Network::do_one_euler_step(){
         cerr<<"\nSystem clogged due to d_min percolation.\nSimulation finished."<<endl;
         if_percolation = true;
         if_system_dissolved=true;
-        T_max = sim_step;  //after clogging just end the simulation
+        T_max = tot_time;  //after clogging just end the simulation
         return;}
 
 }

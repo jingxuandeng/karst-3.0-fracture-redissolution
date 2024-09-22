@@ -90,7 +90,7 @@ class Grain{
 		void   add_Pore   (Pore *p);
 		void   remove_Node(Node *n);
 		void   add_Node   (Node *n);
-		bool   to_be_merge(Network *);
+		int   to_be_merge(Network *);
 		bool   do_contain_Node(Node *n_tmp);
 		bool   do_contain_Pore(Pore *p_tmp);
 		bool   is_pathological ();

@@ -55,11 +55,17 @@ void Network::merge_empty_grains(){
 
 	if(if_debugging_printing && if_verbose) debugging_for_merging ("Before merging one grain: s = " + to_string(tot_steps));
 
-	for(int i=NG-1;i>=0;i--) if(g[i]->to_be_merge(this)) { //condition for merging, can be adapted later
+//	for(int i=NG-1;i>=0;i--) if(g[i]->to_be_merge(this)) { //condition for merging, can be adapted later
+    for(int i=0;i<NG;i++) if(g[i]->to_be_merge(this)>0) { //condition for merging, can be adapted later
 		cerr<<"I am merging this guy: "<<*g[i]<<endl;
 
-		if(g[i]->bP<=1) merge_one_pore_grain(g[i]);
-		else            merge_one_grain(g[i]);
+        if(g[i]->to_be_merge(this)==2){
+            merge_the_other_pore_grain(g[i]);
+        }
+        else {
+            if (g[i]->bP <= 1) merge_one_pore_grain(g[i]);
+            else merge_one_grain(g[i]);
+        }
 
 		//additional checking of network structures
 		if(if_debugging_printing && if_verbose) debugging_for_merging ("After merging one grain: s = " + to_string(tot_steps));
@@ -127,6 +133,34 @@ void Network::merge_one_pore_grain (Grain *gg){
 
 }
 
+void Network::merge_the_other_pore_grain(Grain *gg){
+
+    if (if_verbose) {
+        cerr << endl << endl << "Merging the other grain: " << *gg << endl;
+        cerr << "Pores belonging to it: " << endl;
+        for (int b = 0; b < gg->bP; b++)
+            cerr << *(gg->p[b]) << endl;
+        cerr << endl << "Nodes belonging to it: " << endl;
+        for (int b = 0; b < gg->bN; b++)
+            cerr << *(gg->n[b]) << endl;
+        cerr << endl;
+    }
+
+    if(gg->bP!=3) {cerr<<"ERROR: Problem in merging the other grain bP!=3"<<endl; }
+    Grain* g_goal = gg;
+    for(int b=0;b<gg->bP;b++)
+        if(!gg->p[b]->is_fracture)
+            for(int bb = 0 ;bb<gg->p[b]->bG;bb++)
+                if(gg->p[b]->g[bb] != gg) g_goal = gg->p[b]->g[bb];
+    if (g_goal==gg) {cerr<<"ERROR: Problem in merging the other grain"<<endl; }
+
+    int tmp =0;
+    for(int b=0;b<g_goal->bP;b++) if(g_goal->p[b]->is_fracture) {merge_one_grain(gg); }
+    merge_one_grain(g_goal,gg);
+
+
+}
+
 /**
 * This function merge one grain.
 * In a result this grain will vanish and all connected pores will projected to one of them, the same with nodes.
@@ -135,7 +169,7 @@ void Network::merge_one_pore_grain (Grain *gg){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::merge_one_grain(Grain *gg) {
+void Network::merge_one_grain(Grain *gg, Grain* gg_special) {
 
 
     if (if_verbose) {
@@ -152,9 +186,21 @@ void Network::merge_one_grain(Grain *gg) {
     //choose main pore
     Pore *p1 = NULL;  //master pore (the one that will remain)
 
+    int nr_of_f =0;
     for (int b = 0; b < gg->bP; b++)
-        if (gg->p[b]->is_fracture)
+        if (gg->p[b]->is_fracture){
             p1 = gg->p[b];
+            nr_of_f++;
+        }
+
+    if(nr_of_f>1){
+        double q_max = 0;
+        for (int b = 0; b < gg->bP; b++)
+            if (gg->p[b]->is_fracture && fabs(gg->p[b]->q) >= q_max) {
+                p1 = gg->p[b];
+                q_max = fabs(gg->p[b]->q);
+            }
+    }
 
     if (p1 == NULL) {
         double q_max = 0;
@@ -216,22 +262,28 @@ void Network::merge_one_grain(Grain *gg) {
             Node *n_master = p1->find_closest_node(gg_copy.n[b]);    //closer p1 node
             merge_nodes(n_master, gg_copy.n[b]);
         }
+
     //changing info about grains in master nodes
     p1->n[0]->remove_Grain(gg);
     p1->n[1]->remove_Grain(gg);
 
     int ng_tmp=0;
     for (int i = 0; i < p1->bG; i++) if(p1->g[i]->Va>0 && gg->is_lhs == g[i]->is_lhs) ng_tmp++;
-    if (ng_tmp>0) {
-        for (int i = 0; i < p1->bG; i++) {
+
+    if(gg_special!=NULL && gg_special!=gg) {
+        gg_special->Va += gg->Va;
+        gg_special->Ve += gg->Ve;
+    }
+    else if (ng_tmp>0) {
+        for (int i = 0; i < p1->bG; i++) if (gg->is_lhs == g[i]->is_lhs) {
             p1->g[i]->Va += gg->Va / ng_tmp;
             p1->g[i]->Ve += gg->Ve / ng_tmp;
-        }
+            }
     }
-        else{
-            Va_tot -= gg->Va;
-            Ve_tot -= gg->Ve;
-        }
+    else{
+        Va_tot -= gg->Va;
+        Ve_tot -= gg->Ve;
+    }
 
 	move_grain_to_the_end(gg->tmp,NG);
 
@@ -310,12 +362,22 @@ void Network::merge_nodes(Node *n1, Node *n2){
 	delete [] n1->g; n1->g = g_tmp;
 
 	//change position of node n1 (if the distance is not to large - see periodic boundary conditions)
-	if(printing_mode!="grains") if(n1->xy - n2->xy<N_x/2)  {
-		double q1 = n1->total_pores_d();
-		double q2 = n2->total_pores_d();
-		if(q1+q2 == 0) {q1 = 1; q2 = 1;}
-		n1->xy = ((2*q1/(q1+q2)) * n1->xy) * ((2*q2/(q1+q2))*n2->xy);
+	if(n1->xy - n2->xy<N_x*2./3.){
+        if(!n1->is_fracture and !n2->is_fracture) {
+            double q1 = n1->total_pores_q();
+            double q2 = n2->total_pores_q();
+            if (q1 + q2 == 0) {
+                q1 = 1;
+                q2 = 1;
+            }
+            n1->xy = ((2 * q1 / (q1 + q2)) * n1->xy) * ((2 * q2 / (q1 + q2)) * n2->xy);
+        }
+
+        if(n2->is_fracture )
+            n1->xy = n2->xy;
+
 	}
+
 
     if(n2->is_fracture) n1->is_fracture = true;
 	//change type of master node if necessary

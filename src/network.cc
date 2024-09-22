@@ -65,8 +65,7 @@ Network::Network (string input_file_name) {
 	dt_unit = 2*k1 * gamma_1/d0;            //(in dimensionless units [2 k1 * gamma_1/d0])
 
 	//evolution parameters
-	T_max       = 10;     	  //maximal number of time steps
-    sim_step    = 0;          //nr of simulation steps already done
+	T_max       = 10;     	  //maximal time to stop simulation
 	tot_steps   = 0;          //total nr of steps in simulation
 	tot_time    = 0;          //total time in simulation
 	dt          = 1;      	  //time step (in dimensionless units [2 k1 * gamma_1/d0])

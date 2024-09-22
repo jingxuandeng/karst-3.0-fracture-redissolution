@@ -199,7 +199,7 @@ void Network::createHexagonalNetwork(int N, int M){
 	if(if_randomness_in_regular_net) add_randomness_to_regular_network(gauss_sigma_d,max_rand_shift_xy);
 	save_info_about_initial_node_positions ();
 	//updating pore lengths
-	for(int i=0; i<NP;i++) p[i]->l = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
+	for(int i=0; i<NP;i++) p[i]->l0 = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
 
 
 	//optional barrier (resignation form periodic boundary conditions)
@@ -429,7 +429,7 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
 	if(if_randomness_in_regular_net) add_randomness_to_regular_network(gauss_sigma_d,0);
 	save_info_about_initial_node_positions ();
 	//updating pore lengths
-	for(int i=0; i<NP;i++) p[i]->l = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
+	for(int i=0; i<NP;i++) p[i]->l0 = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
 
 
 
@@ -637,7 +637,7 @@ void Network::createCubicNetwork(int N, int M, int O){
 	if(if_randomness_in_regular_net) add_randomness_to_regular_network(gauss_sigma_d,max_rand_shift_xy);
 	save_info_about_initial_node_positions ();
 	//updating pore lengths
-	for(int i=0; i<NP;i++) p[i]->l = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
+	for(int i=0; i<NP;i++) p[i]->l0 = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
 
 
 
@@ -785,7 +785,7 @@ void Network::createSquareNetwork(int N, int M){
 	if(if_randomness_in_regular_net) add_randomness_to_regular_network(gauss_sigma_d,max_rand_shift_xy);
 	save_info_about_initial_node_positions ();
 	//updating pore lengths
-	for(int i=0; i<NP;i++) p[i]->l = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
+	for(int i=0; i<NP;i++) p[i]->l0 = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
 
 
 
@@ -933,7 +933,7 @@ void Network::createDiamondNetwork(int N, int M){
 	if(if_randomness_in_regular_net) add_randomness_to_regular_network(gauss_sigma_d,max_rand_shift_xy);
 	save_info_about_initial_node_positions ();
 	//updating pore lengths
-	for(int i=0; i<NP;i++) p[i]->l = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
+	for(int i=0; i<NP;i++) p[i]->l0 = point_distance(p[i]->n[0]->xy, p[i]->n[1]->xy);
 
 
 

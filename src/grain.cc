@@ -300,17 +300,19 @@ double Grain::calculate_maximal_volume (Network *S){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-bool Grain::to_be_merge(Network *S){
-    bool if_fracture = false;
-    for (int i=0; i<bP;i++)
-            if (p[i]->is_fracture) if_fracture = true;
+int Grain::to_be_merge(Network *S){
 
-    //if (!if_fracture)               return false;
-    //if((Va+Ve+Vx)/calculate_maximal_volume(S)<S->merge_factor) return true;  //we are getting an artificial spread of merging
-    //if((Va+Ve+Vx)/(sqrt(3)/4.*S->l0*S->H_z) < S->merge_factor) return true;
-    if((Va+Ve+Vx)/V0 < S->merge_factor) return true;
-	if (Va+Ve+Vx<=0)   	 		    return true;
-	else						    return false;
+    int if_fracture = 0;
+    for (int i=0; i<bP;i++)
+            if (p[i]->is_fracture) if_fracture++;
+
+    //if (if_fracture==0)               return false;   // this was hindering horizontal channels
+    if((Va+Ve+Vx)/V0 < S->merge_factor or Va+Ve+Vx<=0) {
+        if (if_fracture > 1) return 2;
+        else return 1;
+    }
+    else
+        return 0;
 }
 
 
@@ -323,7 +325,7 @@ bool Grain::to_be_merge(Network *S){
 * @date 25/09/2019
 */
 bool Grain::is_pathological (){		//condition for pathological grain, this kind of grain is merged automatically
-	if (bN<=2) 	    return true; // fixme: Before (bN==2&& bP>1)  PROBLEM: if bN<2 (we allow two nodes grains the mass conservation is violated, maybe some problem with calculating u or c filed)
+	if (bN<2) 	    return true; // fixme: Before (bN==2&& bP>1)  PROBLEM: if bN<2 (if we allow two nodes grains the mass conservation is violated, maybe some problem with calculating u or c filed)
 	if (bP<2)		return true; //fixme: Before bP ==0
 	if(bN == 2) if(n[0]->xy-n[1]->xy > 3.) return true;     //avoid long thin grains
     return false;
@@ -490,6 +492,7 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
 
 	double s = 0; 			//reaction surface in a grain
 	double r = 0;			//effective resistance in a grain
+
 	double q_max = 0;		//flow in a grain (calculated for u_max)
 	double q_min = 0;		//flow in a grain (calculated for u_min)
     int   is_there_a_fracture = 0;
@@ -526,7 +529,7 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
             if(n[b]->u != n_max->u)
                 delta_P = fabs(n[b]->u - n_max->u);
     }
-    if(delta_P==0) {cerr<<"ERROR: problem with presuure dron in the grain while meging."<<endl; }//exit(123321);}
+    if(delta_P==0) {cerr<<"ERROR: problem with pressure drop in the grain while merging."<<endl; }//exit(123321);}
     if(delta_P>0 and q_max+q_min >0)
         r = delta_P/((q_max+q_min)/2.);
 
@@ -534,14 +537,12 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
 	//calculating new d and l
 	if(r>0 && s>0) {
         if(r>(128*S->mu_0*p_master->l)/M_PI) {
-            cerr<<"Old formula for d and l"<<endl;
             //old formulas for cylinger
             p_master->d = 2. * pow((4. * S->mu_0 * s) / (M_PI * M_PI * r), 0.2);
             p_master->l = 0.5 * pow((r * pow(s, 4)) / (4. * S->mu_0 * pow(M_PI, 3)), 0.2);
         }
         else {
             //new formulas for a fracture
-            cerr<<"New formula for d and l"<<endl;
             p_master->d = (8. / M_PI) * sqrt(2 * s * S->mu_0 / r);
             p_master->l = (1 / 8.) * sqrt(r * s / (2 * S->mu_0));
         }
@@ -552,6 +553,7 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
             //S->clear_unconeccted_pores();
         }
     }
+
     if(S->if_verbose) cerr<<"New  d and l for "<<*p_master<<endl;
     if(is_there_a_fracture==1) p_master->is_fracture = true;           //make sure the pore is tagged as a part of a fracture but do not create false fracture pores
     //else p_master->is_fracture = false;
