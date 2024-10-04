@@ -238,7 +238,7 @@ void Network::find_shortest_path(Node* n_1, Node* n_2){
                 n_tmp->p[s]->tmp = 1;
                 n_tmp = n_tmp->n[s];
         }
-
+    n_2->tmp=1; n_1->tmp=1;
     cerr<<"The shortest path has been set..."<<endl;
 
 }

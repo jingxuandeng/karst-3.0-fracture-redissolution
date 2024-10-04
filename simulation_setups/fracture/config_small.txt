@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 200         # size of the regular network
-N_y = 200         # size of the regular network
+N_x = 100         # size of the regular network
+N_y = 200        # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -42,14 +42,14 @@ time_factor_after_b = 1
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
 
-printing_mode         = grains_and_diss              # style of printing:
+printing_mode         =   grains_and_diss              # style of printing:
                                                # "debugging",
                                                # "dissolution"
                                                # "grains"
                                                # "grains_and_diss"
 L_out                 = 1		# printing scale
 pages_tot             = 100		# total nr of pages in the pictures (should be recalculated in future)
-s_save_data           = 0.01          # how often save txt and ps files
+s_save_data           = 0.002          # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving
@@ -58,7 +58,7 @@ if_save_ps            = true    # if true ps pictures are created
 if_save_txt           = false    # if true data about network (nodes, grains, pores) is seved in text file
 if_save_topology      = false    # if true topology is saved in each save_all
 if_save_table         = true    # if true tables with diameters, flows and concentration is saved
-if_verbose            = true   # if true verbose version for debugging
+if_verbose            = false   # if true verbose version for debugging
 if_debugging_printing = false 	# if true debugging printing is done few time in each time step
 
 
@@ -110,7 +110,7 @@ dyn_k2_c0                           = 0.1        # sigma parameters
 
 inlet_cut_factor = 5      # factor of an inlet cut (in a cut: d = d*factor) if==1 no cut is done
 inlet_cut_w =  0          # width of an inlet cut (for triangulation ot must be at least 2, for hexagonal network 1 is enough for tilted 4 is minimum), if 0 the signla-layer fracture is created!!!
-inlet_cut_l = 200		  # length of an inlet cut
+inlet_cut_l = 1000		  # length of an inlet cut
 add_well = false          # add well
 point_inlet = true
 point_outlet = false

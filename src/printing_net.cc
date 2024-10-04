@@ -19,6 +19,7 @@ ofstream_ps & operator << (ofstream_ps & stream, Grain &g){
         else if (g.tmp==0) k = Kolor(0.1,0.1,0.1);
         else          k = Kolor(0.6,0.6,0.6);
 
+        k=Kolor(1,1,1);
 		stream<<Trojkacik(g.n[0]->xy,g.n[1]->xy,g.n[2]->xy,g.tmp,k)<<endl;
     }
 
@@ -54,8 +55,8 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 
 
             if (g.is_lhs) {
-                p_1 = p_1 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1), 0);
-                p_2 = p_2 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1), 0);
+                p_1 = p_1 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1.), 0);
+                p_2 = p_2 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1.), 0);
             }
             double r_tmp = factr/3.*S.l0;//*(g.n[0]->xy - g.n[1]->xy)/4.;
             if(p_1-p_2 < S.N_x*2/3.) stream<<"stroke "<<Porek(p_1,p_2,r_tmp,666,color)<<endl;
@@ -111,6 +112,8 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	double factor = 2;
 	if (S.if_precipitation)  color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
 
+    if(g.is_lhs) color = Kolor{1,0,0};
+    else         color = Kolor{0,1,0};
 
 	if(g.bN==3)  stream<<Trojkacik(pp[0],pp[1],pp[2],666,color)<<endl;
 	stream<<Wielobok (g.bN, pp,g.tmp,color)<<endl;
@@ -212,12 +215,12 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
     S.find_the_largest_tree(0.5,true);   ///tylko ten kawalek wywala sie, dla tradycyjnego szukania pataernow jest wszystko ok!!!
     //S.find_the_largest_tree(2);
 
-    for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->a;
+    for(int i=0;i<S.NG;i++) S.g[i]->tmp=666;//S.g[i]->a;
 	for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
 	//for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NP;i++) S.p[i]->tmp=S.p[i]->a;
+    for(int i=0;i<S.NP;i++) S.p[i]->tmp=666;//S.p[i]->a;
     for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
-    for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->a; //S.distance_to_root(S.n[i]);//S.n[i]->x;   //FIXME: This will get us in the inf loop
+    for(int i=0;i<S.NN;i++) S.n[i]->tmp=666;//S.n[i]->a; //S.distance_to_root(S.n[i]);//S.n[i]->x;   //FIXME: This will get us in the inf loop
 	for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}
 
 	stream << "showpage "<<endl<<flush;

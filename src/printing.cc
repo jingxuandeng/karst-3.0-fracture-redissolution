@@ -1,7 +1,6 @@
 #include "printing.h"
 #include "node.h"
 
-bool if_print_labels = true;
 
 ostream & operator<< (ostream &os, Kolor k) {
 	os<<k.r<<" "<<k.g<<" "<<k.b<<" setrgbcolor"<<endl;
@@ -20,11 +19,12 @@ ostream & operator<< (ostream &os, Porek l){
 	os<<setprecision(4)<<l.k;
 	os<<l.w<<" setlinewidth"<<endl;
 	os<<l.a<<" moveto "<<l.b<<"lineto stroke"<<endl;
-	if(if_print_labels) os<<"/Times-Bold findfont "<<(l.b-l.a)/7.<<" scalefont setfont "<<Kolor(0,0,1)<<endl;
-	os<<Point((l.b.x+l.a.x)/2, (l.b.y+l.a.y)/2)<<"moveto"<<endl;
-	if(if_print_labels){
-		if (l.podpis != 666) os <<"0 0 ("<<setprecision(3)<< l.podpis<<") ashow stroke"<<endl;
-		else                 os << "stroke"<<endl;}
+
+	if(l.podpis != 666) {
+        os << "/Times-Bold findfont " << (l.b - l.a) / 7. << " scalefont setfont " << Kolor(0, 0, 1) << endl;
+        os << Point((l.b.x + l.a.x) / 2, (l.b.y + l.a.y) / 2) << "moveto" << endl;
+        os << "0 0 (" << setprecision(3) << l.podpis << ") ashow stroke" << endl;
+    }
 	else os << "stroke"<<endl;
 
 	return os;}
@@ -54,11 +54,12 @@ ostream & operator<< (ostream &os, Kropka kr) {
 	if(kr.podpis>=0) 	os<<kr.k;
 	else				os<<Kolor(1-kr.k.r,1-kr.k.g,1-kr.k.b);
 	os<<kr.a<<kr.r<<" 0 360 arc fill closepath"<<endl;
-	os<<Kolor(0,0,1);
-	os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
-	os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
-	if(if_print_labels){
-		if (kr.podpis != 666) os<<"0 0 ("<<setprecision(3)<<kr.podpis<<") ashow stroke"<<endl;}
+
+    if (kr.podpis != 666){
+        os<<Kolor(0,0,1);
+        os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
+        os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
+		 os<<"0 0 ("<<setprecision(3)<<kr.podpis<<") ashow stroke"<<endl;}
 	else os << "stroke"<<endl;
 
 	return os;}
@@ -67,9 +68,10 @@ ostream & operator<< (ostream &os, Kropa kr) {
 
     if(kr.nod) {
         if (kr.nod->t == 0) kr.k = Kolor(0.7, 0.7, 0.7);
-        else if (kr.nod->t == -1) kr.k = Kolor(0, 1, 0);
-        else if (kr.nod->t == 1) kr.k = Kolor(0, 0, 1);
-        if(kr.nod->is_fracture ) kr.k = Kolor(1,0,0);
+        if (kr.nod->t == -1) kr.k = Kolor(0.1, 0.8, 0.1);
+        if (kr.nod->t == 1) kr.k = Kolor(0, 0, 1);
+
+        if(kr.nod->is_fracture ) kr.k = Kolor(0.7,0,0.7);
         //if     (kr.nod->t==0 && kr.nod->cb==1) kr.k=Kolor(0,1,0); //for stream-tube mixing
 
         //	if(kr.nod->x>=1)   kr.k=Kolor(0.8,0.2,0.2);
@@ -79,11 +81,13 @@ ostream & operator<< (ostream &os, Kropa kr) {
 	os<<kr.k;
 
 	os<<kr.a<<kr.r<<" 0 360 arc fill closepath"<<endl;
-	os<<Kolor(0.8,0,0);
-	os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
-	os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
-	if(if_print_labels and kr.nod){
-		if (kr.nod->tmp != 666) os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
+
+
+	if(kr.nod and (kr.nod->tmp != 666)){
+        os<<Kolor(0.8,0,0);
+        os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
+        os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
+		os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
 	else os << " stroke"<<endl;
 	
 	return os;}
@@ -96,13 +100,14 @@ ostream & operator<< (ostream &os, Trojkacik tr) {
 	os<<tr.k;
 	os<<tr.n1<<"moveto "<<tr.n2<<"lineto "<<tr.n3<<"lineto closepath fill stroke"<<endl;
 
-    //printing label
-    os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
-	//os<<"/Times-Bold findfont "<<(tr.n1-tr.n2)/5.<<" scalefont setfont"<<endl;
-	os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl;
-	os<<Point((tr.n1.x+tr.n2.x+tr.n3.x)/3,(tr.n1.y+tr.n2.y+tr.n3.y)/3)<<"moveto"<<endl;
-	if(if_print_labels){
-		if (tr.podpis != 666) os<<"0 0 ("<< setprecision(3) <<tr.podpis<<") ashow stroke"<<endl;}
+
+    if (tr.podpis != 666) {
+        //printing label
+        os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
+        //os<<"/Times-Bold findfont "<<(tr.n1-tr.n2)/5.<<" scalefont setfont"<<endl;
+        os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl;
+        os<<Point((tr.n1.x+tr.n2.x+tr.n3.x)/3,(tr.n1.y+tr.n2.y+tr.n3.y)/3)<<"moveto"<<endl;
+		os<<"0 0 ("<< setprecision(3) <<tr.podpis<<") ashow stroke"<<endl;}
 	else os << "stroke"<<endl;
 	
 	return os;}
@@ -115,14 +120,14 @@ ostream & operator<< (ostream &os, Wielobok w) {
 	for (int i=1;i<w.b;i++)
 	    os<<w.p[i]<<"lineto ";
 	os<<"closepath fill stroke"<<endl;
-	os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
-	//os<<"/Times-Bold findfont "<<(w.p[0]-w.p[1])/5.<<" scalefont setfont"<<endl;
-	os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl; //FIXME:edit 28.11.2022
-	Point sr = Point();
-	for (int i=0;i<w.b;i++) sr = sr +w.p[i];
-	os<<Point(sr.x/w.b,sr.y/w.b)<<"moveto"<<endl;
-	if(if_print_labels){
-		if (w.podpis != 666) os<<"0 0 ("<< setprecision(3) <<w.podpis<<") ashow stroke"<<endl;}
+
+	if(w.podpis != 666){
+        os<<Kolor(0,0,0);
+        os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl; //FIXME:edit 28.11.2022
+        Point sr = Point();
+        for (int i=0;i<w.b;i++) sr = sr +w.p[i];
+        os<<Point(sr.x/w.b,sr.y/w.b)<<"moveto"<<endl;
+		os<<"0 0 ("<< setprecision(3) <<w.podpis<<") ashow stroke"<<endl;}
 	else os << "stroke"<<endl;
 
 	return os;}

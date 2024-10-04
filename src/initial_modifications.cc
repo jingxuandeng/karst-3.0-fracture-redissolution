@@ -45,8 +45,8 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
             n[i]->is_fracture=true;
 
 
-    // Moving node positions to visualize a fracture better
-    //Preparing network
+    // Moving node positions to visualize a fracture better but important for merging as well
+    //Prepared to network
 
     int i=0;
     while (n[i]->t!=0 || n[i]->xy.x>N_x/3. || n[i]->is_fracture) i++;
@@ -89,7 +89,7 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
 void Network::find_R_half(Node *n0) {
         n0->is_LHS=1;
     for (int i=0;i<n0->b;i++)
-        if(n0->n[i]->is_LHS==0 and n0->p[i]->d!=0 and !n0->n[i]->is_fracture and n0->n[i]->xy-n0->xy<N_x/3. ){
+        if(n0->n[i]->is_LHS==0 and n0->p[i]->d!=0 and (!n0->n[i]->is_fracture) and (n0->n[i]->xy-n0->xy)<N_x/3.  ){
             find_R_half(n0->n[i]);
         }
 
@@ -128,7 +128,7 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
         delete[] wi;
         for (int i = 0; i < NN; i++)
             if (n[i]->xy.y < 3 && n[i]->xy.x >= (N_x / 2. - cut_w / 2.) &&
-                n[i]->xy.x < (N_x / 2. + cut_w / 2.))  //check if 3 is ok in this equation
+                n[i]->xy.x < (N_x / 2. + cut_w / 2.))
             {
                 n[i]->t = 1;
                 N_wi++;
