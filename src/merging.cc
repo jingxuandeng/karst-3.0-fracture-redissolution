@@ -268,14 +268,14 @@ void Network::merge_one_grain(Grain *gg, Grain* gg_special) {
     p1->n[1]->remove_Grain(gg);
 
     int ng_tmp=0;
-    for (int i = 0; i < p1->bG; i++) if(p1->g[i]->Va>0 && gg->is_lhs == g[i]->is_lhs) ng_tmp++;
+    for (int i = 0; i < p1->bG; i++) if(p1->g[i]->Va>0 && gg->is_lhs == p1->g[i]->is_lhs) ng_tmp++;
 
     if(gg_special!=NULL && gg_special!=gg) {
         gg_special->Va += gg->Va;
         gg_special->Ve += gg->Ve;
     }
     else if (ng_tmp>0) {
-        for (int i = 0; i < p1->bG; i++) if (gg->is_lhs == g[i]->is_lhs) {
+        for (int i = 0; i < p1->bG; i++) if (p1->g[i]->Va>0 && gg->is_lhs == p1->g[i]->is_lhs) {
             p1->g[i]->Va += gg->Va / ng_tmp;
             p1->g[i]->Ve += gg->Ve / ng_tmp;
             }
