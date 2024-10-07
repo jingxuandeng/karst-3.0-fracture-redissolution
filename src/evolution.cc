@@ -20,7 +20,7 @@ void Network::evolution(double T){
 
 	if(if_save_txt)     print_net_txt();
 	save_all_data       (true);
-	//analyze_diss_pattern(true);
+	analyze_diss_pattern(true);
 
 	while(tot_time < T_max){
 		cerr<<endl;
@@ -33,11 +33,11 @@ void Network::evolution(double T){
         tot_time+=dt;
 
 		save_all_data();
-		//analyze_diss_pattern();
+		analyze_diss_pattern();
 
 		if(if_system_dissolved){
 			save_all_data       (true);
-			//analyze_diss_pattern(true);
+			analyze_diss_pattern(true);
 			break;
 		}
 
