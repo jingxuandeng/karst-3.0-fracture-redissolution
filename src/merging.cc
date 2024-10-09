@@ -56,20 +56,26 @@ void Network::merge_empty_grains(){
 	if(if_debugging_printing && if_verbose) debugging_for_merging ("Before merging one grain: s = " + to_string(tot_steps));
 
 //	for(int i=NG-1;i>=0;i--) if(g[i]->to_be_merge(this)) { //condition for merging, can be adapted later
-    for(int i=0;i<NG;i++) if(g[i]->to_be_merge(this)>0) { //condition for merging, can be adapted later
-		cerr<<"I am merging this guy: "<<*g[i]<<endl;
+    for(int i=0;i<NG;i++) {
+        if (g[i]->to_be_merge(this) > 0) { //condition for merging, can be adapted later
 
-        if(g[i]->to_be_merge(this)==2){
-            merge_the_other_pore_grain(g[i]);
-        }
-        else {
-            if (g[i]->bP <= 1) merge_one_pore_grain(g[i]);
-            else merge_one_grain(g[i]);
-        }
 
-		//additional checking of network structures
-		if(if_debugging_printing && if_verbose) debugging_for_merging ("After merging one grain: s = " + to_string(tot_steps));
-	}
+            if (g[i]->a < 0) break;
+
+            cerr<<endl << "I am merging this guy: " << *g[i] << endl;
+
+            if (g[i]->to_be_merge(this) == 2 and g[i]->bP > 1) {
+                merge_the_other_pore_grain(g[i]);
+            } else {
+                if (g[i]->bP <= 1) merge_one_pore_grain(g[i]);
+                else merge_one_grain(g[i]);
+            }
+
+            //additional checking of network structures
+            if (if_debugging_printing && if_verbose)
+                debugging_for_merging("After merging one grain: s = " + to_string(tot_steps));
+        }
+    }
 
 	//Clear pathological pores: (probably unnecessary)
 	for(int i=0; i<NP;i++) if(p[i]->n[0]==p[i]->n[1]) {
@@ -94,12 +100,13 @@ void Network::merge_empty_grains(){
 
 
 	//Merging pathological grains
+    if(if_verbose) cerr<<"Merging pathological grains..."<<endl;
 	for(int i=0;i<NG;i++) if(g[i]->is_pathological()){
+        if(g[i]->a<0) break;
 		if(g[i]->bP<=1) merge_one_pore_grain(g[i]);
 		else            merge_one_grain(g[i]);
 		if(if_debugging_printing && if_verbose) debugging_for_merging ("After merging pathological grain: s = " + to_string(tot_steps));
 	}
-
 }
 
 /**
@@ -154,8 +161,8 @@ void Network::merge_the_other_pore_grain(Grain *gg){
                 if(gg->p[b]->g[bb] != gg) g_goal = gg->p[b]->g[bb];
     if (g_goal==gg) {cerr<<"ERROR: Problem in merging the other grain"<<endl; }
 
-    int tmp =0;
-    for(int b=0;b<g_goal->bP;b++) if(g_goal->p[b]->is_fracture) {merge_one_grain(gg); }
+    int tmp = 0;
+    for(int b=0;b<g_goal->bP;b++) if(g_goal->p[b]->is_fracture) {merge_one_grain(gg); return; }
     merge_one_grain(g_goal,gg);
 
 
@@ -286,6 +293,9 @@ void Network::merge_one_grain(Grain *gg, Grain* gg_special) {
     }
 
 	move_grain_to_the_end(gg->tmp,NG);
+    if(if_verbose){
+        cerr<<"After moving to the end " << *gg<<endl<<endl<<endl;
+    }
 
 
 }

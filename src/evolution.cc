@@ -95,7 +95,7 @@ void Network::do_one_euler_step(){
 	//check_GMash_connections();  //additional checking for G_Mash network
 
 	//topology changes
-	do_merging();
+    do_merging();
 
 
 	if(if_adaptive_dt)      adapt_dt();           //adapt dt

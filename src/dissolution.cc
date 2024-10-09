@@ -526,7 +526,7 @@ void Network::calculate_concentrations(){
 
 		if(n[i]->t==1) S_q=-1;					//if node is an inlet one
 		else for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
-			Pore *pp = findPore(n[i],n[i]->n[s]);
+			Pore *pp = n[i]->p[s];//findPore(n[i],n[i]->n[s]); not working for merging and two nodes grains
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
@@ -603,7 +603,7 @@ void Network::calculate_concentrations_c(){
 		
 		if(n[i]->t==1) S_q=-1;					//if node is an inlet node
 		else for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
-			Pore *pp = findPore(n[i],n[i]->n[s]);
+			Pore *pp =  n[i]->p[s];  //findPore(n[i],n[i]->n[s]);
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
