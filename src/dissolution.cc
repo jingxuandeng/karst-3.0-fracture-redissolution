@@ -47,7 +47,7 @@ void Network::calculate_pressures(){
 		else for(int s=0; s<n[i]->b;s++){	 //eqs for normal nodes
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
-			B[r_no]		= n[i]->p[s]->perm(mu_0);
+			B[r_no]		= n[i]->p[s]->perm(this);
 			S+=B[r_no];
 			r_no++;}
 		ww_r[r_no] 		= i;
@@ -146,7 +146,7 @@ void Network::calculate_pressures_for_small_d(double d_max){
 		else for(int s=0; s<n[i]->b;s++){	 //eqs for normal nodes
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
-			B[r_no]		= n[i]->p[s]->perm(mu_0);
+			B[r_no]		= n[i]->p[s]->perm(this);
 			S+=B[r_no];
 			r_no++;}
 		ww_r[r_no] 		= i;
@@ -220,7 +220,7 @@ void Network::calculate_pressures_for_large_d(double d_max){
 			if(n[i]->n[s]->x==2){
 				ww_r[r_no] 	= i;
 				ww_c[r_no] 	= n[i]->n[s]->tmp;
-				B[r_no]		= n[i]->p[s]->perm(mu_0);
+				B[r_no]		= n[i]->p[s]->perm(this);
 				S+=B[r_no];
 				r_no++;}
 			else y[i] +=fabs(n[i]->p[s]->q);
@@ -257,7 +257,7 @@ void Network::calculate_flows(){ //version without pore merging
 
 	cerr<<"Calculating flows..."<<endl;
 	if (if_system_dissolved) return;
-	for(int i=0;i<NP;i++) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(mu_0);
+	for(int i=0;i<NP;i++) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(this);
 	for(int i=0;i<NP;i++) if(not isfinite(p[i]->q)) {
 		cerr<<"Problem with flow through the system. Check if the system is not clogged."<<endl;
 		s_save_data = 1;
@@ -292,7 +292,7 @@ void Network::calculate_flows_for_large_d(double d_max){
 	cerr<<"Calculating flows for large d..."<<endl;
 
     if(if_system_dissolved) return;
-	for(int i=0;i<NP;i++) if(p[i]->n[0]->x==2 && p[i]->n[1]->x==2) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(mu_0);
+	for(int i=0;i<NP;i++) if(p[i]->n[0]->x==2 && p[i]->n[1]->x==2) p[i]->q = (p[i]->n[0]->u - p[i]->n[1]->u)*p[i]->perm(this);
 	for(int i=0;i<NP;i++) if(!isfinite(p[i]->q)) {
 			cerr<<"Problem with flow through the system. Check if the system is not clogged."<<endl;
 			s_save_data = 1;
@@ -867,8 +867,8 @@ void Network::dissolve_and_precipitate(){
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0;
-		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2.;
-		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2.;
+		double d_V_A = (d_old<H_z or no_max_z) ? (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus *d0)*p0->l)/2.;
+		double d_V_E = (d_old<H_z or no_max_z) ? (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2. :  (M_PI*(1.0)*(dd_minus*d0)*p0->l)/2.;
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
 		for(int s=0; s<p0->bG;s++) {
 			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;

@@ -536,7 +536,7 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
 	if(s<=0 || r<=0) cerr<<"ERROR: Problem with calculating r and s in setting effective d and l."<<endl<<*this<<endl;
 	//calculating new d and l
 	if(r>0 && s>0) {
-        if(r>(128*S->mu_0*p_master->l)/M_PI) {
+        if(r>(128*S->mu_0*p_master->l)/(M_PI*pow(S->H_z,4)) or S->no_max_z) {
             //old formulas for cylinger
             p_master->d = 2. * pow((4. * S->mu_0 * s) / (M_PI * M_PI * r), 0.2);
             p_master->l = 0.5 * pow((r * pow(s, 4)) / (4. * S->mu_0 * pow(M_PI, 3)), 0.2);

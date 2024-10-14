@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 100         # size of the regular network
-N_y = 200        # size of the regular network
+N_x = 40         # size of the regular network
+N_y = 40        # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -20,24 +20,25 @@ gamma = 1       # parameters of precipitation: V_pre/V_diss
 theta = 1       # parameters of precipitation: G_pre / G_diss
 kappa = 0.5     # parameters of precipitation: Da_pre / Da_diss
 
-d_min = 0.01            # minimal pore diameter
-l_min = 0.001            # minimal pore length
+d_min_factor = 100;            # minimal pore diameter
+l_min = 0.001                  # minimal pore length (meters with no merging mechanism)
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Dynamics
 
 T_max       = 50           # tot time of the simulation
-dt          = 0.0001             # time step (in dimensionless units [2 k1 * gamma_1/d0])
+dt          = 10 #0.0001             # time step (in dimensionless units [2 k1 * gamma_1/d0])
 d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
 d_d_min     = 0 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
-d_V_max     = 0.5     	    # (for precipitation only) maximal change of volume in one step (in % if obtained then dt = 2/3 dt)
-d_V_min     = 0.1    	    # (for precipitation only) minimal change of grain volume in one step (in % if not obtained then dt = 1.2dt)
+d_V_max     = 0.05     	    # (for precipitation only) maximal change of volume in one step (in % if obtained then dt = 2/3 dt)
+d_V_min     = 0.01    	    # (for precipitation only) minimal change of grain volume in one step (in % if not obtained then dt = 1.2dt)
 d_d_dis     =  6            # minimal dissolution at the outlet to finish simulation (unit d0)
 d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
-if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
+if_adaptive_dt      = false  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = false  # if true evolution stops when system is fully dissolved
 time_factor_after_b = 1
+no_max_z    = true        # if true there is no limit for pore diameter, otherwise if s>H_z it is not cylinder anymore
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output
@@ -49,7 +50,7 @@ printing_mode         =   grains_and_diss              # style of printing:
                                                # "grains_and_diss"
 L_out                 = 1		# printing scale
 pages_tot             = 100		# total nr of pages in the pictures (should be recalculated in future)
-s_save_data           = 0.002          # how often save txt and ps files
+s_save_data           = 1 # 0.02          # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving

@@ -111,6 +111,7 @@ class Network
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
 		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
+		double d_min_factor;
 		double l_min;   ///< minimal pore length (for numerical reason)
 
         double K_goal       = 0;    ///< our goal permeability
@@ -161,6 +162,8 @@ class Network
 	   	bool if_randomness_in_regular_net;  ///< if true randomness is added to hexagonal network (working for hexagonal net)
 	   	double gauss_sigma_d;           ///< if randomness is on this give information about width of the initial diameter distribution
 	   	double max_rand_shift_xy;       ///< if randomness is on this give information about max shift in positions
+        bool no_max_z;                   /// if true there  is no constrain on pores diameters, otherwise d>H_z is not cylinder anymore
+
 
 		// dynamics
 		bool if_leapfrog;               ///< if true frog leap instead of Euler algorithm is used in evolution (not implemented yet)

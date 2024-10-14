@@ -144,7 +144,7 @@ void Network::find_the_largest_tree(double threshold, bool if_preci_mode){
 	for(int i=0;i<N_wi;i++) if(wi[i]->x==2){
 		Node * n_tmp = wi[i];
         for(int s=0;s<n_tmp->b;s++) if(n_tmp->p[s]->x>=1)
-            if(1./n_tmp->p[s]->perm(mu_0)<min_r) {min_r = 1./n_tmp->p[s]->perm(mu_0); max_root = i;}
+            if(1./n_tmp->p[s]->perm(this)<min_r) {min_r = 1./n_tmp->p[s]->perm(this); max_root = i;}
         }
 
 	find_minimal_spanning_tree(threshold,wi[max_root],if_preci_mode);

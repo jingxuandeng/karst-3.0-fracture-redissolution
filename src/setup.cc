@@ -128,7 +128,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 
 		else if(name == "d0"){
 			d0 = stod(value);
-			cerr<< "Setting d0 = "<<d0<<endl;}
+			cerr<< "Setting d0 = "<<d0<<endl;
+            d_min = d0/d_min_factor;
+            cerr<< "Additionally setting d_min = "<<d_min<<endl;
+            }
 
 		else if(name == "l0"){
 			l0 = stod(value);
@@ -170,9 +173,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			theta = stod(value);
 			cerr<< "Setting theta = "<<theta<<endl;}
 
-		else if(name == "d_min"){
-			d_min = stod(value);
-			cerr<< "Setting d_min = "<<d_min<<endl;}
+		else if(name == "d_min_factor"){
+            d_min_factor = stod(value);
+			cerr<< "Setting d_min_factor = "<<d_min_factor<<endl;
+            d_min = d0/d_min_factor;
+            cerr<< "Setting d_min = "<<d_min<<endl;
+        }
 
 		else if(name == "l_min"){
 			l_min = stod(value);
@@ -218,9 +224,6 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			u_min = stod(value);
 			cerr<< "Setting u_min = "<<u_min<<endl;}
 
-		else if(name == "d_d_min"){
-			d_d_min = stod(value);
-			cerr<< "Setting d_d_min = "<<d_d_min<<endl;}
 
 		else if(name == "d_V_min"){
 			d_V_min = stod(value);
@@ -265,7 +268,14 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			in_pore_size_file_name = value;
 			cerr<< "Setting in_pore_size_file_name = "<<in_pore_size_file_name<<endl;}
 
-		else if(name == "if_periodic_bc"){
+        else if(name == "no_max_z"){
+            if      (value == "true" )   no_max_z  = true;
+            else if (value == "false")   no_max_z  = false;
+            else                     cerr<<"WARNING: Wrong value of variable no_max_z. Set true or false."<<endl;
+            cerr<< "Setting no_max_z = "<<no_max_z<<endl;}
+
+
+        else if(name == "if_periodic_bc"){
 			if      (value == "true" )   if_periodic_bc  = true;
 			else if (value == "false")   if_periodic_bc  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_periodic_bc. Set true or false."<<endl;

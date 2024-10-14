@@ -21,7 +21,7 @@ Network::Network (string input_file_name) {
 	Ve_tot = 0;       //total volume of precipitating species
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
-    merge_factor = 0.2; //
+    merge_factor = 0.1; //
 
 	//dimenssionless parameters describing evolution of the system
 
@@ -37,6 +37,7 @@ Network::Network (string input_file_name) {
 	kappa = 1;	     //ratio of Da_1/Da_2 = ratio of reaction rates
 	theta = 1;	     //ratio of G_1/G_2
 	d_min = d0/100.; //minimal possible pore diameter (important in precipitation)
+    d_min_factor= 100; //d_min = d0*d_min_factor
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 
 
@@ -108,7 +109,7 @@ Network::Network (string input_file_name) {
 	random_seed                        = -1;
 	gauss_sigma_d                      = 0;    			 //if randomness is on this give information about width of the initial diameter distribution (log normal used here)
 	max_rand_shift_xy                  = 1;       	     //if randomness is on this give information about max shift in positions
-
+    no_max_z                           = false;
 
 
 	//dynamics

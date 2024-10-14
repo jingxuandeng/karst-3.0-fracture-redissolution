@@ -39,8 +39,11 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 		//if(S.if_verbose or true) cerr<<"Pathological grain (bN = "<<g.bN<<", bP = "<<g.bP<<") has to be implemented."<<endl<<g<<endl;
         if(g.bN==2){
           //wariant z linia zamiast kropki....
-            double factor = 2.;
-            auto color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
+            double color_f = 2.;
+
+            auto color = Kolor(color_f * g.Ve / (g.Va + color_f * g.Ve), 0, g.Va / (g.Va + color_f * g.Ve));
+            for(int i=0;i<g.bP;i++) if(g.p[i]->is_fracture) color = Kolor(0.1,0.8,0.1);
+
             double factr = (g.Va + g.Ve + g.Vx)/(g.V0)/2;
             if (factr<0)   factr = 0;
             if (factr>1)   factr = 1;
@@ -55,8 +58,8 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 
 
             if (g.is_lhs) {
-                p_1 = p_1 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1), 0);
-                p_2 = p_2 + Point(-S.l0 * S.d0 * (S.inlet_cut_factor-1), 0);
+                p_1 = p_1 + Point(-S.l0 * min(S.d0 * (S.inlet_cut_factor-1),10. * S.H_z), 0);
+                p_2 = p_2 + Point(-S.l0 * min(S.d0 * (S.inlet_cut_factor-1),10. * S.H_z), 0);
             }
             double r_tmp = factr/3.*S.l0;//*(g.n[0]->xy - g.n[1]->xy)/4.;
             if(p_1-p_2 < S.N_x*2/3.) stream<<"stroke "<<Porek(p_1,p_2,r_tmp,666,color)<<endl;
@@ -90,7 +93,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	for (int i=0;i<b;i++) {
         p[i] = PP[i];
         if(g.is_lhs)
-            p[i] = p[i] + Point(-S.l0*S.d0*(S.inlet_cut_factor-1),0);
+            p[i] = p[i] + Point(-S.l0 * min(S.d0 * (S.inlet_cut_factor-1),10.*S.H_z),0);
         p0 = p0+p[i];}
 	p0 = (1./b)*p0;
 	Point p00 = (-1.)*p0;
@@ -111,7 +114,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	//fancy color for precipitation
 	double factor = 2;
 	if (S.if_precipitation)  color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
-
+    for(int i=0;i<g.bP;i++) if(g.p[i]->is_fracture) color = Kolor(0.1,0.8,0.1);
 
 	if(g.bN==3)  stream<<Trojkacik(pp[0],pp[1],pp[2],666,color)<<endl;
 	stream<<Wielobok (g.bN, pp,g.tmp,color)<<endl;
@@ -400,6 +403,9 @@ void Print_network_in_grain_style (ofstream_ps & stream, Network &S){
 
 
 	for(int i=0;i<S.NG;i++)   print_grain_with_scaling(stream,*(S.g[i]),S);
+
+    for (int i=0;i<S.NP;i++)   if(S.p[i]->is_fracture) stream<<*S.p[i];
+    for (int i=0;i<S.NN;i++)   if(S.n[i]->is_fracture) stream<<*S.n[i];
 	stream << "showpage "<<endl<<flush;
 
 }

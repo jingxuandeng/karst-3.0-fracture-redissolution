@@ -81,7 +81,6 @@ void Network::check_acid_balance(){
 		}
 	}
 
-
 	else{
 
 		//calculate total input of acid
