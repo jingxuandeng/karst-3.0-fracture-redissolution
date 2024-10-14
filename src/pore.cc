@@ -93,6 +93,9 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
 	l = S->point_distance(n[0]->xy, n[1]->xy);  //l0;
 
+    if (is_fracture and S->type_of_merging == "merge_for_fracture") return;        // fracture pore has always maximal length
+
+
 	if (d == 0) return;
 
 	if(!S->if_dynamical_length || !S->if_track_grains) return;

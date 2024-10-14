@@ -2,7 +2,7 @@
 #  Size of the netwrok
 
 N_x = 40         # size of the regular network
-N_y = 40        # size of the regular network
+N_y = 100        # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -94,7 +94,7 @@ if_track_grains                    = true        # if true grains and their volu
 if_dynamical_length                = true        # if true pore length is addapted in each time step
 if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)
 if_smarter_calculation_of_pressure = false       # if true pressure and flow is calculate in two steps
-type_of_merging                    = merge_empty_grains        # type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
+type_of_merging                    = none  #merge_empty_grains  # merge_for_fracture #         # type of merging: "none", "merge_for_fracture" ,  "merge_empty_grains", not implemented yet: "merge_pores"
 if_cut_d_min                       = true        # cutting completely pores with d<=d_min
 
 

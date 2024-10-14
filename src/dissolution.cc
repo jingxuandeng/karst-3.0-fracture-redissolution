@@ -866,13 +866,14 @@ void Network::dissolve_and_precipitate(){
 		}
 
 		//updating Va and Ve volumes
-		int bG_tmp_A=0;
+		int bG_tmp_A=0; int bG_tmp_E=0;
 		double d_V_A = (d_old<H_z or no_max_z) ? (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus *d0)*p0->l)/2.;
 		double d_V_E = (d_old<H_z or no_max_z) ? (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2. :  (M_PI*(1.0)*(dd_minus*d0)*p0->l)/2.;
-		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
+        for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
+        for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0 or p0->g[s]->Ve >0) bG_tmp_E++;
 		for(int s=0; s<p0->bG;s++) {
-			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;
-			if (true)           p0->g[s]->tmp2+=d_V_E/p0->bG;
+			if(p0->g[s]->Va > 0)                          p0->g[s]->tmp -=d_V_A/bG_tmp_A;
+			if(p0->g[s]->Va > 0 or p0->g[s]->Ve > 0)      p0->g[s]->tmp2+=d_V_E/bG_tmp_E;
 		}
 
 		if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus)*d0/p0->d, fabs(d_V_A) + fabs(d_V_E));

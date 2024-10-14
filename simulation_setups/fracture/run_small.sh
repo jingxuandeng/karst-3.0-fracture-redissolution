@@ -45,11 +45,11 @@ Da=0.5
 d0=0.1
 for if_dynamic_k2 in "false"
 do
-for inlet_cut_factor in 10 #3 4 5
+for inlet_cut_factor in 3 #3 4 5
 do
 for kappa in 1  #0.1 0.
 do
-  for gamma in  0  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  0.9  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2
