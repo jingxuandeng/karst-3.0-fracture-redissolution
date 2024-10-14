@@ -39,23 +39,23 @@ void Network::do_merging(){
 }
 
 
-void Network::merge_for_fracture(){
-
-    for(int i=0;i<NG;i++) {
-        Grain * gg = g[i];
-        Pore *pp = NULL;
-
-        //checking if the grain belongs to the fracture
-        bool is_fracture = false;
-        for(int j=0;j<gg->bP;j++) if(gg->p[j]->is_fracture) {is_fracture = true; pp = gg->p[j];}
-        if(!is_fracture) continue;
-
-        if((gg->Va+gg->Ve+gg->Vx)/gg->V0 > merge_factor) continue;
-
-        for
-
-
-        }
+//void Network::merge_for_fracture(){
+//
+//    for(int i=0;i<NG;i++) {
+//        Grain * gg = g[i];
+//        Pore *pp = NULL;
+//
+//        //checking if the grain belongs to the fracture
+//        bool is_fracture = false;
+//        for(int j=0;j<gg->bP;j++) if(gg->p[j]->is_fracture) {is_fracture = true; pp = gg->p[j];}
+//        if(!is_fracture) continue;
+//
+//        if((gg->Va+gg->Ve+gg->Vx)/gg->V0 > merge_factor) continue;
+//
+//        for
+//
+//
+//        }
 
 
 /**
