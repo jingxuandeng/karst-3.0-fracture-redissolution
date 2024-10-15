@@ -356,7 +356,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 	else if(!S.print_diss_factor)  for(int i=0;i<S.NP;i++)                  {S.p[i]->tmp=666; stream<<*S.p[i];}
 
 	stream << "showpage "<<endl<<flush;
-cerr<<"AFter printing in diss style"<<endl;
+
 }
 
 void Print_network_in_debugging_style_tmp (ofstream_ps & stream, Network &S,int nr_tmp){

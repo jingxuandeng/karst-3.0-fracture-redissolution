@@ -38,7 +38,7 @@ d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_m
 if_adaptive_dt      = false  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = false  # if true evolution stops when system is fully dissolved
 time_factor_after_b = 1
-no_max_z    = true        # if true there is no limit for pore diameter, otherwise if s>H_z it is not cylinder anymore
+no_max_z    = false        # if true there is no limit for pore diameter, otherwise if d>H_z it is not cylinder anymore but behaves as a aperture  d x H_z
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Output

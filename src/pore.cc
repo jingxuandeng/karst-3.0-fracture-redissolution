@@ -17,7 +17,7 @@ double Pore::perm(Network*S){
     if(d<S->H_z or S->no_max_z)
         return M_PI*pow(d,4)/(128*S->mu_0*l);   ///< permeability of a particular pore
     else
-        return M_PI*d/(128*S->mu_0*l);          ///WARNING: the tube can not have the diameter larger than 1, later the formula for H_z = l_Z = 1
+        return M_PI*d/(128*S->mu_0*l);          ///WARNING: the tube can not have the diameter larger than H_z, later the formula for H_z = l_Z = 1
 }
 
 
@@ -168,12 +168,13 @@ double Pore::local_Da_eff(Network* S){
 	if (q==0) return -1;
 	double G = this->local_G(S);
 
-    if(d>S->H_z or S->no_max_z) {
+    //formula for aperture
+    if(d>S->H_z and !S->no_max_z) {
         if (G > 0)  return S->Da * (1 / S->d0) * (l / S->l0) * (S->q_in_0 / fabs(q)) * ((1 + S->G1) / (1 + G));
         if (G == 0) return S->Da * (1 / S->d0) * (l / S->l0) * (S->q_in_0 / fabs(q));
     }
-    //double d_tmp = min(1,d);   //possible feature for a fracture
 
+    // old formula for a cylinder
 	if      (G>0)    return S->Da*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G1)/(1+G));
 	else if (G==0)   return S->Da*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
 	else             return S->Da*(l/S->l0)*(S->q_in_0/fabs(q));
@@ -203,11 +204,13 @@ double Pore::local_Da_eff_2(Network* S){
         }
     }
 
-    if(d>S->H_z or S->no_max_z){
+    //formula for an aperture
+    if(d>S->H_z and !S->no_max_z){
         if      (G>0)    return Da2local*(1/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G2)/(1+G));
         else if (G==0)   return Da2local*(1/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
     }
 
+    //old formula for a cylinder
 	if      (G>0)    return Da2local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G2)/(1+G));
 	else if (G==0)   return Da2local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
 	else             return Da2local*(l/S->l0)*(S->q_in_0/fabs(q));

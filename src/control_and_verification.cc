@@ -105,7 +105,7 @@ void Network::check_acid_balance(){
 
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
 		{cerr<<"WARNING: Mass is not conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<Va_delta<<setprecision(10)<<"."<<endl;
-        cerr<<"VBin = "<<VB_in<<"   VB_out"<<VB_out<<endl;}
+        cerr<<"VBin = "<<VB_in<<"   VB_out = "<<VB_out<<endl;}
 	else
 		cerr<<"Mass is conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<setprecision(10)<<Va_delta<<"."<<endl;
 	if(!if_precipitation) Va_tot=Va_tot_tmp;
