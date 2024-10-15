@@ -38,14 +38,12 @@ los=210
 #K_f0=1
 #K_f1=50
 #K_goal=1
-if_tilted_cut="false"
-if_reactions_in_the_fracture="true"
-cut="true"
+
 Da=0.5
 d0=0.1
 for if_dynamic_k2 in "false"
 do
-for inlet_cut_factor in 3 #3 4 5
+for inlet_cut_factor in 5 #3 4 5
 do
 for kappa in 1  #0.1 0.
 do
@@ -66,15 +64,10 @@ do
                   echo Da    = $Da
                   echo d0    = $d0
                   echo d_min = $dmin
-                  echo if_cut_d_min = $cut
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
                   echo if_dynamic_k2 = $if_dynamic_k2
-                  echo if_tilted_cut = $if_tilted_cut
-                  echo if_reactions_in_the_fracture = $if_reactions_in_the_fracture
-#                  echo K_f0 = $K_f0
-#                  echo K_f1 = $K_f1
-#                  echo K_goal = $K_goal
+
 
 
                 } >> config.txt

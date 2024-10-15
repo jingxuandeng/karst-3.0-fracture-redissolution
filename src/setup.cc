@@ -220,7 +220,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			d_d_max = stod(value);
 			cerr<< "Setting d_d_max = "<<d_d_max<<endl;}
 
-		else if(name == "u_min"){
+        else if(name == "d_d_min"){
+            d_d_min = stod(value);
+            cerr<< "Setting d_d_min = "<<d_d_min<<endl;}
+
+
+        else if(name == "u_min"){
 			u_min = stod(value);
 			cerr<< "Setting u_min = "<<u_min<<endl;}
 
