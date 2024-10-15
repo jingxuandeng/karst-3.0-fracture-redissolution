@@ -246,6 +246,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
             time_factor_after_b = stod(value);
             cerr<< "Setting time_factor_after_b = "<<time_factor_after_b<<endl;}
 
+        else if(name == "merge_factor"){
+            merge_factor = stod(value);
+            cerr<< "Setting merge_factor = "<<merge_factor<<endl;}
+
 
 
         else if(name == "type_of_topology"){
