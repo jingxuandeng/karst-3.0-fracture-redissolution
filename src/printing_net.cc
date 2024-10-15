@@ -42,7 +42,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
             double color_f = 2.;
 
             auto color = Kolor(color_f * g.Ve / (g.Va + color_f * g.Ve), 0, g.Va / (g.Va + color_f * g.Ve));
-            for(int i=0;i<g.bP;i++) if(g.p[i]->is_fracture) color = Kolor(0.1,0.8,0.1);
+            //for(int i=0;i<g.bP;i++) if(g.p[i]->is_fracture) color = Kolor(0.1,0.8,0.1);
 
             double factr = (g.Va + g.Ve + g.Vx)/(g.V0)/2;
             if (factr<0)   factr = 0;
@@ -114,7 +114,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	//fancy color for precipitation
 	double factor = 2;
 	if (S.if_precipitation)  color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
-    for(int i=0;i<g.bP;i++) if(g.p[i]->is_fracture) color = Kolor(0.1,0.8,0.1);
+    //for(int i=0;i<g.bP;i++) if(g.p[i]->is_fracture) color = Kolor(0.1,0.8,0.1);
 
 	if(g.bN==3)  stream<<Trojkacik(pp[0],pp[1],pp[2],666,color)<<endl;
 	stream<<Wielobok (g.bN, pp,g.tmp,color)<<endl;
@@ -404,8 +404,8 @@ void Print_network_in_grain_style (ofstream_ps & stream, Network &S){
 
 	for(int i=0;i<S.NG;i++)   print_grain_with_scaling(stream,*(S.g[i]),S);
 
-    for (int i=0;i<S.NP;i++)   if(S.p[i]->is_fracture) stream<<*S.p[i];
-    for (int i=0;i<S.NN;i++)   if(S.n[i]->is_fracture) stream<<*S.n[i];
+//    for (int i=0;i<S.NP;i++)   if(S.p[i]->is_fracture) stream<<*S.p[i];
+//    for (int i=0;i<S.NN;i++)   if(S.n[i]->is_fracture) stream<<*S.n[i];
 	stream << "showpage "<<endl<<flush;
 
 }

@@ -98,7 +98,7 @@ int main(int argc, char** argv){
 
         system("open net.pdf");
         system("open net_2.pdf");
-        system("open bledy.out.gz");
+        //system("open bledy.out.gz");
 	}
 	
 
