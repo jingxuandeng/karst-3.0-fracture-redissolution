@@ -80,7 +80,7 @@ class Network
 		double Ve_tot;		///< total amount of volume of precipitating species
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
-		double merge_factor;
+		double merge_factor;  ///< ratio of actual an initial volume of a grain below the merging will occur
 
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
 
@@ -111,7 +111,7 @@ class Network
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
 		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
-		double d_min_factor;
+		double d_min_factor; ///< d_min = d0*d_min_factor
 		double l_min;   ///< minimal pore length (for numerical reason)
 
         double K_goal       = 0;    ///< our goal permeability

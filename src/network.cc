@@ -21,7 +21,7 @@ Network::Network (string input_file_name) {
 	Ve_tot = 0;       //total volume of precipitating species
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
-    merge_factor = 0.1; //
+    merge_factor = 0.1; //  ratio of actual an initial volume of a grain below the merging will occur
 
 	//dimenssionless parameters describing evolution of the system
 
@@ -109,7 +109,7 @@ Network::Network (string input_file_name) {
 	random_seed                        = -1;
 	gauss_sigma_d                      = 0;    			 //if randomness is on this give information about width of the initial diameter distribution (log normal used here)
 	max_rand_shift_xy                  = 1;       	     //if randomness is on this give information about max shift in positions
-    no_max_z                           = false;
+    no_max_z                           = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
 
 
 	//dynamics
