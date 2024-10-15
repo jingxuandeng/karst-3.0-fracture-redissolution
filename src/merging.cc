@@ -12,6 +12,7 @@
 
 #include "network.h"
 #include "printing.h"
+#include "deque"
 
 
 
@@ -28,34 +29,90 @@ void Network::do_merging(){
 	//merging
 	if      (type_of_merging == "none") 					cerr<<"No merging."<<endl;
 	else if (type_of_merging == "merge_empty_grains") 		merge_empty_grains();
-	else                               						cerr<<"WARNING: type_of_merging: "<<type_of_merging<<" not implemented yet."<<endl;
+    else if (type_of_merging == "merge_for_fracture") 		merge_for_fracture();
+    else                               						cerr<<"WARNING: type_of_merging: "<<type_of_merging<<" not implemented yet."<<endl;
 
 	//checking network connections
-	if(type_of_merging != "none")     {
+	if(type_of_merging != "none" and type_of_merging != "merge_for_fracture")     {
         //clear_unconeccted_pores();
         check_network_connections();}
 
 
 }
 
+/*
+ * WARNING:
+ * Works worse than a traditional merging.
+ * Do not use this function without implementation of geometrical prediction
+ * for the grain that should be in the contact with the fracture!!!
+ */
+void Network::merge_for_fracture() {
 
-//void Network::merge_for_fracture(){
-//
-//    for(int i=0;i<NG;i++) {
-//        Grain * gg = g[i];
-//        Pore *pp = NULL;
-//
-//        //checking if the grain belongs to the fracture
-//        bool is_fracture = false;
-//        for(int j=0;j<gg->bP;j++) if(gg->p[j]->is_fracture) {is_fracture = true; pp = gg->p[j];}
-//        if(!is_fracture) continue;
-//
-//        if((gg->Va+gg->Ve+gg->Vx)/gg->V0 > merge_factor) continue;
-//
-//        for
-//
-//
-//        }
+    cerr<<"Merging for fracture..."<<endl;
+
+    for (int i = 0; i < NG; i++) {
+        Grain *gg = g[i];
+        Pore *pp = NULL;
+        deque<Grain*> g_list;
+
+        //checking if the grain belongs to the fracture
+        bool is_fracture = false;
+        for (int j = 0; j < gg->bP; j++)
+            if (gg->p[j]->is_fracture) {
+                is_fracture = true;
+                pp = gg->p[j];
+                break;
+            }
+        if (!is_fracture) continue;
+
+        if ((gg->Va + gg->Ve + gg->Vx) / gg->V0 > merge_factor) continue;
+
+
+        int number_of_g =0;     //number of grain to be added to pp
+        // looking for new grains to be added to pp
+        for (int j = 0; j < gg->bN; j++) for(int jj=0; jj<gg->n[j]->bG;jj++){
+            if (gg->n[j]->g[jj] != gg){
+                Grain *g_tmp = gg->n[j]->g[jj];
+
+                //checking if the grain is connected to the fracture
+                bool is_connected_to_the_fracture = false;
+                for(int k=0;k<g_tmp->bP;k++)
+                    if(g_tmp->p[k]->is_fracture)
+                        is_connected_to_the_fracture=true;
+
+                //checking if the y position if fine
+                bool y_location_ok = false;
+                for (int k = 0; k < g_tmp->bN; k++)
+                    if( g_tmp->n[k]->xy.y>=min(pp->n[0]->xy.y,pp->n[1]->xy.y) and
+                        g_tmp->n[k]->xy.y<=max(pp->n[0]->xy.y,pp->n[1]->xy.y))
+                        y_location_ok = true;
+
+
+                if (!is_connected_to_the_fracture and y_location_ok and g_tmp->is_lhs == gg->is_lhs){
+                    g_list.push_back(g_tmp);
+                    pp->add_grain(g_tmp);
+                    g_tmp->add_Pore(pp);
+                }
+            }
+        }
+
+        for (auto g_tmp : g_list){
+            g_tmp->Va+= gg->Va/g_list.size();
+            g_tmp->Ve+= gg->Ve/g_list.size();
+            g_tmp->Vx+= gg->Vx/g_list.size();
+        }
+
+        if(g_list.empty()) {
+            cerr<<"Problem with finding grains while merging for fracture..."<<endl;
+            Va_tot-=gg->Va;
+            Ve_tot-=gg->Ve;
+            Vx_tot-=gg->Vx;
+        }
+        gg->Va=0; gg->Ve=0; gg->Vx=0;
+
+    }
+
+}
 
 
 /**

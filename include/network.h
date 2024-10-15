@@ -303,7 +303,7 @@ class Network
 // network merging
 		void do_merging();										///< do standard merging
 		void merge_empty_grains();								///< merge empty (Va + Ve <=0) grains
-        void merge_for_fracture();								///< merge almast empty (Va + Ve <=V0/3) grains only in vicinity of a fracture, do not change the topology too much
+        void merge_for_fracture();								///< merge almost empty (Va + Ve <=V0/3) grains only in vicinity of a fracture, do not change the topology too much
 		void merge_nodes(Node *n1, Node *n2);					///< merge two nodes, this is a pert of merging one grain function
 		void merge_one_grain(Grain *g, Grain* g2=NULL);							///<  the main function responsible of merging grains
 		void merge_one_pore_grain (Grain *g);					///< merging special type of grain, the one-pore one
