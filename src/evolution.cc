@@ -15,8 +15,8 @@ void Network::evolution(double T){
 
 	cerr<<"\n\n\nEvolution:"<<endl;
 
-	if (T!=0) T_max = T*dt_unit;
-    else      T_max = T_max*dt_unit;    //WARING: switching to propoer time units./
+	if (T!=0) T_max = T*dt_unit/d0;         // Each simulation will finish after particular amount of acid injected.
+    else      T_max = T_max*dt_unit/d0;    //WARING: switching to propoer time units not good idea since the d0 with const DA will scale Q
 
 	if(if_save_txt)     print_net_txt();
 	save_all_data       (true);

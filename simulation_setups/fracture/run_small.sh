@@ -39,18 +39,21 @@ los=210
 #K_f1=50
 #K_goal=1
 
+merge_factor=0.25
 Da=1
 d0=0.3
+for merge_factor in 0.2 # 0.01 0.1 0.25 0.5
+do
 for if_dynamic_k2 in "true"
 do
-for inlet_cut_factor in 1 #3 4 5
+for inlet_cut_factor in 3 #3 4 5
 do
 for kappa in 1  #0.1 0.
 do
-  for gamma in  1.05  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  0  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
-                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2
+                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2-merge_factor-$merge_factor
                 printf "Creating variant: %s\n" "$param"
                 pwd
                 mkdir $param
@@ -66,6 +69,7 @@ do
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
                   echo if_dynamic_k2 = $if_dynamic_k2
+                  echo merge_factor = $merge_factor
 
 
 
@@ -74,6 +78,7 @@ do
                 ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
 
              )
+done
 done
 done
 done
