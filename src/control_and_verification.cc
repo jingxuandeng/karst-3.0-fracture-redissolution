@@ -68,7 +68,7 @@ void Network::check_acid_balance(){
 		for(int i=0;i<N_wi;i++){
 			for (int j=0; j<wi[i]->b;j++){
 				Pore * pp = wi[i]->p[j];
-				if(pp->d>0) VB_in+=fabs(pp->q)*pp->c_in*dt/dt_unit;
+				if(pp->d>0) VB_in+=fabs(pp->q)*pp->c_in*dt*dt_unit;
 			}
 		}
 
@@ -76,7 +76,7 @@ void Network::check_acid_balance(){
 		for(int i=0;i<N_wo;i++){
 			for (int j=0; j<wo[i]->b;j++){
 				Pore * pp = wo[i]->p[j];
-				if(pp->d>0) VB_out+=fabs(pp->q)*pp->c_in*outlet_c_b(pp)*dt/dt_unit;
+				if(pp->d>0) VB_out+=fabs(pp->q)*pp->c_in*outlet_c_b(pp)*dt*dt_unit;
 			}
 		}
 	}
@@ -86,13 +86,13 @@ void Network::check_acid_balance(){
 		//calculate total input of acid
 		for(int i=0;i<N_wi;i++){
 			Node* n_tmp = wi[i];
-			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VB_in+=fabs(n_tmp->p[j]->q)*n_tmp->cb*dt/dt_unit;
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VB_in+=fabs(n_tmp->p[j]->q)*n_tmp->cb*dt*dt_unit;
 		}
 
 		//calculate total output of acid
 		for(int i=0;i<N_wo;i++){
 			Node* n_tmp = wo[i];
-			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VB_out+=fabs(n_tmp->p[j]->q)*n_tmp->cb*dt/dt_unit;
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VB_out+=fabs(n_tmp->p[j]->q)*n_tmp->cb*dt*dt_unit;
 			}
 	}
 
@@ -129,13 +129,13 @@ void Network::check_precipitating_balance(){
 	//calculate total input of precipitatin species
 	for(int i=0;i<N_wi;i++){
 		Node* n_tmp = wi[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit;
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt*dt_unit;
 	}
 
 	//calculate total output of acid
 	for(int i=0;i<N_wo;i++){
 		Node* n_tmp = wo[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_out+=(1.*gamma)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_out+=(1.*gamma)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt*dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
 		}
 
 	//calculate consumption of C

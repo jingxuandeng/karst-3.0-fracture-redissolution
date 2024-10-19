@@ -441,7 +441,7 @@ double Network::outlet_c_c_1 (Pore *p0){
 	double x = 0;   //value to be returned
 	if(p0->d + (dd_plus - dd_minus)*d0 < d_min)   { //if there is no space for full precipitation
 		dd_minus=(p0->d/d0 + dd_plus - d_min/d0);
-		x = c_tmp_in*q_tmp*(1-exp(-f1)) - (M_PI*(p0->d)*(dd_minus*d0)/2*p0->l)/(gamma*dt/dt_unit);
+		x = c_tmp_in*q_tmp*(1-exp(-f1)) - (M_PI*(p0->d)*(dd_minus*d0)/2*p0->l)/(gamma*dt*dt_unit);
 		if(x<0) {
 			if (if_verbose) cerr<< "WARNING: STH wrong in outlet_c_c_1 with calculating x!!!"<<endl;
 			x=0;}

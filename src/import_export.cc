@@ -606,7 +606,7 @@ void Network::  save_all_data(bool if_save_now){
 
 	if(if_save_now){
 		cerr<<"Saving all data..."<<endl;
-		description_note = "At the end of step: s = " + to_string(tot_steps) + "  T = " + double_to_string(tot_time,4) + " ("+double_to_string(tot_time/dt_unit,4)+")";
+		description_note = "At the end of step: s = " + to_string(tot_steps) + "  T = " + double_to_string(tot_time,4) + " ("+double_to_string(tot_time*dt_unit,4)+")";
 		if(if_save_ps)        {net_ps<< *this;  Print_network_in_dissolution_style (net_ps2,*this);} //Not very pretty but I want two net.pdf files -- one with pores and one with gains.
 		if(if_save_txt)       print_net_txt();
 		if(if_save_table)     print_tables_txt();

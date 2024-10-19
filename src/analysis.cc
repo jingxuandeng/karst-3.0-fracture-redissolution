@@ -51,6 +51,7 @@ void Network::write_pattern_properties(){
 			pattern_analysis_out   << "#"                   <<\
 						setw(15)   << "step  "              <<\
 						setw(15)   << "time  "              <<\
+						setw(15)   << "time*dt_unit  "      <<\
 						setw(15)   << "diss_pattern_l "     <<\
                         setw(15)   << "preci_pattern_l "    <<\
 						setw(15)   << "horton_diss"         <<\
@@ -122,6 +123,7 @@ void Network::write_pattern_properties(){
     pattern_analysis_out        <<\
 		setw(15) << tot_steps   <<\
 		setw(15) << tot_time    <<\
+		setw(15) << tot_time*dt_unit    <<\
 		setw(15) << dist_diss   <<\
         setw(15) << dist_pre    <<\
 		setw(15) << max_horton_diss  <<\
@@ -160,6 +162,7 @@ void Network::write_time_step_properties(){
 		time_evolution_out<<"#" <<setw(15)<<\
 				"step"          <<setw(15)<<\
 				"time"          <<setw(15)<<\
+				"time*dt_unit"  <<setw(15)<<\
 				"Q"             <<setw(15)<<\
 				"P"             <<setw(15)<<\
 				"VA_tot"        <<setw(15)<<\
@@ -193,6 +196,7 @@ void Network::write_time_step_properties(){
 	time_evolution_out <<setw(15)<<\
 			tot_steps  <<setw(15)<<\
 			tot_time   <<setw(15)<<\
+			tot_time*dt_unit   <<setw(15)<<\
 			Q_tot_tmp  <<setw(15)<<\
 			wi[0]->u   <<setw(15)<<\
 			Va_tot     <<setw(15)<<\

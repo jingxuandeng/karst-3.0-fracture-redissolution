@@ -63,7 +63,7 @@ Network::Network (string input_file_name) {
 	Cb_0 	= 1;		//acid inlet concentration 
 	Cc_0	= 0;		//precipitating species inlet concentration
 	mu_0    = M_PI*pow(d0,4)/(128*l0);		//viscosity  always set to M_PI*pow(d0,4)/(128*l0)
-	dt_unit = 2*k1 * gamma_1/d0;            //(in dimensionless units [2 k1 * gamma_1/d0])
+	dt_unit = d0/(2*k1 * gamma_1);            //(in dimensionless units [2 k1 * gamma_1/d0])
 
 	//evolution parameters
 	T_max       = 10;     	  //maximal time to stop simulation

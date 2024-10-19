@@ -31,7 +31,7 @@ void Network::recalculate_k1(){
 	if (G1 < 0) k1  = -1; 		// diffusion limited case
 	else        k1  = (Da*q_in_0 + Da*G1*q_in_0)/(d0*l0*M_PI);
 	cerr<<"Reaction rate has been calculated: k1 = "<<k1<<endl;
-	if(G1>=0) {dt_unit = 2*k1*gamma_1/d0; cerr<<"Unit of time is set to: [2*k1 * gamma_1/d0] = "<<dt_unit<<endl;}
+	if(G1>=0) {dt_unit = d0/(2*k1*gamma_1); cerr<<"Unit of time is set to: [d0/(2*k1 * gamma_1)] = "<<dt_unit<<endl;}
 }
 
 
@@ -48,7 +48,7 @@ void Network::recalculate_DD1(){
 	else if (G1<0)   DD1 = (Da*q_in_0)/(M_PI*Sh*l0);      				// reaction limited case; convention: G<0 => G = Inf
 	else             DD1 = (Da*q_in_0 + Da*G1*q_in_0)/(G1*l0*M_PI*Sh);	// mixed case
 	cerr<<"Transversal diffusion has been calculated: DD1 = "<<DD1<<endl;
-	if(G1<0) {dt_unit = 2*DD1*Sh*gamma_1/d0; cerr<<"Unit of time is set to: [2*DD1*Sh*gamma_1/d0^2] = "<<dt_unit<<endl;}
+	if(G1<0) {dt_unit =d0*d0/( 2*DD1*Sh*gamma_1); cerr<<"Unit of time is set to: [d0^2/(2*DD1*Sh*gamma_1)] = "<<dt_unit<<endl;}
 
 }
 

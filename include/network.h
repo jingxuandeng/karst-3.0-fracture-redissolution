@@ -96,7 +96,7 @@ class Network
 		double Cb_0;		///< acid inlet concentration
 		double Cc_0;		///< inlet concentration of precipitating species
 		double mu_0;        ///< viscosity  (by default set to M_PI*pow(d0,4)/(128*l0))
-		double dt_unit;     ///< unit of time step (in dimensionless units [2 k1 * gamma_1/d0] or in diffusion limited case 2 DD1*Sh*gamma/d0^2)
+		double dt_unit;     ///< unit of time step (in dimensionless units [d0/(2 k1 * gamma_1)] or in diffusion limited case 2 DD1*Sh*gamma/d0^2)
 
 		// dimenssionless parameters
 		double d0;		///< initial characteristic pore diameter [natural unit is l0]
