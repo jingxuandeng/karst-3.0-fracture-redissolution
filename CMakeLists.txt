@@ -28,11 +28,11 @@ else()
     # Check macOS version and set CXX compiler accordingly
     if (MACOS_VERSION VERSION_GREATER "14.1")
         message(STATUS "Running on a new MACOS")
-        set(CC /opt/homebrew/bin/gcc-13)
-        set(CXX /opt/homebrew/bin/g++-13)
+        set(CC /opt/homebrew/bin/gcc-14)
+        set(CXX /opt/homebrew/bin/g++-14)
         set(FL /opt/homebrew/bin/gfortran)
-        set(CMAKE_C_COMPILER /opt/homebrew/bin/gcc-13)
-        set(CMAKE_CXX_COMPILER /opt/homebrew/bin/g++-13)
+        set(CMAKE_C_COMPILER /opt/homebrew/bin/gcc-14)
+        set(CMAKE_CXX_COMPILER /opt/homebrew/bin/g++-14)
         set(MDIR /Users/agnieszka/Desktop/KARST/MUMPS_5.6.0)
         set(FLIBS -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/13 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran)
         set(MLIBS  -L${MDIR} -L${MDIR}/lib -L${MDIR}/libseq)
@@ -64,6 +64,7 @@ target_include_directories(karst PRIVATE
         ${MDIR}/include
         ./algorithms
         ./include
+        ./src
         )
 #
 ## Add the directory containing the algorithms library to link directories

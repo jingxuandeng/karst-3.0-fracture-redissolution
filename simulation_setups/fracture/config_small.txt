@@ -53,7 +53,7 @@ pages_tot             = 100		# total nr of pages in the pictures (should be reca
 s_save_data           = 0.02        # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
-                                       #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving
+                                       #  if s_save_data<1 && s_save_data>0 then the condition for delta V_B_tot is used for saving 1/s_save_data is the number of pages
 print_diss_factor     = 2       # for printing_mode==dissolution, defines threshold for dissolution pattern (pores larger then factor x d0 are printed)
 if_save_ps            = true    # if true ps pictures are created
 if_save_txt           = false    # if true data about network (nodes, grains, pores) is seved in text file
@@ -101,7 +101,7 @@ merge_factor                       = 0.2         # ratio of current to initial g
 
 # dynamic k2!!!
 if_dynamic_k2                       = false       # if true the Da2_eff will be multiplied by sigma function
-dyn_k2_alpha                        = 2          # sigma parameters
+dyn_k2_alpha                        = 10          # sigma parameters
 dyn_k2_c0                           = 0.1        # sigma parameters
 
 

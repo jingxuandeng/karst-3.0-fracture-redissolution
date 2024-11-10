@@ -444,6 +444,8 @@ void Network::print_tables_txt(){
 
 	diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+    f_pores_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+    f_nodes_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	concentration_out  <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	concentration2_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	pressure_out       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
@@ -454,6 +456,33 @@ void Network::print_tables_txt(){
 		VE_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 		VX_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	}
+
+    if(inlet_cut_factor>1){
+        int linia = 0;
+        for(int i=0;i<NP;i++) {
+            if(int(max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y)) > linia){
+                linia++;
+                f_pores_out      <<endl;
+            }
+            if(p[i]->is_fracture)
+                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->q;
+//                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->d;
+//                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->l;
+//                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->d;
+        }
+
+    linia = 0;
+    for(int i=0;i<NN;i++) {
+        if(int(n[i]->xy.y) > linia){
+            linia++;
+            f_nodes_out      <<endl;
+        }
+        if(n[i]->is_fracture)
+            f_nodes_out       <<setprecision(7)<<setw(12)<<n[i]->cb;
+            f_nodes_out       <<setprecision(7)<<setw(12)<<n[i]->cc;
+    }
+}
+
 
 	if (type_of_topology == "hexagonal"){
 		for(int i=0;i<NN;i++) {
@@ -578,24 +607,26 @@ void Network::print_tables_txt(){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::  save_all_data(bool if_save_now){
+void Network::  save_all_data(bool if_save_now) {
 
-    cerr<<"Saving basic data..."<<endl;
+    cerr << "Saving basic data..." << endl;
 
 
-	static double Va_old = 0;
+    static double Va_old = 0;
 
-	//deciding either to save or not
-	if     (s_save_data<0 and !if_save_now)                  if_save_now = check_diss_front(print_diss_factor, pages_saved*fabs(s_save_data));
-	else if(s_save_data>=1 && tot_steps%int(s_save_data)==0) if_save_now = true;
-	else if(s_save_data>0 && s_save_data<1){
+    //deciding either to save or not
+    if (s_save_data < 0 and !if_save_now)
+        if_save_now = check_diss_front(print_diss_factor, pages_saved * fabs(s_save_data));
+    else if (s_save_data >= 1 && tot_steps % int(s_save_data) == 0) if_save_now = true;
+    else if (s_save_data > 0 && s_save_data < 1) {
 //check the volume condition!!!
-		if(tot_steps==0) Va_old = Va_tot;
-		if((Va_old-Va_tot)/Va_tot>s_save_data){
-			if_save_now = true;
-			Va_old = Va_tot;
-		}
-	}
+        if (tot_steps == 0) Va_old = 0;
+        if (fabs(Va_old - tot_time * dt_unit) / (T_max * dt_unit) > s_save_data) {
+            if_save_now = true;
+            Va_old = tot_time * dt_unit;
+        }
+    }
+
 
     auto double_to_string = [](double value, int precision) -> std::string {
         std::ostringstream out;

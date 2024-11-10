@@ -1,7 +1,7 @@
 #include "network.h"
 
 
-//functions conected with creation of the network
+//functions connected with creation of the network
 
 Network::Network (string input_file_name) {
 
@@ -184,6 +184,8 @@ Network::Network (string input_file_name) {
 		VE_out			  .open("VE.out",	      ios_base::out | ios_base::trunc );
 		VX_out			  .open("VX.out",	      ios_base::out | ios_base::trunc );
 		lengths_out		  .open("l.out",	      ios_base::out | ios_base::trunc );
+        f_pores_out       .open("f_pores.out",    ios_base::out | ios_base::trunc );
+        f_nodes_out       .open("f_nodes.out",    ios_base::out | ios_base::trunc );
 	}
 
 
@@ -322,6 +324,8 @@ Network:: ~Network (){
 	if (if_save_table){
 		diameters_out      .close();
 		flow_out           .close();
+        f_pores_out        .close();
+        f_nodes_out        .close();
 		pressure_out       .close();
 		concentration_out  .close();
 		concentration2_out .close();
