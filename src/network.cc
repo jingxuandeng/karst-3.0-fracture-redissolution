@@ -269,7 +269,7 @@ Network::Network (string input_file_name) {
 	for(int i=0;i<NN;i++) n[i]->tmp = n[i]->t;
 	for(int i=0;i<NP;i++) p[i]->tmp = p[i]->d;
 	for(int i=0;i<NG;i++) g[i]->tmp = g[i]->Ve;
-	if(if_save_ps)   net_ps<< *this;
+	//if(if_save_ps)   net_ps<< *this;   ///Make initial print occuring twice (maybe important for showing changes after merging?)
 	if(if_save_txt)  print_net_txt();
 
 
