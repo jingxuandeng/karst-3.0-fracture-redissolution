@@ -404,9 +404,9 @@ void Network::import_pore_size_from_file (string in_file_name){
 void Network::print_net_txt(){
 
 
-	pores_out <<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	nodes_out <<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	grains_out<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	pores_out <<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	nodes_out <<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	grains_out<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
 
 	pores_out<<"#" <<setw(11)<<"name"<<setw(12)<<"d"<<setw(12)<<"l"<<setw(8)<<"b"<<setw(12)<<"q"<<setw(12)<<"Da_local"<<setw(12)<<"G_local"<<endl;
 	pores_out<<"#  ----------------------------------------------------------------------"<<endl;
@@ -442,46 +442,42 @@ void Network::print_net_txt(){
 void Network::print_tables_txt(){
 
 
-	diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-    f_pores_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-    f_nodes_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	concentration_out  <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	concentration2_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	pressure_out       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	lengths_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    f_pores_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    f_nodes_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	concentration_out  <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	concentration2_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	pressure_out       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+	lengths_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
 
 	if(if_track_grains){
-		VA_out		       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-		VE_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-		VX_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+		VA_out		       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+		VE_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+		VX_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
 	}
 
     if(inlet_cut_factor>1){
-        int linia = 0;
-        for(int i=0;i<NP;i++) {
-            if(int(max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y)) > linia){
-                linia++;
-                f_pores_out      <<endl;
-            }
-            if(p[i]->is_fracture)
-                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->q;
-//                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->d;
-//                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->l;
-//                f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->d;
+        for (int linia = 0; linia < N_y; linia++){
+
+            for(int i=0;i<NP;i++)
+                if(p[i]->is_fracture)
+                    if(linia <= max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) &&  max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) < linia + 1){
+                        f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->q;
+                    }
+
+            for(int i=0;i<NN;i++)
+                if(n[i]->is_fracture)
+                    if(linia <= n[i]->xy.y and n[i]->xy.y < linia+1){
+                        f_nodes_out       <<setprecision(7)<<setw(12)<<n[i]->cb;
+                        f_nodes_out       <<setprecision(7)<<setw(12)<<n[i]->cc;
+                    }
+
+            f_nodes_out      <<endl;
+            f_pores_out      <<endl;
         }
 
-    linia = 0;
-    for(int i=0;i<NN;i++) {
-        if(int(n[i]->xy.y) > linia){
-            linia++;
-            f_nodes_out      <<endl;
-        }
-        if(n[i]->is_fracture)
-            f_nodes_out       <<setprecision(7)<<setw(12)<<n[i]->cb;
-            f_nodes_out       <<setprecision(7)<<setw(12)<<n[i]->cc;
     }
-}
 
 
 	if (type_of_topology == "hexagonal"){
@@ -535,37 +531,39 @@ void Network::print_tables_txt(){
 		}
 
     else {   //printing nodes line by line,  exact d and q around given node are printed. (NEW VERSION, NO MEANS)
-		int linia = 0;
-		for(int i=0;i<NN;i++) {
-			if(int(n[i]->xy.y) > linia){
-				linia++;
-				diameters_out      <<endl;
-				flow_out           <<endl;
-				concentration_out  <<endl;
-				concentration2_out <<endl;
-				pressure_out       <<endl;
-				lengths_out        <<endl;
-                VA_out             <<endl;
-                VE_out             <<endl;
-                VX_out             <<endl;
-			}
-			for(int b=0;b<n[i]->b;b++) {
+        for (int linia = 0; linia < N_y; linia++) {
+            for (int i = 0; i < NN; i++)
+                if (linia < int(n[i]->xy.y) < linia + 1) {
 
-                diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
-                flow_out << setprecision(5) << setw(10) << n[i]->p[b]->q;
-                lengths_out << setprecision(7) << setw(12) << n[i]->p[b]->l;
+                    for (int b = 0; b < n[i]->b; b++) {
 
-                concentration_out << setprecision(5) << setw(12) << n[i]->cb;
-                concentration2_out << setprecision(5) << setw(12) << n[i]->cc;
-                pressure_out << setprecision(5) << setw(12) << n[i]->u;
-            }
-            for(int b=0;b<n[i]->bG;b++)  if(if_track_grains) {
-                VA_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Va;
-                VE_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Ve;
-                VX_out <<setprecision(5)<<setw(10)<<n[i]->g[b]->Vx;
-            }
-		}
-	}
+                        diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
+                        flow_out << setprecision(5) << setw(10) << n[i]->p[b]->q;
+                        lengths_out << setprecision(7) << setw(12) << n[i]->p[b]->l;
+                    }
+                    concentration_out << setprecision(5) << setw(12) << n[i]->cb;
+                    concentration2_out << setprecision(5) << setw(12) << n[i]->cc;
+                    pressure_out << setprecision(5) << setw(12) << n[i]->u;
+
+                    for (int b = 0; b < n[i]->bG; b++)
+                        if (if_track_grains) {
+                            VA_out << setprecision(5) << setw(10) << n[i]->g[b]->Va;
+                            VE_out << setprecision(5) << setw(10) << n[i]->g[b]->Ve;
+                            VX_out << setprecision(5) << setw(10) << n[i]->g[b]->Vx;
+                        }
+                }
+
+            diameters_out << endl;
+            flow_out << endl;
+            concentration_out << endl;
+            concentration2_out << endl;
+            pressure_out << endl;
+            lengths_out << endl;
+            VA_out << endl;
+            VE_out << endl;
+            VX_out << endl;
+        }
+    }
 
 //	else {   //printing nodes line by line,  mean d and q around given node are printed.
 //		int linia = 0;

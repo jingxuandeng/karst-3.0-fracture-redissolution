@@ -51,7 +51,7 @@ for inlet_cut_factor in 5 #3 4 5
 do
 for kappa in 1  #0.1 0.
 do
-  for gamma in  0.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  0.01  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2-merge_factor-$merge_factor
@@ -76,7 +76,7 @@ do
 
                 } >> config.txt
 
-                ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
+                ../../../../../karst_3.0/build/karst config.txt  # >wyjscie.out 2>bledy.out &
 
              )
 done
