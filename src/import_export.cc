@@ -442,7 +442,9 @@ void Network::print_net_txt(){
 void Network::print_tables_txt(){
 
 
-	diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    d_nbr_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    l_nbr_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
 	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     f_pores_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     f_nodes_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
@@ -492,7 +494,9 @@ void Network::print_tables_txt(){
 			for(int b=0; b<2;b++)VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Ve;
 //			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
 			if(i%N_x ==N_x-1){
-				diameters_out       <<endl;
+                diameters_out       <<endl;
+                d_nbr_out           <<endl;
+                l_nbr_out           <<endl;
 				flow_out            <<endl;
 				concentration_out   <<endl;
 				concentration2_out  <<endl;
@@ -533,11 +537,13 @@ void Network::print_tables_txt(){
     else {   //printing nodes line by line,  exact d and q around given node are printed. (NEW VERSION, NO MEANS)
         for (int linia = 0; linia < N_y; linia++) {
             for (int i = 0; i < NN; i++)
-                if (linia < int(n[i]->xy.y) < linia + 1) {
+                if (linia < n[i]->xy.y and n[i]->xy.y < linia + 1) {
 
                     for (int b = 0; b < n[i]->b; b++) {
 
                         diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
+                        d_nbr_out << setprecision(5) << setw(10) << n[i]->p[b]->calculate_d_nbr();
+                        l_nbr_out << setprecision(5) << setw(10) << n[i]->p[b]->calculate_l_nbr();
                         flow_out << setprecision(5) << setw(10) << n[i]->p[b]->q;
                         lengths_out << setprecision(7) << setw(12) << n[i]->p[b]->l;
                     }
@@ -554,6 +560,8 @@ void Network::print_tables_txt(){
                 }
 
             diameters_out << endl;
+            d_nbr_out << endl;
+            l_nbr_out << endl;
             flow_out << endl;
             concentration_out << endl;
             concentration2_out << endl;

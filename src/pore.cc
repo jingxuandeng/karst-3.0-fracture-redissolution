@@ -417,6 +417,38 @@ void Pore::change_pore_neighbours(Node * n_old, Node *n_new){
 
 
 
+double Pore::calculate_d_nbr() {
+
+    double sum_tmp=0;
+    int n_tmp=0;
+
+    for(int i=0; i<n[0]->b;i++)
+        if(n[0]->p[i]!=this) {sum_tmp+=n[0]->p[i]->d; n_tmp++;}
+    for(int i=0; i<n[1]->b;i++)
+        if(n[1]->p[i]!=this) {sum_tmp+=n[1]->p[i]->d; n_tmp++;}
+
+    return sum_tmp/n_tmp;
+
+}
+
+
+
+double Pore::calculate_l_nbr() {
+
+    double sum_tmp=0;
+    int n_tmp=0;
+
+    for(int i=0; i<n[0]->b;i++)
+        if(n[0]->p[i]!=this) { sum_tmp+=n[0]->p[i]->l; n_tmp++;}
+    for(int i=0; i<n[1]->b;i++)
+        if(n[1]->p[i]!=this) { sum_tmp+=n[1]->p[i]->l; n_tmp++;}
+
+    return sum_tmp / n_tmp;
+
+}
+
+
+
 ofstream_txt & operator << (ofstream_txt & stream, Pore &p){
 
 	stream <<setw(12)<<p.a<<setw(12)<<p.d<<setw(12)<<p.l<<setw(8)<<p.bG<<setw(12)<<p.q;

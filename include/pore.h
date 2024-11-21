@@ -96,6 +96,9 @@ class Pore{
 		Node*  find_common_node (Pore *p1);					///< check if node n_tmp belongs to the neighbors of this pore
 		Node*  find_closest_node(Node *n1);					///< check if node n_tmp belongs to the neighbors of this pore
 
+        double   calculate_d_nbr();                           ///< returns average diameter of its neighbours
+        double   calculate_l_nbr();                           ///< returns average length of its neighbours
+
 
 };
 

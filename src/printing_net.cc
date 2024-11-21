@@ -216,10 +216,10 @@ void Print_network_in_debugging_style (ofstream_ps & stream, Network &S){
     S.find_the_largest_tree(0.5,true);   ///tylko ten kawalek wywala sie, dla tradycyjnego szukania pataernow jest wszystko ok!!!
     //S.find_the_largest_tree(2);
 
-    for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->a;
-	for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
+//    for(int i=0;i<S.NG;i++) S.g[i]->tmp=S.g[i]->a;
+//	for(int i=0;i<S.NG;i++) stream<<*S.g[i];//	cerr<<"Printing grain: "<<*S.g[i]<<endl;}
 	//for(int i=0;i<S.NG;i++) print_grain_with_scaling(stream,*(S.g[i]),S);
-    for(int i=0;i<S.NP;i++) S.p[i]->tmp=S.p[i]->a;
+    for(int i=0;i<S.NP;i++) S.p[i]->tmp=S.p[i]->calculate_d_nbr();
     for(int i=0;i<S.NP;i++) stream<<*S.p[i];// 	cerr<<"Printing pore: "<<*S.p[i]<<endl;}
     for(int i=0;i<S.NN;i++) S.n[i]->tmp=S.n[i]->a; //S.distance_to_root(S.n[i]);//S.n[i]->x;   //FIXME: This will get us in the inf loop
 	for(int i=0;i<S.NN;i++) stream<<*S.n[i];//  cerr<<"Printing node: "<<*S.n[i]<<endl;}

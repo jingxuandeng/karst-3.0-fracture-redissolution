@@ -186,6 +186,8 @@ Network::Network (string input_file_name) {
 		lengths_out		  .open("l.out",	      ios_base::out | ios_base::trunc );
         f_pores_out       .open("f_pores.out",    ios_base::out | ios_base::trunc );
         f_nodes_out       .open("f_nodes.out",    ios_base::out | ios_base::trunc );
+        d_nbr_out         .open("d_nbr.out",	  ios_base::out | ios_base::trunc );
+        l_nbr_out         .open("l_nbr.out",	  ios_base::out | ios_base::trunc );
 	}
 
 
@@ -322,7 +324,9 @@ Network:: ~Network (){
 
 
 	if (if_save_table){
-		diameters_out      .close();
+        diameters_out      .close();
+        d_nbr_out          .close();
+        l_nbr_out          .close();
 		flow_out           .close();
         f_pores_out        .close();
         f_nodes_out        .close();
