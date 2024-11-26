@@ -255,6 +255,8 @@ Network::Network (string input_file_name) {
 //calculating physical parameters based on dimensionless one
 	calculate_initial_d0_and_l0 ();
 	calculate_initial_mean_flow();
+    calculate_concentrations();         //for printing info of initial conditions
+    calculate_concentrations_c();  //for printing info of initial conditions
 	if(if_recalculate_physical_parameters) {
 		recalculate_k1 ();
 		recalculate_DD1();
