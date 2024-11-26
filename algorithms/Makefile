@@ -75,6 +75,7 @@ all:
 
 .PHONY: debug
 debug:
-	@echo "Running on $(UNAME)"
-	@echo "MACOS_VERSION=$(MACOS_VERSION)"
-    @echo "MACOS_MAJOR_VERSION=$(MACOS_MAJOR_VERSION)"
+	@echo	"Running on $(UNAME)"
+	@echo	"MACOS_VERSION=$(MACOS_VERSION)"
+	@echo	"MACOS_MAJOR_VERSION=$(MACOS_MAJOR_VERSION)"
+
