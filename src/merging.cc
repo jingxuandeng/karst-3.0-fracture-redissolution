@@ -9,7 +9,7 @@
  *
  */
 
-
+#include <functional>
 #include "network.h"
 #include "printing.h"
 #include "deque"
@@ -163,7 +163,63 @@ void Network::merge_empty_grains(){
 		move_pore_to_the_end(p_tmp->tmp,NP);
 	}
 
-	if(if_debugging_printing && if_verbose) debugging_for_merging ("After clearing pathological pores: s = " + to_string(tot_steps));
+    //clear loops in the fracture
+    for(int i=0; i<NP;i++) if(p[i]->n[0]->is_fracture and p[i]->n[1]->is_fracture and !p[i]->is_fracture ) {
+
+        cerr<<"Entering the  loop clearance for pore"<<*p[i]<<endl;
+        Pore* p_tmp=NULL;   //pore belonging to the loop
+        for (int b=0;b<p[i]->n[0]->b;b++)
+                if(p[i]->n[0]->n[b] == p[i]->n[1] and p[i]->n[0]->p[b]!=p[i] and p[i]->n[0]->p[b]->is_fracture)
+                    p_tmp=p[i]->n[0]->p[b];
+        if(p_tmp==NULL) continue;
+        cerr<<"The other pore is "<<*p_tmp<<endl;
+
+        Grain* g_tmp=NULL; // grain trapped in the loop
+        for (int b=0;b<p[i]->bG;b++)
+            if(p[i]->g[b]->bP==2 and p[i]->g[b]->bN==2)
+                if((p[i]->g[b]->p[0]==p[i] and p[i]->g[b]->p[1]==p_tmp ) or p[i]->g[b]->p[1]==p[i] and p[i]->g[b]->p[0]==p_tmp)
+                    g_tmp= p[i]->g[b];
+        if(g_tmp==NULL) continue;
+        cerr<<"The grain to be clear is "<<*g_tmp<<endl;
+
+        merge_one_grain(g_tmp);
+
+        cerr<<endl;
+    }
+
+
+    //look for floating fracture elements and mark them as not belonging to the fracture
+    for(int i=0; i<NP;i++) if( p[i]->is_fracture and !(p[i]->n[0]->is_fracture and p[i]->n[1]->is_fracture)) {
+        cerr<<"This pore has problematic fracture label: "<<*p[i]<<endl;
+        //p[i]->is_fracture=false;
+        //exit(123);
+        }
+
+    //check the fracture percolation
+    cerr<<"Checking fracture percolation"<<endl;
+    for(int i=0;i<NN;i++) n[i]->x=0;
+    for(int i=0;i<NP;i++) p[i]->x=0;
+    function<void(Node*)> fracture_percolation = [&](Node* n_tmp) -> void {
+        n_tmp->x=1;
+        if(!n_tmp->is_fracture) return;
+        if (n_tmp->t == -1) return;
+        for(int b=0;b<n_tmp->b;b++)
+            if(n_tmp->p[b]->is_fracture and n_tmp->n[b]->is_fracture and n_tmp->p[b]->x==0){
+                n_tmp->p[b]->x=1;
+                fracture_percolation(n_tmp->n[b]);
+            }
+    };
+    fracture_percolation(wi[0]);
+    bool f_percol=false;
+    for(int i=0;i<N_wo;i++)
+        if(wo[i]->x==1)f_percol=true;
+    if(f_percol)
+        cerr<<"Fracture percolation is ok."<<endl;
+    else
+        cerr<<"No fracture percolation"<<endl;
+
+
+    if(if_debugging_printing && if_verbose) debugging_for_merging ("After clearing pathological pores: s = " + to_string(tot_steps));
 
 	//Clear pathological nodes: (probably unnecessary)
 	for(int i=0; i<NN;i++) if(n[i]->b==0) {
