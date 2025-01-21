@@ -466,6 +466,15 @@ void Network::print_tables_txt(){
                 if(p[i]->is_fracture)
                     if(linia <= max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) &&  max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) < linia + 1){
                         f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->q;
+                        double q_others=0;
+                        Node * n_tmp = p[i]->n[0];
+                        if(n_tmp->xy.y<p[i]->n[1]->xy.y) n_tmp=p[i]->n[1];
+                        for (int b=0;b<n_tmp->b;b++)
+                            if(!n_tmp->p[b]->is_fracture)
+                                if(n_tmp->n[b]->u>n_tmp->u)
+                                    q_others+=abs(n_tmp->p[b]->q);
+
+                        f_pores_out       <<setprecision(7)<<setw(12)<<q_others;
                     }
 
             for(int i=0;i<NN;i++)
