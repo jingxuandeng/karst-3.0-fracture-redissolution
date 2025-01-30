@@ -23,6 +23,7 @@
 #include <string>
 #include <cstdlib>
 #include <cstring>
+#include <tuple>
 
 #include "constants.h"
 
@@ -98,7 +99,9 @@ class Pore{
 
         double   calculate_d_nbr();                           ///< returns average diameter of its neighbours
         double   calculate_l_nbr();                           ///< returns average length of its neighbours
-
+        double   calculate_sin_angle();
+        double   calculate_cos_angle();
+        std::tuple<double,double>   calculate_d_nbr_direction();
 
 };
 

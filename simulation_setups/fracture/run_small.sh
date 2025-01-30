@@ -41,17 +41,17 @@ los=210
 
 if_dynamic_k2="false"
 merge_factor=0.25
-Da=0.5
+Da=0.1
 d0=0.3
 for merge_factor in 0.2 # 0.01 0.1 0.25 0.5
 do
-for d0 in 0.1 # 0.2 0.3
+for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 5 #3 4 5
+for inlet_cut_factor in 1 #3 4 5
 do
-for kappa in 1  #0.1 0.
+for kappa in 1 100 10 1000  #0.1 0.
 do
-  for gamma in  0.01  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  1.0  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$if_dynamic_k2-merge_factor-$merge_factor

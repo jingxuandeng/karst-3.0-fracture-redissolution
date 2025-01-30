@@ -2,6 +2,7 @@
 #include "network.h"
 #include "printing.h"
 #include "grain.h"
+#include <tuple>
 
 Pore::Pore (double dd, double ll, float name, int bb){
 	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
@@ -431,7 +432,51 @@ double Pore::calculate_d_nbr() {
 
 }
 
+double Pore::calculate_sin_angle() {
+    double x0=n[0]->xy.x;
+    double x1=n[1]->xy.x;
+    double y0=n[0]->xy.y;
+    double y1=n[1]->xy.y;
 
+    double sqrt_tmp=sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1));
+    return abs(y0-y1)/sqrt_tmp;
+
+}
+
+
+double Pore::calculate_cos_angle() {
+    double x0=n[0]->xy.x;
+    double x1=n[1]->xy.x;
+    double y0=n[0]->xy.y;
+    double y1=n[1]->xy.y;
+
+    double sqrt_tmp=sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1));
+    return abs(x0-x1)/sqrt_tmp;
+
+}
+
+
+std::tuple<double,double> Pore::calculate_d_nbr_direction() {
+
+    double sum_tmp_hor=0;
+    double sum_tmp_ver=0;
+    int n_tmp=0;
+
+    for(int i=0; i<n[0]->b;i++)
+        if(n[0]->p[i]!=this) {
+            sum_tmp_hor+=n[0]->p[i]->d*n[0]->p[i]->calculate_sin_angle();
+            sum_tmp_ver+=n[0]->p[i]->d*n[0]->p[i]->calculate_cos_angle();
+            n_tmp++;}
+    for(int i=0; i<n[1]->b;i++)
+        if(n[1]->p[i]!=this) {
+            sum_tmp_hor+=n[1]->p[i]->d*n[1]->p[i]->calculate_sin_angle();
+            sum_tmp_ver+=n[1]->p[i]->d*n[1]->p[i]->calculate_cos_angle();
+            n_tmp++;
+        }
+
+    return {sum_tmp_hor/n_tmp,sum_tmp_ver};
+
+}
 
 double Pore::calculate_l_nbr() {
 
@@ -446,6 +491,8 @@ double Pore::calculate_l_nbr() {
     return sum_tmp / n_tmp;
 
 }
+
+
 
 
 

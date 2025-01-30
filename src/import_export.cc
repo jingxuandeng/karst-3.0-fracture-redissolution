@@ -444,6 +444,8 @@ void Network::print_tables_txt(){
 
     diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     d_nbr_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    d_nbr_direction_out<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    angle_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     l_nbr_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
 	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     f_pores_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
@@ -505,6 +507,8 @@ void Network::print_tables_txt(){
 			if(i%N_x ==N_x-1){
                 diameters_out       <<endl;
                 d_nbr_out           <<endl;
+                d_nbr_direction_out <<endl;
+                angle_out           <<endl;
                 l_nbr_out           <<endl;
 				flow_out            <<endl;
 				concentration_out   <<endl;
@@ -552,6 +556,9 @@ void Network::print_tables_txt(){
 
                         diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
                         d_nbr_out << setprecision(5) << setw(10) << n[i]->p[b]->calculate_d_nbr();
+                        auto [ver,hor] = n[i]->p[b]->calculate_d_nbr_direction();
+                        d_nbr_direction_out << setprecision(5) << setw(10) << ver<< setprecision(5) << setw(10) << hor;
+                        angle_out<< setprecision(5) << setw(10) << n[i]->p[b]->calculate_sin_angle();
                         l_nbr_out << setprecision(5) << setw(10) << n[i]->p[b]->calculate_l_nbr();
                         flow_out << setprecision(5) << setw(10) << n[i]->p[b]->q;
                         lengths_out << setprecision(7) << setw(12) << n[i]->p[b]->l;
@@ -569,7 +576,9 @@ void Network::print_tables_txt(){
                 }
 
             diameters_out << endl;
+            angle_out<<endl;
             d_nbr_out << endl;
+            d_nbr_direction_out<<endl;
             l_nbr_out << endl;
             flow_out << endl;
             concentration_out << endl;
