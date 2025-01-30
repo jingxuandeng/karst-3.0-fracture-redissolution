@@ -47,9 +47,9 @@ for merge_factor in 0.2 # 0.01 0.1 0.25 0.5
 do
 for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 1 #3 4 5
+for inlet_cut_factor in 3 #3 4 5
 do
-for kappa in 1 100 10 1000  #0.1 0.
+for kappa in 1 #100 10 1000  #0.1 0.
 do
   for gamma in  1.0  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do

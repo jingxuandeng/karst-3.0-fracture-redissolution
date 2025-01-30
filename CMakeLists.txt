@@ -4,7 +4,7 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 project(karst)  # Change to your project name
 
-set(CMAKE_CXX_STANDARD 11)  # Set the C++ standard
+set(CMAKE_CXX_STANDARD 20)  # Set the C++ standard
 set(CMAKE_VERBOSE_MAKEFILE ON)
 add_compile_options(-Wall -pedantic -O2)
 
@@ -56,7 +56,7 @@ add_executable(karst ${SOURCES})
 # Set compiler flags
 target_compile_options(karst PRIVATE
         -Wall -pedantic -O2
-        -std=c++11 -Weffc++ -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -O2
+        -std=c++20 -Weffc++ -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -O2
         )
 
 # Set include directories
