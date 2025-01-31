@@ -23,7 +23,7 @@ CINCLUDES	= -I ../include -I ../algorithms
 MINCLUDES	= -I ../include -I $(MDIR)/include -I $(MDIR)/libseq
 
 CFLAGS	 = $(COPTS) $(CINCLUDES) $(MINCLUDES) 
-CXXFLAGS = -O2 -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -O2
+CXXFLAGS = -O2 -std=c++17 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -O2
 TMP      = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-system
 
 

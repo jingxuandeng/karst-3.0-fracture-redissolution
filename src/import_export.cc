@@ -465,23 +465,34 @@ void Network::print_tables_txt(){
 	}
 
     if(inlet_cut_factor>1){
+
+
+
+            for (int y_tmp=1;y_tmp<N_y-2;y_tmp++) {
+                for (int i = 0; i < NP; i++)
+                    if (p[i]->n[0]->is_fracture && p[i]->n[1]->is_fracture)
+                        if ((p[i]->n[0]->xy.y <= y_tmp && p[i]->n[1]->xy.y > y_tmp) or
+                            (p[i]->n[1]->xy.y <= y_tmp && p[i]->n[0]->xy.y > y_tmp))
+                            f_pores_out << setprecision(7) << setw(12) << p[i]->q;
+                f_pores_out<<endl;
+            }
+
+//            for(int i=0;i<NP;i++)
+//                if(p[i]->is_fracture)
+//                    if(linia <= max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) &&  max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) < linia + 1){
+//                        f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->q;
+//                        double q_others=0;
+//                        Node * n_tmp = p[i]->n[0];
+//                        if(n_tmp->xy.y<p[i]->n[1]->xy.y) n_tmp=p[i]->n[1];
+//                        for (int b=0;b<n_tmp->b;b++)
+//                            if(!n_tmp->p[b]->is_fracture)
+//                                if(n_tmp->n[b]->u>n_tmp->u)
+//                                    q_others+=abs(n_tmp->p[b]->q);
+//
+//                        f_pores_out       <<setprecision(7)<<setw(12)<<q_others;
+//                    }
+
         for (int linia = 0; linia < N_y; linia++){
-
-            for(int i=0;i<NP;i++)
-                if(p[i]->is_fracture)
-                    if(linia <= max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) &&  max(p[i]->n[0]->xy.y,p[i]->n[1]->xy.y) < linia + 1){
-                        f_pores_out       <<setprecision(7)<<setw(12)<<p[i]->q;
-                        double q_others=0;
-                        Node * n_tmp = p[i]->n[0];
-                        if(n_tmp->xy.y<p[i]->n[1]->xy.y) n_tmp=p[i]->n[1];
-                        for (int b=0;b<n_tmp->b;b++)
-                            if(!n_tmp->p[b]->is_fracture)
-                                if(n_tmp->n[b]->u>n_tmp->u)
-                                    q_others+=abs(n_tmp->p[b]->q);
-
-                        f_pores_out       <<setprecision(7)<<setw(12)<<q_others;
-                    }
-
             for(int i=0;i<NN;i++)
                 if(n[i]->is_fracture)
                     if(linia <= n[i]->xy.y and n[i]->xy.y < linia+1){
