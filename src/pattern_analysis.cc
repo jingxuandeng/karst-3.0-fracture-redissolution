@@ -1,6 +1,6 @@
 #include <deque>
 #include <algorithm>
-#include <ranges>
+//#include <ranges>
 #include "network.h"
 #include "printing.h"
 #include "algorithms_cc.h"
@@ -445,7 +445,8 @@ void Network::find_flow_focusing_profile(double th){
             if((p[i]->n[0]->xy.y<=y_tmp && p[i]->n[1]->xy.y>y_tmp) or
                (p[i]->n[1]->xy.y<=y_tmp && p[i]->n[0]->xy.y>y_tmp))
                     p_list.push_back(p[i]);     //TODO: Rethink U turns in meandering patters
-        std::ranges::sort(p_list,[](const Pore* p1, const Pore*p2) { return fabs(p1->q) > fabs(p2->q); });
+        //std::ranges::sort(p_list,[](const Pore* p1, const Pore*p2) { return fabs(p1->q) > fabs(p2->q); });
+        std::sort(p_list.begin(),p_list.end(),[](const Pore* p1, const Pore*p2) { return fabs(p1->q) > fabs(p2->q); });
         double n_th=p_list.size()*th;
         int i_tmp=0;
         double Q_tmp=0.0;
