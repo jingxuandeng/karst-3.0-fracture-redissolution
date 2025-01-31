@@ -438,26 +438,22 @@ double Network::find_cluster_size(int l){
 
 void Network::find_flow_focusing_profile(double th){
 
-
+    deque<Pore*> p_list {};
     for (int y_tmp=1;y_tmp<N_y-2;y_tmp++){
-        deque<Pore*> p_list {};
+
         for (int i=0;i<NP;i++)
             if((p[i]->n[0]->xy.y<=y_tmp && p[i]->n[1]->xy.y>y_tmp) or
                (p[i]->n[1]->xy.y<=y_tmp && p[i]->n[0]->xy.y>y_tmp))
                     p_list.push_back(p[i]);     //TODO: Rethink U turns in meandering patters
         //std::ranges::sort(p_list,[](const Pore* p1, const Pore*p2) { return fabs(p1->q) > fabs(p2->q); });
         std::sort(p_list.begin(),p_list.end(),[](const Pore* p1, const Pore*p2) { return fabs(p1->q) > fabs(p2->q); });
-        double n_th=p_list.size()*th;
-        int i_tmp=0;
-        double Q_tmp=0.0;
-        for (auto &p : p_list)
-            if(Q_tmp<Q_tot*th){
-                Q_tmp+=fabs(p->q);
-                i_tmp++;
-            }
-            else break;
-        fff_out << setw(15)<< (n_th-i_tmp)/n_th;
-    }
-    fff_out<<endl;
+        for(auto &p_tmp : p_list)
+            fff_out << setw(15)<< p_tmp->q;
+
+        fff_out <<endl;
+        p_list.clear();
 
     }
+
+
+}

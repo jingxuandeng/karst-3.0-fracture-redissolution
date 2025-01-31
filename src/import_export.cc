@@ -441,7 +441,7 @@ void Network::print_net_txt(){
 */
 void Network::print_tables_txt(){
 
-    //fff_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    fff_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     find_flow_focusing_profile();
 
 

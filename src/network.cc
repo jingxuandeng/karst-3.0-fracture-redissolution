@@ -189,6 +189,7 @@ Network::Network (string input_file_name) {
         d_nbr_out         .open("d_nbr.out",	  ios_base::out | ios_base::trunc );
         l_nbr_out         .open("l_nbr.out",	  ios_base::out | ios_base::trunc );
         angle_out         .open("angle.out",	  ios_base::out | ios_base::trunc );
+        max_out           .open("max.out",   	  ios_base::out | ios_base::trunc );
         fff_out           .open("flow_focusing_factor.out",	  ios_base::out | ios_base::trunc );
         d_nbr_direction_out .open("d_nbr_dir.out",	  ios_base::out | ios_base::trunc );
 
@@ -345,6 +346,7 @@ Network:: ~Network (){
 		lengths_out		   .close();
         angle_out          .close();
         fff_out            .close();
+        max_out            .close();
         d_nbr_direction_out.close();
 	}
 
