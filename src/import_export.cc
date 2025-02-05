@@ -469,12 +469,18 @@ void Network::print_tables_txt(){
 
 
             for (int y_tmp=1;y_tmp<N_y-2;y_tmp++) {
+                double q_f_tot = 0;
+                double perm_tot=0;
                 for (int i = 0; i < NP; i++)
                     if (p[i]->n[0]->is_fracture && p[i]->n[1]->is_fracture)
                         if ((p[i]->n[0]->xy.y <= y_tmp && p[i]->n[1]->xy.y > y_tmp) or
-                            (p[i]->n[1]->xy.y <= y_tmp && p[i]->n[0]->xy.y > y_tmp))
-                            f_pores_out << setprecision(7) << setw(12) << p[i]->q;
-                f_pores_out<<endl;
+                            (p[i]->n[1]->xy.y <= y_tmp && p[i]->n[0]->xy.y > y_tmp)){
+                            q_f_tot += fabs(p[i]->q);
+                            perm_tot += p[i]->perm(this);
+                    }
+                f_pores_out << setprecision(7) << setw(12) << q_f_tot;
+                f_pores_out << setprecision(7) << setw(12) << perm_tot;
+                f_pores_out << endl;
             }
 
 //            for(int i=0;i<NP;i++)
