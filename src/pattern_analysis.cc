@@ -79,7 +79,7 @@ void Network::find_minimal_spanning_tree(double threshold, Node* root, bool if_p
 			//double dist    = min_nod->tmp + 1./min_nod->p[s]->perm(mu_0); //weight is a distance from root
 			double dist;
             if (if_length_mode)
-                dist = min_nod->tmp + min_nod->p[s]->l; //length is a distance from root
+                dist = min_nod->tmp + min_nod->p[s]->l0; //length is a distance from root
             else
                 dist = min_nod->tmp + 1./(min_nod->p[s]->d+d_min); //width is a distance from root
 			if(nod_tmp->tmp > dist){ nod_tmp->tmp=dist; nod_tmp->x = -nod_tmp->neighbor_number(min_nod)-1;}

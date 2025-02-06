@@ -478,8 +478,8 @@ void Network::print_tables_txt(){
                             q_f_tot += fabs(p[i]->q);
                             perm_tot += p[i]->perm(this);
                     }
-                f_pores_out << setprecision(7) << setw(12) << q_f_tot;
-                f_pores_out << setprecision(7) << setw(12) << perm_tot;
+                f_pores_out << setprecision(7) << setw(20) << q_f_tot;
+                f_pores_out << setprecision(7) << setw(20) << perm_tot;
                 f_pores_out << endl;
             }
 
