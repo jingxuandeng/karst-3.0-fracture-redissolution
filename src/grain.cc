@@ -589,7 +589,7 @@ ostream& operator << (ostream & stream, Grain &g){
 }
 
 /**
-* This function prints grain propoerties in one line
+* This function prints grain properties in one line
 *
 * @param stream output stream
 * @param g grain to be printed

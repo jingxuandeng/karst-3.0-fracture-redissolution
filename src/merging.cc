@@ -164,7 +164,7 @@ void Network::merge_empty_grains(){
 	}
 
     //clear loops in the fracture
-    for(int i=0; i<NP;i++) if(p[i]->n[0]->is_fracture and p[i]->n[1]->is_fracture and !p[i]->is_fracture ) {
+    for(int i=0; i<NP;i++) if(p[i]->n[0]->is_fracture and p[i]->n[1]->is_fracture and !p[i]->is_fracture and inlet_cut_factor>1) {
 
         cerr<<"Entering the  loop clearance for pore"<<*p[i]<<endl;
         Pore* p_tmp=NULL;   //pore belonging to the loop
@@ -328,7 +328,7 @@ void Network::merge_one_grain(Grain *gg, Grain* gg_special) {
 
     int nr_of_f =0;
     for (int b = 0; b < gg->bP; b++)
-        if (gg->p[b]->is_fracture){
+        if (gg->p[b]->is_fracture and inlet_cut_factor>1){
             p1 = gg->p[b];
             nr_of_f++;
         }
