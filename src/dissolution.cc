@@ -855,6 +855,14 @@ void Network::dissolve_and_precipitate(){
 		double dd_plus  = p0->default_dd_plus (this);
 		double dd_minus = p0->default_dd_minus(this);
 
+//        ///WARNING (FIXME): To linijka dodana dla sprawdzenia hipotezy zakładającej, że rozgałęzianie jest związane z
+//        //if(p0->is_fracture and p0->d  < d0*inlet_cut_factor and p0->n[0]->xy.y> N_y/2){
+//        if(p0->is_fracture and  (dd_plus - dd_minus) < 0){
+//            dd_plus=0;
+//            dd_minus=0;
+//            //p0->d=d0*inlet_cut_factor;
+//        }
+
 		//Checking if there is enough space for full dissolution
 		if(p0->d + (dd_plus - dd_minus) *d0<d_min){		//there is not enough space for all precipitating material
 			dd_minus = p0->d/d0 + dd_plus - d_min/d0;
@@ -864,6 +872,7 @@ void Network::dissolve_and_precipitate(){
 		else{											//there is enough space for all precipitating material
 			p0->d += (dd_plus - dd_minus) *d0;
 		}
+
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0; int bG_tmp_E=0;
@@ -891,6 +900,7 @@ void Network::dissolve_and_precipitate(){
         //if(type_of_merging=="merge_empty_grains") clear_unconeccted_pores();
         }
 	if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
+
 
 
 	//additional printing for debugging

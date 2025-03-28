@@ -312,15 +312,19 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 
         //cerr<<"Printing pore "<< *S.p[i];
 
+
 		kkk = Kolor(0.5,0.5,0.5);
 		Pore &p = *S.p[i];
+        double d_rel=S.d0;
+        if(p.is_fracture) d_rel= S.d0*S.inlet_cut_factor;
+
 		double r=0.5, g=0.5, b=0.5;
-		if (p.d<S.d0 and p.d!=0){
+		if (p.d<d_rel and p.d!=0){
 			r = 1;
 			g = 1;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
 			b = 0;
 			kkk=Kolor(r,g,b);}
-        if (p.d<=S.d0/5.){// FIXME *(1+0.01) ){
+        if (p.d<=d_rel/5.){// FIXME *(1+0.01) ){
             r = 1;
             g = 0;  //((p.d) - (S.d_min))/((S.d0) - (S.d_min));
             b = 0;
@@ -331,8 +335,10 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
             b = 0;
             kkk=Kolor(r,g,b);
         }
+        if(p.d<d_rel and p.is_fracture)
+            kkk=Kolor(0.0,0.0,1.0);
         //if(p.d==0) kkk=Kolor(0,0,1);
-		if(p.x==1) kkk=Kolor(0.0,0.0,0.0);
+		//if(p.x==1) kkk=Kolor(0.0,0.0,0.0);
 
 
 
@@ -340,10 +346,11 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 		if(p.is_fracture || (p.n[0]->xy - p.n[1]->xy < S.N_x*2./3  && p.d<S.N_x*2 && p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print)){
 			//if (p.x == 1)           stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
 			//else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
-            double ww = 0.1;
-            if(fabs(p.q)>0)
-                ww+=fabs(p.q/100.);
-            if(p.is_fracture)   stream<<Porek(p.n[0]->xy,p.n[1]->xy,ww ,p.tmp,Kolor(0.0,0.0,1.0));
+            double ww =p.d/4.;
+            if(p.is_fracture)
+                ww=0.5;
+
+            if(p.is_fracture and false)   stream<<Porek(p.n[0]->xy,p.n[1]->xy,ww ,p.tmp,Kolor(0.0,0.0,1.0));
             else                stream<<Porek(p.n[0]->xy,p.n[1]->xy,ww, p.tmp,kkk);
 			}
 

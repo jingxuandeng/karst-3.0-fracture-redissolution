@@ -204,7 +204,7 @@ void Network::check_if_dissolved(){
 	check_diss_pattern(d_d_dis);
 	for(int i=0;i<N_wo;i++){
 		Node* nn = wo[i];
-		for (int j=0; j<nn->b;j++) if (nn->p[j]->d > d0*d_d_dis*inlet_cut_factor && nn->p[j]->x==1){
+		for (int j=0; j<nn->b;j++) if (nn->p[j]->d > d0*d_d_dis* inlet_cut_factor && nn->p[j]->x==1){
 			cerr<<"\nSystem is fully dissolved\nSimulation will finish soon."<<endl;
             if_check = false;
             sim_state = -1;
