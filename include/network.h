@@ -164,7 +164,7 @@ class Network
 	   	double gauss_sigma_d;           ///< if randomness is on this give information about width of the initial diameter distribution
 	   	double max_rand_shift_xy;       ///< if randomness is on this give information about max shift in positions
         bool no_max_z;                   /// if true there  is no constrain on pores diameters, otherwise d>H_z is not cylinder anymore
-
+        bool sandwich_pores;            /// if true for all pores the sandwich (pure 2D) formula for reactive area and resistance are calculated.
 
 		// dynamics
 		bool if_leapfrog;               ///< if true frog leap instead of Euler algorithm is used in evolution (not implemented yet)

@@ -15,7 +15,9 @@ Pore::Pore (double dd, double ll, float name, int bb){
 }
 
 double Pore::perm(Network*S){
-    if(d<S->H_z or S->no_max_z)
+    bool pipe_formula = (!(S->sandwich_pores and is_fracture) and (d<S->H_z or S->no_max_z));
+
+    if(pipe_formula)
         return M_PI*pow(d,4)/(128*S->mu_0*l);   ///< permeability of a particular pore
     else
         return M_PI*d/(128*S->mu_0*l);          ///WARNING: the tube can not have the diameter larger than H_z, later the formula for H_z = l_Z = 1
@@ -170,7 +172,7 @@ double Pore::local_Da_eff(Network* S){
 	double G = this->local_G(S);
 
     //formula for aperture
-    if(d>S->H_z and !S->no_max_z) {
+    if((d>S->H_z and !S->no_max_z) or (S->sandwich_pores and is_fracture)) {
         if (G > 0)  return S->Da * (1 / S->d0) * (l / S->l0) * (S->q_in_0 / fabs(q)) * ((1 + S->G1) / (1 + G));
         if (G == 0) return S->Da * (1 / S->d0) * (l / S->l0) * (S->q_in_0 / fabs(q));
     }
@@ -206,7 +208,7 @@ double Pore::local_Da_eff_2(Network* S){
     }
 
     //formula for an aperture
-    if(d>S->H_z and !S->no_max_z){
+    if((d>S->H_z and !S->no_max_z) or (S->sandwich_pores and is_fracture)){
         if      (G>0)    return Da2local*(1/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G2)/(1+G));
         else if (G==0)   return Da2local*(1/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
     }

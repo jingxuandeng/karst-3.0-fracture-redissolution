@@ -43,13 +43,19 @@ Da=0.1
 d0=0.3
 
 dyn=1
-for Da in 0.1 0.5
+
+
+sandwich_pores=true
+no_max_z=false
+
+
+for Da in 0.1
 do
 for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 5 #0.999 #3 4 5
+for inlet_cut_factor in 3  #5 3 #0.999 #3 4 5
 do
-for kappa in 1 0.1 #100 10 1000  #0.1 0.
+for kappa in 0.1 10 1 # 0.1 10 #100 10 1000  #0.1 0.
 do
   for gamma in  1.0  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
@@ -69,6 +75,9 @@ do
                   echo d0    = $d0
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
+                  echo sandwich_pores = $sandwich_pores
+                  echo no_max_z = $no_max_z
+                  echo gauss_sigma_d=0.1
 
 
 

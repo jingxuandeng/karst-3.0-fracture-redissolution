@@ -110,6 +110,7 @@ Network::Network (string input_file_name) {
 	gauss_sigma_d                      = 0;    			 //if randomness is on this give information about width of the initial diameter distribution (log normal used here)
 	max_rand_shift_xy                  = 1;       	     //if randomness is on this give information about max shift in positions
     no_max_z                           = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
+    sandwich_pores                     = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
 
 
 	//dynamics

@@ -876,8 +876,9 @@ void Network::dissolve_and_precipitate(){
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0; int bG_tmp_E=0;
-		double d_V_A = (d_old<H_z or no_max_z) ? (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus *d0)*p0->l)/2.;
-		double d_V_E = (d_old<H_z or no_max_z) ? (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2. :  (M_PI*(1.0)*(dd_minus*d0)*p0->l)/2.;
+        bool pipe_formula = (!(sandwich_pores and p0->is_fracture) and (d_old<H_z or no_max_z));
+		double d_V_A = pipe_formula ? (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus *d0)*p0->l)/2.;
+		double d_V_E = pipe_formula ? (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2. :  (M_PI*(1.0)*(dd_minus*d0)*p0->l)/2.;
         for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
         for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0 or p0->g[s]->Ve >0) bG_tmp_E++;
 		for(int s=0; s<p0->bG;s++) {

@@ -283,6 +283,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
             else                     cerr<<"WARNING: Wrong value of variable no_max_z. Set true or false."<<endl;
             cerr<< "Setting no_max_z = "<<no_max_z<<endl;}
 
+        else if(name == "sandwich_pores"){
+            if      (value == "true" )   sandwich_pores  = true;
+            else if (value == "false")   sandwich_pores  = false;
+            else                     cerr<<"WARNING: Wrong value of variable sandwich_pores. Set true or false."<<endl;
+            cerr<< "Setting sandwich_pores = "<<sandwich_pores<<endl;}
+
 
         else if(name == "if_periodic_bc"){
 			if      (value == "true" )   if_periodic_bc  = true;

@@ -506,8 +506,12 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
 
 	//calculating s and q_max/min
 	for(int b=0;b<bP;b++){
-		s+=p[b]->l*p[b]->d*M_PI;
-		if(p[b]->n[0]==n_max||p[b]->n[1]==n_max) q_max += fabs(p[b]->q);
+        bool pipe_formula = (!(S->sandwich_pores and p[b]->is_fracture) and (p[b]->d<S->H_z or S->no_max_z));
+		if(pipe_formula)
+            s+=p[b]->l*p[b]->d*M_PI;  //FIXME: tu był błąd bo nie obsługiwałam wcześńiej pora - kanapki, teraz jest ok
+		else
+            s+=p[b]->l*M_PI;
+        if(p[b]->n[0]==n_max||p[b]->n[1]==n_max) q_max += fabs(p[b]->q);
 		if(p[b]->n[0]==n_min||p[b]->n[1]==n_min) q_min += fabs(p[b]->q);
         if(p[b]->is_fracture) is_there_a_fracture++;
 	}
@@ -536,7 +540,8 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
 	if(s<=0 || r<=0) cerr<<"ERROR: Problem with calculating r and s in setting effective d and l."<<endl<<*this<<endl;
 	//calculating new d and l
 	if(r>0 && s>0) {
-        if(r>(128*S->mu_0*p_master->l)/(M_PI*pow(S->H_z,4)) or S->no_max_z) {
+        bool pipe_formula = (!(S->sandwich_pores and p_master->is_fracture) and (r>(128*S->mu_0*p_master->l)/(M_PI*pow(S->H_z,4)) or S->no_max_z));
+        if(pipe_formula) {
             //old formulas for cylinger
             p_master->d = 2. * pow((4. * S->mu_0 * s) / (M_PI * M_PI * r), 0.2);
             p_master->l = 0.5 * pow((r * pow(s, 4)) / (4. * S->mu_0 * pow(M_PI, 3)), 0.2);
