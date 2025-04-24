@@ -42,9 +42,7 @@
 
 
 
-## Other remarks:
-
-1. Branches:
+###  Branches:
 
     - master: two reactions without transversal diffusion;
 
@@ -53,3 +51,9 @@
     - pure diffusion transversal diffusion works for first reaction (dissolution). 
 
     - other branches are connected with work in progress
+
+
+## How to cite
+
+[1] **Budek, A., & Szymczak, P.** (2012). *Network models of dissolution of porous media*. _Physical Review E_, **86**, 056318.  
+ [DOI: 10.1103/PhysRevE.86.056318](https://doi.org/10.1103/PhysRevE.86.056318)
