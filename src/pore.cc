@@ -17,6 +17,8 @@ Pore::Pore (double dd, double ll, float name, int bb){
 double Pore::perm(Network*S){
     bool pipe_formula = (!(S->sandwich_pores and is_fracture) and (d<S->H_z or S->no_max_z));
 
+    if(!pipe_formula and d<S->H_z)
+        return M_PI*pow(d,3)/(128*S->mu_0*l);   ///< permeability of a thin fracture
     if(pipe_formula)
         return M_PI*pow(d,4)/(128*S->mu_0*l);   ///< permeability of a particular pore
     else
