@@ -53,7 +53,7 @@ for Da in 0.1
 do
 for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 3  #5 3 #0.999 #3 4 5
+for inlet_cut_factor in 3.5  #5 3 #0.999 #3 4 5
 do
 for kappa in 0.1 10 1 # 0.1 10 #100 10 1000  #0.1 0.
 do
