@@ -551,7 +551,7 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
                 //new formulas for a thin fracture
 //                p_master->d = 4. * pow((2. * S->mu_0 ) / ( M_PI * r), 1./3);
 //                p_master->l = 1;
-                p_master->l = std::max(std::min(s/M_PI,1.0),p_master->l);
+                p_master->l = fmax(fmin(s/M_PI,1.0),p_master->l);
                 p_master->d = 4. * pow((2. * S->mu_0 * p_master->l) / (  M_PI * r), 1./3);
 
             }
@@ -559,7 +559,7 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
                 //new formulas for a fracture
 //                p_master->d = (128 * S->mu_0) / (M_PI * r);
 //                p_master->l = 1;
-                p_master->l = std::max(std::min(s/M_PI,1.0),p_master->l);
+                p_master->l = fmax(fmin(s/M_PI,1.0),p_master->l);
                 p_master->d = (128 *  p_master->l * S->mu_0) / ( M_PI * r);
 
 
