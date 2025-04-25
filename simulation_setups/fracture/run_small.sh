@@ -49,7 +49,7 @@ sandwich_pores=true
 no_max_z=false
 
 
-for Da in 0.1
+for Da in 0.1 0.02 0.5
 do
 for d0 in 0.24  # 0.2 0.3
 do
