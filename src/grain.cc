@@ -549,17 +549,19 @@ void Grain::set_effective_d_and_l(Pore *p_master,Network *S){
         else {
             if(p_master->d<S->H_z){
                 //new formulas for a thin fracture
-                p_master->d = 4. * pow((2. * S->mu_0 ) / ( M_PI * r), 1./3);
-                p_master->l = 1;
-//                p_master->d = 4. * pow((2. * S->mu_0 * s) / ( M_PI * M_PI * r), 1./3);
-//                p_master->l = s/M_PI;
+//                p_master->d = 4. * pow((2. * S->mu_0 ) / ( M_PI * r), 1./3);
+//                p_master->l = 1;
+                p_master->l = std::max(std::min(s/M_PI,1.0),p_master->l);
+                p_master->d = 4. * pow((2. * S->mu_0 * p_master->l) / (  M_PI * r), 1./3);
+
             }
             else{
                 //new formulas for a fracture
-                p_master->d = (128 * S->mu_0) / (M_PI * r);
-                p_master->l = 1;
-//                p_master->d = (128 * s * S->mu_0) / (M_PI * M_PI * r);
-//                p_master->l = s/M_PI;
+//                p_master->d = (128 * S->mu_0) / (M_PI * r);
+//                p_master->l = 1;
+                p_master->l = std::max(std::min(s/M_PI,1.0),p_master->l);
+                p_master->d = (128 *  p_master->l * S->mu_0) / ( M_PI * r);
+
 
 
             }
