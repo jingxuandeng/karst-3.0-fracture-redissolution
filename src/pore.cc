@@ -207,6 +207,9 @@ double Pore::local_Da_eff_2(Network* S){
             double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
             Da2local = Da2local*kappa;
         }
+
+        if(calculate_inlet_cc()<S->C_eq)
+            return 0;
     }
 
     //formula for an aperture

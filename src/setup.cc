@@ -255,7 +255,9 @@ void::Network::read_setup_file(ifstream& fp_setup){
             merge_factor = stod(value);
             cerr<< "Setting merge_factor = "<<merge_factor<<endl;}
 
-
+        else if(name == "C_eq"){
+            C_eq = stod(value);
+            cerr<< "Setting C_eq = "<<C_eq<<endl;}
 
         else if(name == "type_of_topology"){
 			type_of_topology =   value;
