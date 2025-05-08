@@ -204,10 +204,12 @@ double Pore::local_Da_eff_2(Network* S){
         if(calculate_inlet_cc()<S->C_eq)
             return 0;
 
-        if(abs(S->dyn_k2_alpha)>100){
-            if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)>S->dyn_k2_c0*_sign(S->dyn_k2_alpha))  return 0;
+
+        if(abs(S->dyn_k2_alpha)>100 and S->C_eq==0){
+            if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)>S->dyn_k2_c0*_sign(S->dyn_k2_alpha))
+                return 0;
         }
-        else{
+        if(S->C_eq==0){
             double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
             Da2local = Da2local*kappa;
         }
