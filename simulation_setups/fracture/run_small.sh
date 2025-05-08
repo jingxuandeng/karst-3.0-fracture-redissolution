@@ -48,19 +48,22 @@ dyn=1
 sandwich_pores=true
 no_max_z=false
 
+C_eq=0.5
 
-for Da in 0.1 0.02 0.5
+inlet_cut_factor=1
+for Da in 0.5 #0.02 0.5
 do
 for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 3.5  #5 3 #0.999 #3 4 5
+for C_eq in 0.1 0   #5 3 #0.999 #3 4 5
+
 do
-for kappa in 0.1 10 1 # 0.1 10 #100 10 1000  #0.1 0.
+for kappa in 1 # 0.1 10 #100 10 1000  #0.1 0.
 do
-  for gamma in  1.0  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  1.0 1.5 0.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
-                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$dyn
+                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-Ceq-$C_eq
                 printf "Creating variant: %s\n" "$param"
                 pwd
                 mkdir $param
@@ -78,6 +81,9 @@ do
                   echo sandwich_pores = $sandwich_pores
                   echo no_max_z = $no_max_z
                   echo gauss_sigma_d=0.1
+                  echo C_eq = $C_eq
+                  echo if_dynamic_k2 = true
+                  echo dyn_k2_c0 = 1
 
 
 

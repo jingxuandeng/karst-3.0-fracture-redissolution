@@ -39,13 +39,13 @@ los=210
 #K_f1=50
 #K_goal=1
 
-Da=0.1
+Da=0.05
 d0=0.3
-
+C_eq=0.2
 dyn=1
 for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 3 #5 #3 4 5
+for inlet_cut_factor in 0 #5 #3 4 5
 do
 for kappa in 1 #10 0.1  # 1000  #0.1 0.
 do
@@ -67,8 +67,9 @@ do
                   echo d0    = $d0
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
-
-
+                  echo C_eq = $C_eq
+                  echo if_dynamic_k2 = true
+                  echo dyn_k2_c0 = 1
 
                 } >> config.txt
 

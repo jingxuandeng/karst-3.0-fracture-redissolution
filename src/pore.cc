@@ -200,6 +200,10 @@ double Pore::local_Da_eff_2(Network* S){
     //double d_tmp = min(1,d);     //possible feature for a fracture
 
     if(S->if_dynamic_k2){
+
+        if(calculate_inlet_cc()<S->C_eq)
+            return 0;
+
         if(abs(S->dyn_k2_alpha)>100){
             if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)>S->dyn_k2_c0*_sign(S->dyn_k2_alpha))  return 0;
         }
@@ -208,8 +212,6 @@ double Pore::local_Da_eff_2(Network* S){
             Da2local = Da2local*kappa;
         }
 
-        if(calculate_inlet_cc()<S->C_eq)
-            return 0;
     }
 
     //formula for an aperture

@@ -2,7 +2,7 @@
 #  Size of the netwrok
 
 N_x = 4         # size of the regular network
-N_y = 100        # size of the regular network
+N_y = 2000        # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -103,7 +103,7 @@ merge_factor                       = 0.2         # ratio of current to initial g
 if_dynamic_k2                       = false       # if true the Da2_eff will be multiplied by sigma function
 dyn_k2_alpha                        = 10          # sigma parameters
 dyn_k2_c0                           = 0.1        # sigma parameters
-
+C_eq                                = 0
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Initial inlet cut
