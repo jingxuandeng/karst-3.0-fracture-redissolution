@@ -185,6 +185,27 @@ double Pore::local_Da_eff(Network* S){
 	else             return S->Da*(l/S->l0)*(S->q_in_0/fabs(q));
 }
 
+double Pore::is_there_precipitation(Network *S){
+
+    double cc0 = calculate_inlet_cc();
+    double cb0 = calculate_inlet_cb();
+    if(!is_Va_left()) cb0 = 0;
+
+    if(cc0 >= 0)
+        return 1;       //normal behaviour with precipitation
+
+    double f1 = local_Da_eff(S);
+    double dcc = cb0*(1-exp(-f1));
+
+    if(cc0+dcc < 0)
+        return 0;
+
+    double alpha = 1./f1 * log(cb0/(cb0+cc0));
+    if(alpha>1 or alpha<0) {cerr<<"ERROR: is_there_precipitation has wrong value."; return 0;}
+    return (1-alpha);
+
+}
+
 /**
 * This function returns the local value of Da_eff_2 (used in precipitation) parameter for the pore.
 * @param S pointer to the network
@@ -201,20 +222,17 @@ double Pore::local_Da_eff_2(Network* S){
 
     if(S->if_dynamic_k2){
 
-        if(calculate_inlet_cc()<S->C_eq)
-            return 0;
-
-
-        if(abs(S->dyn_k2_alpha)>100 and S->C_eq==0){
+        if(abs(S->dyn_k2_alpha)>100){
             if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)>S->dyn_k2_c0*_sign(S->dyn_k2_alpha))
                 return 0;
         }
-        if(S->C_eq==0){
+        else{
             double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
             Da2local = Da2local*kappa;
         }
-
     }
+
+    Da2local = Da2local * is_there_precipitation(S);
 
     //formula for an aperture
     if((d>S->H_z and !S->no_max_z) or (S->sandwich_pores and is_fracture)){
@@ -286,7 +304,7 @@ double Pore::default_dd_minus(Network*S){
 
 	//precipitation parameters
 	double f2       = local_Da_eff_2(S);
-	double c0_c     = calculate_inlet_cc();
+	double c0_c     = fmax(0,calculate_inlet_cc());
 	double dd_minus = 0; 		//diameter change
 
 
@@ -298,7 +316,7 @@ double Pore::default_dd_minus(Network*S){
 								       	   	   	   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
 												   c0_c*  (1-exp(-f2)) );
 
-	return dd_minus;
+	return dd_minus ;//* is_there_precipitation(S);
 }
 
 /**

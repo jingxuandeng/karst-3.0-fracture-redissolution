@@ -257,7 +257,9 @@ void::Network::read_setup_file(ifstream& fp_setup){
 
         else if(name == "C_eq"){
             C_eq = stod(value);
-            cerr<< "Setting C_eq = "<<C_eq<<endl;}
+            cerr<< "Setting C_eq = "<<C_eq<<endl;
+            Cc_0=-C_eq;
+        }
 
         else if(name == "type_of_topology"){
 			type_of_topology =   value;

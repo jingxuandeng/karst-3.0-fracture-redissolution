@@ -103,6 +103,8 @@ class Pore{
         double   calculate_cos_angle();
         std::tuple<double,double>   calculate_d_nbr_direction();
 
+        double is_there_precipitation(Network *S);                       ///< checking if precipitation is in the pore: 1-cc>=0 everywhere, 0-noprecipitation
+
 };
 
 ofstream_txt & operator << (ofstream_txt & stream, Pore &p); ///< print info about pore p in one line

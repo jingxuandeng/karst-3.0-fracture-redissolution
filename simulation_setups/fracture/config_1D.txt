@@ -2,7 +2,7 @@
 #  Size of the netwrok
 
 N_x = 4         # size of the regular network
-N_y = 10000        # size of the regular network
+N_y = 2000        # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)

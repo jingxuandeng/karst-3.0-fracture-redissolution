@@ -441,11 +441,17 @@ void Network::print_net_txt(){
 */
 void Network::print_tables_txt(){
 
+
+    //to be deleted later (for debugging reason)
+    for (int i=0; i<NP;i++)
+        p[i]->tmp=p[i]->is_there_precipitation(this);
+
     fff_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     find_flow_focusing_profile();
 
 
     diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
+    tmp_out            <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     d_nbr_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     d_nbr_direction_out<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
     angle_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
@@ -516,6 +522,7 @@ void Network::print_tables_txt(){
 	if (type_of_topology == "hexagonal"){
 		for(int i=0;i<NN;i++) {
 			for(int b=0; b<3;b++) diameters_out  <<setprecision(7)<<setw(12)<<p[i*3+b]->d;
+            for(int b=0; b<3;b++) tmp_out        <<setprecision(7)<<setw(12)<<p[i*3+b]->tmp;
 			for(int b=0; b<3;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*3+b]->q;
 //			for(int b=0; b<3;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
 			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
@@ -526,6 +533,7 @@ void Network::print_tables_txt(){
 //			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
 			if(i%N_x ==N_x-1){
                 diameters_out       <<endl;
+                tmp_out             <<endl;
                 d_nbr_out           <<endl;
                 d_nbr_direction_out <<endl;
                 angle_out           <<endl;
@@ -545,6 +553,7 @@ void Network::print_tables_txt(){
 	else if (type_of_topology == "diamond" || type_of_topology == "square"){
 			for(int i=0;i<NN;i++) {
 				for(int b=0; b<2;b++) diameters_out  <<setprecision(7)<<setw(12)<<p[i*2+b]->d;
+                for(int b=0; b<2;b++) tmp_out        <<setprecision(7)<<setw(12)<<p[i*2+b]->tmp;
 				for(int b=0; b<2;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*2+b]->q;
 				for(int b=0; b<2;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*2+b]->l;
 				pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
@@ -555,6 +564,7 @@ void Network::print_tables_txt(){
 				VX_out  <<setprecision(7)<<setw(12)<<g[i]->Vx;
 				if(i%N_x ==N_x-1){
 					diameters_out       <<endl;
+                    tmp_out             <<endl;
 					flow_out            <<endl;
 					concentration_out   <<endl;
 					concentration2_out  <<endl;
@@ -575,6 +585,7 @@ void Network::print_tables_txt(){
                     for (int b = 0; b < n[i]->b; b++) {
 
                         diameters_out << setprecision(5) << setw(10) << n[i]->p[b]->d;
+                        tmp_out       << setprecision(5) << setw(10) << n[i]->p[b]->tmp;
                         d_nbr_out << setprecision(5) << setw(10) << n[i]->p[b]->calculate_d_nbr();
                         auto [ver,hor] = n[i]->p[b]->calculate_d_nbr_direction();
                         d_nbr_direction_out << setprecision(5) << setw(10) << ver<< setprecision(5) << setw(10) << hor;
@@ -608,6 +619,7 @@ void Network::print_tables_txt(){
             VA_out << endl;
             VE_out << endl;
             VX_out << endl;
+            tmp_out << endl;
         }
     }
 
@@ -654,6 +666,7 @@ void Network::print_tables_txt(){
 void Network::  save_all_data(bool if_save_now) {
 
     cerr << "Saving basic data..." << endl;
+
 
 
     static double Va_old = 0;
