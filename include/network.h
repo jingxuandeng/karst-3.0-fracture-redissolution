@@ -182,7 +182,7 @@ class Network
         bool if_dynamic_k2; ///< if true the Da2_eff will be multiplied by sigma function
         double dyn_k2_alpha;  ///<sigma parameters
         double dyn_k2_c0;     ///< sigma parameters
-        double C_eq;          ///< below C_eq precipitation do not occur
+        double C_eq;          ///< below C_eq precipitation do not occur if ==0 reaction is reversible (if )
 
 		// output
 		bool if_save_ps;                          ///< if true ps pictures are created

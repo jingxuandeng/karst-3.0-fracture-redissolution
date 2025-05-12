@@ -43,7 +43,7 @@ Da=0.02
 d0=0.3
 C_eq=0.2
 dyn=1
-for C_eq in 0 0.3 # 0.1 0 0.3
+for C_eq in -0.3 # 0.1 0 0.3
 do
 for d0 in 0.4  # 0.2 0.3
 do
@@ -69,9 +69,8 @@ do
                   echo d0    = $d0
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
-                  echo C_eq = $C_eq
-                  echo if_dynamic_k2 = true
-                  echo dyn_k2_c0 = 1
+                  echo Cc_0 = $C_eq
+
 
                 } >> config.txt
 

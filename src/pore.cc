@@ -313,7 +313,7 @@ double Pore::default_dd_minus(Network*S){
 	//precipitation parameters
     double dd_minus = 0; 		//diameter change
     double f2       = local_Da_eff_2(S);
-    double c0_c     = fmax(0,calculate_inlet_cc());
+    double c0_c     = calculate_inlet_cc();
     if(S->C_eq!=0)   c0_c     = fmax(0,calculate_inlet_cc());   //irreversible reaction
 
 
@@ -327,8 +327,8 @@ double Pore::default_dd_minus(Network*S){
 												   c0_c*  (1-exp(-f2)) );
 
 
-    if(!is_Ve_left() and dd_minus<0)  return 0;     //no E dissolution if there is no E left
-	else                              return dd_minus ;//* is_there_precipitation(S);
+    if(!is_Ve_left() and dd_minus<0)  return 0;         //no E dissolution if there is no E left
+	else                              return dd_minus ; //* is_there_precipitation(S);
 
 }
 
