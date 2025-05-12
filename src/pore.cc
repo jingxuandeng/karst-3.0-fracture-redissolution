@@ -81,7 +81,12 @@ bool Pore::is_Va_left(){
 	else		   return false;
 }
 
-
+bool Pore::is_Ve_left(){
+    double Ve_tot=0;
+    for (int b=0;b<bG;b++) Ve_tot+=g[b]->Ve;
+    if(Ve_tot>0)   return true;
+    else		   return false;
+}
 
 /**
 * This function returns the actual length the pore if the if_dynamical_length flag is on.
@@ -187,6 +192,8 @@ double Pore::local_Da_eff(Network* S){
 
 double Pore::is_there_precipitation(Network *S){
 
+    if (S->C_eq==0 and is_Ve_left()) return  1;  //if C_eq == 0 the precipitation is reversible
+
     double cc0 = calculate_inlet_cc();
     double cb0 = calculate_inlet_cb();
     if(!is_Va_left()) cb0 = 0;
@@ -289,6 +296,7 @@ double Pore::default_dd_plus(Network*S){
 */
 double Pore::default_dd_minus(Network*S){
 
+
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l==S->l_min)    return 0;   //no reaction in tiny grain
 	if(d<=S->d_min && (!is_Va_left())) return 0;
@@ -303,9 +311,11 @@ double Pore::default_dd_minus(Network*S){
 
 
 	//precipitation parameters
-	double f2       = local_Da_eff_2(S);
-	double c0_c     = fmax(0,calculate_inlet_cc());
-	double dd_minus = 0; 		//diameter change
+    double dd_minus = 0; 		//diameter change
+    double f2       = local_Da_eff_2(S);
+    double c0_c     = fmax(0,calculate_inlet_cc());
+    if(S->C_eq!=0)   c0_c     = fmax(0,calculate_inlet_cc());   //irreversible reaction
+
 
 
 	//finding precipitation contribution
@@ -316,7 +326,10 @@ double Pore::default_dd_minus(Network*S){
 								       	   	   	   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
 												   c0_c*  (1-exp(-f2)) );
 
-	return dd_minus ;//* is_there_precipitation(S);
+
+    if(!is_Ve_left() and dd_minus<0)  return 0;     //no E dissolution if there is no E left
+	else                              return dd_minus ;//* is_there_precipitation(S);
+
 }
 
 /**

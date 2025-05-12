@@ -892,8 +892,8 @@ void Network::dissolve_and_precipitate(){
 
 	//updating Va and Vc (must be done after main dissolution for c_out to be calculated correctly)
 	if(if_track_grains){
-		for (int i=0;i<NG;i++) {g[i]->Va+=g[i]->tmp;  if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}}
-		for (int i=0;i<NG;i++)  g[i]->Ve+=g[i]->tmp2;
+		for (int i=0;i<NG;i++) {g[i]->Va+=g[i]->tmp;   if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}}
+		for (int i=0;i<NG;i++) {g[i]->Ve+=g[i]->tmp2;  if(g[i]->Ve<0) {Ve_tot-=g[i]->Ve; g[i]->Ve = 0;}}
 	}
 
     if(if_cut_d_min) {
