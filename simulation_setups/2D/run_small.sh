@@ -8,7 +8,7 @@ if ! bash ./build.sh; then
     exit 1
 fi
 
-cd ../DATA/2D || exit
+cd ~/Desktop/KARST/DATA/2D || exit
 
 # Creating proper directory
 current_date_time=$(date +small_%Y_%m_%d_%H_%M)
@@ -22,7 +22,7 @@ else
 fi
 
 cd "$current_date_time" || exit
-cp ../../../karst_3.0/simulation_setups/2D/config_small.txt ./config.txt || exit
+cp ~/Desktop/KARST/karst_3.0/simulation_setups/2D/config_small.txt ./config.txt || exit
 
 
 printf "Running the simulation...\n\n"
@@ -32,7 +32,7 @@ gamma=1
 kappa=1000
 dmin=0.001
 cut=true
-los=107
+
 
 Da=0.5
 d0=0.1
@@ -55,11 +55,11 @@ do
                   echo d0    = $d0
                   echo d_min = $dmin
                   echo if_cut_d_min = $cut
-                  echo random_seed = $los
+
 
                 } >> config.txt
 
-                ../../../../karst_3.0/build/karst config.txt  >wyjscie.out 2>bledy.out&
+                ~/Desktop/KARST/karst_3.0/build/karst config.txt  >wyjscie.out 2>bledy.out&
 
              )
 done

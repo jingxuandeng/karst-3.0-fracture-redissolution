@@ -114,7 +114,7 @@ class Network
 		double d_min_factor; ///< d_min = d0*d_min_factor
 		double l_min;   ///< minimal pore length (for numerical reason)
 
-        double K_goal       = 0;    ///< our goal permeability
+        double K_goal       = 1;    ///< our goal permeability
         double K_0          = 0;    ///< permeability at the beggining of the simulation
         double K_tmp        = 0;    ///< best approx of temporal permeability
         double K_tmp_old    = 0;    ///< best approx of last permeability
@@ -182,7 +182,7 @@ class Network
         bool if_dynamic_k2; ///< if true the Da2_eff will be multiplied by sigma function
         double dyn_k2_alpha;  ///<sigma parameters
         double dyn_k2_c0;     ///< sigma parameters
-        double C_eq;          ///< below C_eq precipitation do not occur if ==0 reaction is reversible (if )
+        double C_eq;          ///< below C_eq precipitation do not occur if ==0 reaction is reversible (if C_c < 0)
 
 		// output
 		bool if_save_ps;                          ///< if true ps pictures are created

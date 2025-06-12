@@ -7,11 +7,11 @@ ifeq ($(UNAME), Linux)
 	MDIR	=  ~/.nix-profile/opt/mumps
 	FLIBS	= -L ~/.nix-profile/lib -lgfortran -lquadmath -lblas
 else 
-	CC      = /opt/homebrew/bin/gcc-13
-	CXX 	= /opt/homebrew/bin/g++-13
+	CC      = /opt/homebrew/bin/gcc-14
+	CXX 	= /opt/homebrew/bin/g++-14
 	FL      = /opt/homebrew/bin/gfortran
 	MDIR	= ~/Desktop/KARST/MUMPS_5.6.0
-	FLIBS	= -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/12.2.0/lib/gcc/12 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran
+	FLIBS	= -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/14 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran
 endif	
 
 #MUMPS linking

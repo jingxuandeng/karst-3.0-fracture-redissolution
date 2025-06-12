@@ -8,7 +8,7 @@ if ! bash ~/Desktop/KARST/karst_3.0/build.sh; then
     exit 1
 fi
 
-cd ~/Desktop/KARST/DATA/fracture/1D || exit
+cd ~/Desktop/KARST/DATA/fracture/100x100 || exit
 
 # Creating proper directory
 current_date_time=$(date +small_%Y_%m_%d_%H_%M)
@@ -25,7 +25,7 @@ cd "$current_date_time" || exit
 #mkdir debuging_tmp
 #cd debuging_tmp || exit
 
-cp ~/Desktop/KARST/karst_3.0/simulation_setups/fracture/config_1D.txt ./config.txt || exit
+cp ~/Desktop/KARST/karst_3.0/simulation_setups/fracture/config_small.txt ./config.txt || exit
 
 
 printf "Running the simulation...\n\n"
@@ -39,22 +39,32 @@ los=210
 #K_f1=50
 #K_goal=1
 
-Da=0.05
+Da=0.1
 d0=0.3
-C_eq=0.2
+
 dyn=1
-for C_eq in -0.3 # 0.1 0 0.3
+
+
+sandwich_pores=true
+no_max_z=false
+
+C_eq=0.5
+
+inlet_cut_factor=1
+for Da in 0.2 #0.02 0.5
 do
-for d0 in 0.45  # 0.2 0.3
+for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 1 #5 #3 4 5
+for los in 1 2 3 4 5 6
 do
-for kappa in 2 0.5  # 1000  #0.1 0.
+for inlet_cut_factor in 0.999
 do
-  for gamma in  1 #1.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+for kappa in 1 # 0.1 10 #100 10 1000  #0.1 0.
+do
+  for gamma in  1.0 #1.5 0.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
-                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-$inlet_cut_factor-dyn-$C_eq
+                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-los-$los
                 printf "Creating variant: %s\n" "$param"
                 pwd
                 mkdir $param
@@ -69,7 +79,13 @@ do
                   echo d0    = $d0
                   echo random_seed = $los
                   echo inlet_cut_factor = $inlet_cut_factor
-                  echo Cc_0 = $C_eq
+                  echo sandwich_pores = $sandwich_pores
+                  echo no_max_z = $no_max_z
+                  echo los = $los
+                  echo if_dynamic_k2 = true
+                  echo dyn_k2_c0 = 1
+                  echo inlet_cut_factor = $inlet_cut_factor
+
 
 
                 } >> config.txt
@@ -77,6 +93,7 @@ do
                 ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
 
              )
+done
 done
 done
 done
