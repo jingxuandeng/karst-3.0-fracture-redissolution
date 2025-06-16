@@ -59,7 +59,7 @@ do
 
                 } >> config.txt
 
-                ~/Desktop/KARST/karst_3.0/build/karst config.txt  >wyjscie.out 2>bledy.out&
+                ~/Desktop/KARST/karst_3.0/build/karst config.txt  #>wyjscie.out 2>bledy.out&
 
              )
 done

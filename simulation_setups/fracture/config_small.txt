@@ -67,7 +67,7 @@ if_debugging_printing = false 	# if true debugging printing is done few time in 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Type of the network
 
-type_of_topology                   =  diamond #triangulation     # six options:
+type_of_topology                   =  triangulation     # six options:
                                                             #  "hexagonal" 
                                                             #  "from_file", 
                                                             #  "triangulation" 
