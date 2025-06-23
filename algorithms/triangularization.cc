@@ -83,7 +83,12 @@ void triangulation(int N_x, int N_y, \
 		for(const auto &p : points)  cerr << p << std::endl;
 	}
 
-	std::vector<Vector2<double> > points_tmp;
+
+//    for(auto &p : points) if(int(p.y)==0) p.y = 0.5;
+//    for(auto &p : points) if(int(p.y)==N_y-1) p.y = N_y-0.5;
+
+
+    std::vector<Vector2<double> > points_tmp;
 	points_tmp = points;
 	int eps_bc = 20;   //vicinity of mirror nodes to get periodic boundary conditions
 	if(if_periodic_bc){

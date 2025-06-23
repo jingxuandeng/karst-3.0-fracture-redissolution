@@ -36,13 +36,14 @@ cut=true
 
 Da=0.5
 d0=0.1
-
-for kappa in 1 #0.1 0.
+los=13
+kappa=0
+for los in `seq 1 1 20`
 do
-  for gamma in  0.75 #0.25 0.3 0.8 0.75 1.25   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  0 #0.25 0.3 0.8 0.75 1.25   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
-                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa
+                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-los-$los
                 printf "Creating variant: %s\n" "$param"
                 mkdir $param
                 cd    $param || exit
@@ -55,6 +56,7 @@ do
                   echo d0    = $d0
                   echo d_min = $dmin
                   echo if_cut_d_min = $cut
+                  echo random_seed = $los
 
 
                 } >> config.txt
