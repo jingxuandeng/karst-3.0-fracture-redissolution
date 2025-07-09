@@ -470,7 +470,7 @@ void Network::print_tables_txt(){
 		VX_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<"  ("<<tot_time*dt_unit<<")"<<endl;
 	}
 
-    if(inlet_cut_factor>1){
+    if( inlet_cut_factor!=1){
 
 
 

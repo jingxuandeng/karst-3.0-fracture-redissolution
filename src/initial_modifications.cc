@@ -4,16 +4,16 @@
 void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
 
 
-    cerr<<"Creating a single - layer fracture"<<endl;
+    cerr << "Creating a single - layer fracture" << endl;
 
     //1. Optionally finding the inlet at the center of the system:
-    if (n_1 == nullptr){
+    if (n_1 == nullptr) {
         n_1 = wi[0];
-        Point center = {N_x/2.,0.0};
+        Point center = {N_x / 2., 0.0};
         double dist_min = n_1->xy - center;
-        for (int i=0;i<N_wi;i++){
+        for (int i = 0; i < N_wi; i++) {
 
-            if(wi[i]->xy - center < dist_min){
+            if (wi[i]->xy - center < dist_min) {
                 n_1 = wi[i];
                 dist_min = wi[i]->xy - center;
             }
@@ -21,44 +21,46 @@ void Network :: create_a_fracture(double factor, Node *n_1, Node *n_2) {
     }
 
     //2. Optionally finding the outlet at the center of the system:
-    if (n_2 == nullptr){
+    if (n_2 == nullptr) {
         n_2 = wo[0];
-        Point center = {N_x/2.,N_y/1.};
+        Point center = {N_x / 2., N_y / 1.};
         double dist_min = n_2->xy - center;
-        for (int i=0;i<N_wo;i++){
-            if(wo[i]->xy - center < dist_min){
+        for (int i = 0; i < N_wo; i++) {
+            if (wo[i]->xy - center < dist_min) {
                 n_2 = wo[i];
                 dist_min = wo[i]->xy - center;
             }
         }
     }
 
-    find_shortest_path(n_1,n_2);
+    find_shortest_path(n_1, n_2);
 
-    for (int i=0;i<NP;i++)
-        if (p[i]->tmp == 1){
-            p[i]->d = p[i]->d * factor;   //the initial diameter is larger for a fracture
-            p[i]->is_fracture = true;              //the fracture can be implemented in different way that the regular pore
+    if (factor != 1) { //fracture is made only for factor !=1 now
+
+        for (int i = 0; i < NP; i++)
+            if (p[i]->tmp == 1) {
+                p[i]->d = p[i]->d * factor;   //the initial diameter is larger for a fracture
+                p[i]->is_fracture = true;              //the fracture can be implemented in different way that the regular pore
+            }
+        for (int i = 0; i < NN; i++)
+            if (n[i]->tmp == 1)
+                n[i]->is_fracture = true;
+
+
+        // Moving node positions to visualize a fracture better but important for merging as well
+        //Prepared to network
+
+        int i = 0;
+        while (n[i]->t != 0 || n[i]->xy.x > N_x / 3. || n[i]->is_fracture) i++;
+        find_R_half(n[i]);
+        for (int i = 0; i < NG; i++) {
+            int tmp_lhs = 0;
+            for (int b = 0; b < g[i]->bN; b++)
+                if (g[i]->n[b]->is_LHS) tmp_lhs++;
+            if (tmp_lhs > 0)
+                g[i]->is_lhs = true;
         }
-    for (int i=0;i<NN;i++)
-        if (n[i]->tmp == 1)
-            n[i]->is_fracture=true;
-
-
-    // Moving node positions to visualize a fracture better but important for merging as well
-    //Prepared to network
-
-    int i=0;
-    while (n[i]->t!=0 || n[i]->xy.x>N_x/3. || n[i]->is_fracture) i++;
-    find_R_half(n[i]);
-    for (int i=0;i<NG;i++){
-        int tmp_lhs=0;
-        for(int b=0;b<g[i]->bN;b++)
-            if(g[i]->n[b]->is_LHS) tmp_lhs++;
-        if(tmp_lhs>0)
-            g[i]->is_lhs=true;
     }
-
 
     if(point_inlet) {
         cerr<<"Setting point inlet..."<<endl;

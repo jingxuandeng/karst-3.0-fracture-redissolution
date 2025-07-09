@@ -10,20 +10,20 @@ fi
 
 cd ~/Desktop/KARST/DATA/fracture/50x50 || exit
 
-## Creating proper directory
-#current_date_time=$(date +small_%Y_%m_%d_%H_%M)
-#
-#mkdir "$current_date_time"
-#if [ -d "$current_date_time" ]; then
-#  echo "Directory '$current_date_time' created successfully."
-#else
-#  echo "Failed to create directory."
-#  exit 1
-#fi
-#
-#cd "$current_date_time" || exit
-##mkdir debuging_tmp
-##cd debuging_tmp || exit
+# Creating proper directory
+current_date_time=$(date +small_%Y_%m_%d_%H_%M)
+
+mkdir "$current_date_time"
+if [ -d "$current_date_time" ]; then
+  echo "Directory '$current_date_time' created successfully."
+else
+  echo "Failed to create directory."
+  exit 1
+fi
+
+cd "$current_date_time" || exit
+#mkdir debuging_tmp
+#cd debuging_tmp || exit
 
 cp ~/Desktop/KARST/karst_3.0/simulation_setups/fracture/config_small.txt ./config.txt || exit
 
@@ -55,7 +55,7 @@ kappa=1
 dyn=1
 for d0 in 0.24  # 0.2 0.3
 do
-for inlet_cut_factor in 1 3
+for inlet_cut_factor in 1 3.5
 
   do
   (

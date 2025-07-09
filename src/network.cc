@@ -240,10 +240,13 @@ Network::Network (string input_file_name) {
 	if (!if_track_grains) NG = 0;
 
 //additional options
-	//inlets cuts
-	if(inlet_cut_factor!=1 && ! if_tilted_cut) create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
-	if(if_tilted_cut && inlet_cut_factor!=1) create_tilted_fracture(inlet_cut_w,inlet_cut_factor);
-    create_an_initial_pattern();
+	//inlet cuts and setting proper point inlet or outlet
+	create_a_fracture(inlet_cut_factor);
+
+
+    //create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
+	//if(if_tilted_cut && inlet_cut_factor!=1) create_tilted_fracture(inlet_cut_w,inlet_cut_factor);
+    //create_an_initial_pattern();
 
 
 

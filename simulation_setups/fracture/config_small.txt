@@ -39,7 +39,7 @@ if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alte
 if_full_dissolution = false  # if true evolution stops when system is fully dissolved
 time_factor_after_b = 1
 no_max_z    = false        # if true there is no limit for pore diameter, otherwise if d>H_z it is not cylinder anymore but behaves as a aperture  d x H_z
-sandwich_pipe = true      # if true the sandwich formula is always valid for pipe r and s calculations.
+sandwich_pores = false      # if true the sandwich formula is always valid for pipe r and s calculations.
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  Output
