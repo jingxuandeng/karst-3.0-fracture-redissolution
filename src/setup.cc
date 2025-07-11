@@ -145,6 +145,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			Da2 = stod(value);
 			cerr<< "Setting Da2 = "<<Da2<<endl;}
 
+		else if(name == "Da3"){
+			Da3 = stod(value);
+			cerr<< "Setting Da3 = "<<Da3<<endl;}
+
 		else if(name == "G1"){
 			G1 = stod(value);
 			cerr<< "Setting G1 = "<<G1<<endl;}
@@ -152,6 +156,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "G2"){
 			G2 = stod(value);
 			cerr<< "Setting G2 = "<<G2<<endl;}
+
+		else if(name == "G3"){
+			G3 = stod(value);
+			cerr<< "Setting G3 = "<<G3<<endl;}
 
 		else if(name == "Pe1"){
 			Pe1 = stod(value);
@@ -169,9 +177,17 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			kappa = stod(value);
 			cerr<< "Setting kappa = "<<kappa<<endl;}
 
+		else if(name == "kappa2"){
+		 	kappa2 = stod(value);
+		 	cerr<< "Setting kappa2 = "<<kappa2<<endl;}
+
 		else if(name == "theta"){
 			theta = stod(value);
 			cerr<< "Setting theta = "<<theta<<endl;}
+
+		else if(name == "theta2"){
+			theta = stod(value);
+			cerr<< "Setting theta2 = "<<theta2<<endl;}
 
 		else if(name == "d_min_factor"){
             d_min_factor = stod(value);
@@ -584,8 +600,11 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	NN    = N_x * N_y;
 	Da2   = kappa * Da;
 	G2    = theta * G1;  //TODO: Tu mogloby być G2 = kappa*theta*G1
+	G3   = theta2 * G1;
+	Da3= kappa2 * Da;
 
 
-	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;
+	// cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;
+	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<endl;
 
 }

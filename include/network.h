@@ -103,13 +103,17 @@ class Network
 		double l0;		///< initial characteristic pore length (l0 is by defoult set to one)
 		double Da;		///< effective Damkohler number for dissolution
 		double Da2;		///< effective Damkohler number for precipitation
+		double Da3;		///< effective Damkohler number for redissolution of secondary mindral
 		double G1;		///< DaPe for dissolution
 		double G2;		///< DaPe for precipitation
+		double G3;		///< DaPe for redissolution
 		double Pe1;		///< Peclet number for dissolution (D along pore) (not used now)
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
+	    double kappa2;	///< ratio of Da_3/Da_1 of reaction rates (redissolution vs dissolution)
 		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
+		double theta2;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double d_min_factor; ///< d_min = d0*d_min_factor
 		double l_min;   ///< minimal pore length (for numerical reason)
@@ -254,10 +258,13 @@ class Network
 		double outlet_c_c_2     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_c
 		double k_eff_in_pore    (Pore* p);		///< returns the value of k_eff in the pore p
 		double k_eff_2_in_pore  (Pore* p);		///< returns the value of k_eff_2 (see precipitation) in the pore p
+		double k_eff_3_in_pore  (Pore* p);		///< returns the value of k_eff_3 (see redissolution) in the pore p
 		double G_in_pore        (Pore* p);		///< returns the value of G in the pore p
-		double G2_in_pore       (Pore* p);		///< returns the value of g2 (see precipitation) in the pore p
+		// double G2_in_pore       (Pore* p);		///< returns the value of g2 (see precipitation) in the pore p
+		// double G3_in_pore       (Pore* p);		///< returns the value of g3 (see redissolution) in the pore p
 		double Da_eff_in_pore   (Pore* p);		///< returns the value of Da_eff in the pore p
 		double Da_eff_2_in_pore (Pore* p);		///< returns the value of Da_eff_2 (see precipitation) in the pore p
+		double Da_eff_3_in_pore (Pore* p);		///< returns the value of Da_eff_3 (see redissolution) in the pore p
 
 		void check_diss_pattern(double threshold);		///< check the position of the dissolution pattern - pores larger that threshold x d0
 		bool check_diss_front  (double threshold, int row);  ///< check if the dissolution pattern -reaches particular row of pores

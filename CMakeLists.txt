@@ -1,8 +1,11 @@
-#cmake_minimum_required(VERSION 3.12)  # Adjust the required version as needed
-cmake_minimum_required(VERSION 3.6)  # Adjust the required version as needed
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
-project(karst)  # Change to your project name
+cmake_minimum_required(VERSION 3.12)  # Adjust the required version as needed
+#cmake_minimum_required(VERSION 3.6)  # Adjust the required version as needed
+#set(CMAKE_C_COMPILER "gcc")
+#set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_C_COMPILER "clang")
+set(CMAKE_CXX_COMPILER "clang++")
+#project(karst)  # Change to your project name
+project(fracture)
 
 set(CMAKE_CXX_STANDARD 20)  # Set the C++ standard
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -28,13 +31,21 @@ else()
     # Check macOS version and set CXX compiler accordingly
     if (MACOS_VERSION VERSION_GREATER "14.1")
         message(STATUS "Running on a new MACOS")
-        set(CC /opt/homebrew/bin/gcc-14)
-        set(CXX /opt/homebrew/bin/g++-14)
-        set(FL /opt/homebrew/bin/gfortran)
-        set(CMAKE_C_COMPILER /opt/homebrew/bin/gcc-14)
-        set(CMAKE_CXX_COMPILER /opt/homebrew/bin/g++-14)
-        set(MDIR /Users/agnieszka/Desktop/KARST/MUMPS_5.6.0)
-        set(FLIBS -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/13 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran)
+        #set(CC /opt/homebrew/bin/gcc-14)
+        #set(CXX /opt/homebrew/bin/g++-14)
+        #set(FL /opt/homebrew/bin/gfortran)
+        #set(CMAKE_C_COMPILER /opt/homebrew/bin/gcc-14)
+        #set(CMAKE_CXX_COMPILER /opt/homebrew/bin/g++-14)
+        #set(MDIR /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/MUMPS_5.1.2)
+        #set(FLIBS -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/13 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran)
+        #set(MLIBS  -L${MDIR} -L${MDIR}/lib -L${MDIR}/libseq)
+        set(CC  /usr/bin/clang)
+        set(CXX /usr/bin/clang++)
+        set(FL /usr/local/bin/gfortran)
+        set(CMAKE_C_COMPILER /usr/bin/clang)
+        set(CMAKE_CXX_COMPILER /usr/bin/clang++)
+        set(MDIR /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/MUMPS_5.1.2)
+        set(FLIBS -L/usr/local/lib/ -L/usr/local/opt/gcc/lib/gcc/15 -L/Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/scotch/lib -L/usr/local/opt/metis/lib -L/usr/local/opt/lapack/lib -L/usr/local/opt/openblas/lib -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran)
         set(MLIBS  -L${MDIR} -L${MDIR}/lib -L${MDIR}/libseq)
     else (MACOS_VERSION GREATER_EQUAL "9.14")
         message(STATUS "Running on an old  MACOS")
@@ -43,7 +54,7 @@ else()
         set(CC clang)
         set(CXX clang++)
         set(FL gfortran)
-        set(MDIR /Users/agnieszka/Desktop/KARST/MUMPS_4.7.3)
+        set(MDIR /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/MUMPS_5.1.2)
         set(FLIBS -lgfortran -lquadmath -lblas)
         set(MLIBS  -L${MDIR} -L${MDIR}/lib -L${MDIR}/libseq)
     endif()
@@ -58,6 +69,10 @@ target_compile_options(karst PRIVATE
         -Wall -pedantic -O2
         -std=c++20 -Weffc++ -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -O2
         )
+#target_compile_options(karst PRIVATE
+#        -Wall -pedantic -O2
+#        -std=c++20 -Weffc++ -Wextra -Wfatal-errors -Wunused -pedantic -Winline -O2
+#)
 
 # Set include directories
 target_include_directories(karst PRIVATE

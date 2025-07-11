@@ -29,13 +29,17 @@ Network::Network (string input_file_name) {
 	d0    = 0.1*l0;	 //initial characteristic pore diameter
 	Da    = 1;		 //effective Damkohler number for dissolution
 	Da2   = 1;		 //effective Damkohler number for precipitation
+	Da3   = 1;		 //effective Damkohler number for redissolution
 	G1    = 1;		 //DaPe for dissolution
 	G2    = 1;		 //DaPe for precipitation
+	G3    = 1;       //DaPe for redissolution
 	Pe1   = 1;		 //Peclet number for dissolution (D along pore)
 	Pe2   = 1;		 //Peclet number for precipitation (D along pore)
 	gamma = 1;	     //ratio of acid capacity numbers between dissolution and precipitation (gamma1/gamma2)
 	kappa = 1;	     //ratio of Da_1/Da_2 = ratio of reaction rates
+	kappa2 = 1;		 //ratio of Da_3/Da_1 = ratio of reaction rates. Ratio of Da_redissolution to Da_dissolution. (20250616 Question: or Da_3/Da_1?)
 	theta = 1;	     //ratio of G_1/G_2
+	theta2 = 1;      //ratio of G_1/G_3
 	d_min = d0/100.; //minimal possible pore diameter (important in precipitation)
     d_min_factor= 100; //d_min = d0*d_min_factor
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)

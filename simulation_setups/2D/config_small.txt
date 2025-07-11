@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Size of the netwrok
 
-N_x = 100         # size of the regular network
-N_y = 100         # size of the regular network
+N_x = 10         # size of the regular network
+N_y = 10         # size of the regular network
 
 # P_out = 0       # pressure at the outlet, always should be set to zero
 # P_in  = N_y-1   # pressure at the inlet is set to  N_y-1 automatically after setting N_y (P_in must be positive)
@@ -15,9 +15,12 @@ N_y = 100         # size of the regular network
 l0    = 1		# initial characteristic pore length (should be always equal to one!!!!)
 d0    = 0.1  	# initial characteristic pore diameter
 Da    = 1       # effective Damkohler number for dissolution
+Da3   = 1       # effective Damkohler number for redissolution
 G1    = 1		# DaPe for dissolution
+G3    = 1		# DaPe for redissolution
 gamma = 1       # parameters of precipitation: V_pre/V_diss
 theta = 1       # parameters of precipitation: G_pre / G_diss
+theta2 = 1      # parameters of precipitation: G_rediss / G_diss
 kappa = 0.5     # parameters of precipitation: Da_pre / Da_diss
 
 d_min = 0.01            # minimal pore diameter
@@ -59,13 +62,13 @@ if_save_txt           = true    # if true data about network (nodes, grains, por
 if_save_topology      = true    # if true topology is saved in each save_all
 if_save_table         = true    # if true tables with diameters, flows and concentration is saved
 if_verbose            = false   # if true verbose version for debugging
-if_debugging_printing = false 	# if true debugging printing is done few time in each time step
+if_debugging_printing = ture 	# if true debugging printing is done few time in each time step
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Type of the network
 
-type_of_topology                   = triangulation     # six options:
+type_of_topology                   = diamond     # six options:
                                                             #  "hexagonal" 
                                                             #  "from_file", 
                                                             #  "triangulation" 
@@ -88,7 +91,8 @@ max_rand_shift_xy                  = 0       		# if randomness is on this gives 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Model properties
 
-if_precipitation                   = true       # if true the precipitation is added to dissolution
+if_precipitation                   = false       # if true the precipitation is added to dissolution
+#if_redissolution                   = ture        # if true the redissolution of secondary mineral is added to dissolution
 if_track_grains                    = true        # if true grains and their volume are tracked (important for merging and precipitation)
 if_dynamical_length                = true        # if true pore length is addapted in each time step
 if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)

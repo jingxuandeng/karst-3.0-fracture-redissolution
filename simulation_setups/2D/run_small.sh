@@ -3,7 +3,7 @@
 printf "Preparing the simulation...\n\n"
 
 bash ./build.sh
-if ! bash ./build.sh; then
+if ! bash ./build.sh; then # change the path for build.sh
     echo "Problem with compilation."
     exit 1
 fi
@@ -22,14 +22,14 @@ else
 fi
 
 cd "$current_date_time" || exit
-cp ../../../karst_3.0/simulation_setups/2D/config_small.txt ./config.txt || exit
+cp ../../../fracture/simulation_setups/2D/config_small.txt ./config.txt || exit # need to change this
 
 
 printf "Running the simulation...\n\n"
 
 Da=0.5
 gamma=1
-kappa=1000
+kappa=1
 dmin=0.001
 cut=true
 los=107
@@ -59,7 +59,8 @@ do
 
                 } >> config.txt
 
-                ../../../../karst_3.0/build/karst config.txt  >wyjscie.out 2>bledy.out&
+#                ../../../../fracture/build/karst config.txt  >wyjscie.out 2>bledy.out&
+                 ../../../../fracture/build/karst config.txt  >run_output.txt 2>run_errors.txt&
 
              )
 done

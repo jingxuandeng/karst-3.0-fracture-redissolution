@@ -624,7 +624,7 @@ void Network::calculate_concentrations_c(){
 	}
 
 	//if(r_no!=R_no) {cerr<<"Problem with filling linear equations for concentration! R_no = "<<R_no<<" r_no = "<<r_no<<endl; exit(666);}
-	cerr<<"Calculating concentrations: solving matrix..."<<endl;
+	cerr<<"Calculating concentracations: solving matrix..."<<endl;
 	int M_out = solve_matrix(R_m, r_no, ww_r, ww_c, B, y);
 	if(M_out!=0) cerr<<"Problem with solving linear equations; M_out = "<<M_out<<endl;
 
@@ -876,13 +876,14 @@ void Network::dissolve_and_precipitate(){
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0; int bG_tmp_E=0;
-        bool pipe_formula = (!(sandwich_pores and p0->is_fracture) and (d_old<H_z or no_max_z));
+        bool pipe_formula = (!(sandwich_pores and p0->is_fracture) and (d_old<H_z or no_max_z)); //pip_formular is for pore
 		double d_V_A = pipe_formula ? (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus *d0)*p0->l)/2.;
 		double d_V_E = pipe_formula ? (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2. :  (M_PI*(1.0)*(dd_minus*d0)*p0->l)/2.;
         for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
         for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0 or p0->g[s]->Ve >0) bG_tmp_E++;
-		for(int s=0; s<p0->bG;s++) {
-			if(p0->g[s]->Va > 0)                          p0->g[s]->tmp -=d_V_A/bG_tmp_A;
+		for(int s=0; s<p0->bG;s++) {//looking for grains that connect to this pore
+			if(p0->g[s]->Va > 0)                          p0->g[s]->tmp -=d_V_A/bG_tmp_A; // if A is available in the grain, then reduce the amount of A by the total amount of A in pore divided by total number of grain that consist of A, So if i have redissolution, i need to check if mineral E is positive or negative, If E is positive, then this dont need to change, if E is negative, then i need to change it
+			// if d_V_E is negative, check if I have enough mineral to be dissolved.
 			if(p0->g[s]->Va > 0 or p0->g[s]->Ve > 0)      p0->g[s]->tmp2+=d_V_E/bG_tmp_E;
 		}
 
@@ -892,7 +893,7 @@ void Network::dissolve_and_precipitate(){
 
 	//updating Va and Vc (must be done after main dissolution for c_out to be calculated correctly)
 	if(if_track_grains){
-		for (int i=0;i<NG;i++) {g[i]->Va+=g[i]->tmp;   if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}}
+		for (int i=0;i<NG;i++) {g[i]->Va+=g[i]->tmp;   if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}} // if Va is negative, setting the grain volume to zero. It's a trick. For Ve we cannot use this. Need to think about how to
 		for (int i=0;i<NG;i++) {g[i]->Ve+=g[i]->tmp2;  if(g[i]->Ve<0) {Ve_tot-=g[i]->Ve; g[i]->Ve = 0;}}
 	}
 

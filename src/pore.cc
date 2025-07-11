@@ -81,6 +81,12 @@ bool Pore::is_Va_left(){
 	else		   return false;
 }
 
+/**
+* This function returns true if the species E is still present in neighboring grains.
+* This information is important when deciding if the redissolution can still occur in the pore.
+* @author Jingxuan Deng
+* @date 07/07/2025
+*/
 bool Pore::is_Ve_left(){
     double Ve_tot=0;
     for (int b=0;b<bG;b++) Ve_tot+=g[b]->Ve;
@@ -168,6 +174,22 @@ double Pore::local_G_2(Network* S){
 }
 
 /**
+* This function returns the local value of G3 (used in redissolution) parameter for the pore.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 16/06/2025
+*/
+double Pore::local_G_3(Network* S){
+
+	//double d_tmp = min(1,d);   //possible feature for a fracture
+
+	if     (S->G3==0)	return	0;						         // reaction limited case, G = 0
+	else if(S->G3>0 )	return  S->G3*d/S->d0;	             // mixed case: k1 ~ DD1
+	else			    return  -1;							     // diffusion limited case, convention: G<0 => G = Inf
+
+}
+
+/**
 * This function returns the local value of Da_eff parameter for the pore.
 * @param S pointer to the network
 * @author Agnieszka Budek
@@ -194,7 +216,7 @@ double Pore::is_there_precipitation(Network *S){
 
     if (S->C_eq==0 and is_Ve_left()) return  1;  //if C_eq == 0 the precipitation is reversible
 
-    double cc0 = calculate_inlet_cc();
+    double cc0 = calculate_inlet_cc(); // 20250708: This could be negative because the definition of R=k2theta(c_eq-c) for reversible precipitation
     double cb0 = calculate_inlet_cb();
     if(!is_Va_left()) cb0 = 0;
 
@@ -207,11 +229,37 @@ double Pore::is_there_precipitation(Network *S){
     if(cc0+dcc < 0)
         return 0;
 
+	// 20250708: because cb0 must be positive, so if cc0 is negative
     double alpha = 1./f1 * log(cb0/(cb0+cc0));
     if(alpha>1 or alpha<0) {cerr<<"ERROR: is_there_precipitation has wrong value."; return 0;}
     return (1-alpha);
 
 }
+// // To do 20250708
+// // this function should be value between 0 and 1, value inbetween means we are redissolving that not comes from the euqation
+// double Pore::is_there_redissolution(Network *S){
+//
+// 	if (S->C_eq==0 and is_Ve_left()) return  1;  //if C_eq == 0 the precipitation is reversible
+//
+// 	double cc0 = calculate_inlet_cc(); // 20250708: This could be negative because the definition of R=k2theta(c_eq-c) for reversible precipitation
+// 	double cb0 = calculate_inlet_cb();
+// 	if(!is_Va_left()) cb0 = 0;
+//
+// 	if(cc0 >= 0)
+// 		return 1;       //normal behaviour with precipitation
+//
+// 	double f1 = local_Da_eff(S);
+// 	double dcc = cb0*(1-exp(-f1));
+//
+// 	if(cc0+dcc < 0)
+// 		return 0;
+//
+// 	// 20250708: because cb0 must be positive, so if cc0 is negative
+// 	double alpha = 1./f1 * log(cb0/(cb0+cc0));
+// 	if(alpha>1 or alpha<0) {cerr<<"ERROR: is_there_precipitation has wrong value."; return 0;}
+// 	return (1-alpha);
+//
+// }
 
 /**
 * This function returns the local value of Da_eff_2 (used in precipitation) parameter for the pore.
@@ -227,11 +275,12 @@ double Pore::local_Da_eff_2(Network* S){
 
     //double d_tmp = min(1,d);     //possible feature for a fracture
 
+	// precipitation depends on pH treshold
     if(S->if_dynamic_k2){
 
         if(abs(S->dyn_k2_alpha)>100){
             if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)>S->dyn_k2_c0*_sign(S->dyn_k2_alpha))
-                return 0;
+                return 0; // if inlet cB_in concentration of a given pore is larger than treshold value, then 0. Right now this is implemented, dont need to worry about the else{...}
         }
         else{
             double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
@@ -239,7 +288,7 @@ double Pore::local_Da_eff_2(Network* S){
         }
     }
 
-    Da2local = Da2local * is_there_precipitation(S);
+    Da2local = Da2local * is_there_precipitation(S); // this could be useful form for redissolution as well
 
     //formula for an aperture
     if((d>S->H_z and !S->no_max_z) or (S->sandwich_pores and is_fracture)){
@@ -253,7 +302,23 @@ double Pore::local_Da_eff_2(Network* S){
 	else             return Da2local*(l/S->l0)*(S->q_in_0/fabs(q));
 }
 
+/**
+* This function returns the local value of Da_eff_3 (used in redissolution) parameter for the pore.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 16/06/2025
+*/
+double Pore::local_Da_eff_3(Network* S){
 
+	if (q==0) return -1;
+	double G = this->local_G_3(S); // TO DO: define local_G_3
+
+	// Da3local = Da3local * is_there_redissolution(S); // this could be useful form for redissolution as well
+
+	if      (G>0)    return S->Da3*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
+	else if (G==0)   return S->Da3*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	else             return S->Da3*(l/S->l0)*(S->q_in_0/fabs(q));
+}
 
 /**
 * This function returns the change in diameter due to dissolution in one time step.
@@ -262,7 +327,7 @@ double Pore::local_Da_eff_2(Network* S){
 * @date 14/03/2020
 */
 double Pore::default_dd_plus(Network*S){
-
+	// To do: add check how much E is available: use a loop to get all the E ...
 	if(S->if_track_grains && !is_Va_left())  return 0;   //no reaction if there is no A species available
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
@@ -282,6 +347,40 @@ double Pore::default_dd_plus(Network*S){
 	if      (f1==0)      dd_plus = 0;
 	else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
 	else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
+
+
+	return dd_plus;
+}
+
+/**
+* This function returns the change in diameter due to redissolution in one time step.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 07/07/2025
+*/
+
+double Pore::default_dd_plus_rediss(Network*S){
+	// even if E is present, check how much will be redissolved, make sure that this amount is not larger than Ve left, do not have negative volume. check dissolution.cc file, for tracking and checking mineral A
+	if(S->if_track_grains && !is_Ve_left())  return 0;   //no reaction if there is no E species available
+	if(d==0 || q ==0)  return 0;   //pore with no flow
+	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
+
+	//redissolution parameters
+	double f1      = local_Da_eff(S);
+	double f3      = local_Da_eff_3(S);
+	double g       = local_G_3(S);
+	// To do: check what c0 should be for redissoltuion
+	double c0;
+	if(S->if_streamtube_mixing) c0 = c_in;
+	else                        c0 = calculate_inlet_cb();
+
+	double dd_plus = 0; 		//diameter change
+
+
+	//finding redissolution contribution
+	if      (-f1-f3==0)      dd_plus = 0;
+	else if (S->G3 >=0)  dd_plus = S->gamma*S->dt*(f3/(f1+f3))*c0*(1-exp(-f1-f3))/(1+g)/f1;
+	else        	     dd_plus = S->gamma*S->dt*(f3/(f1+f3))*c0*(1-exp(-f1-f3))/f1/d;
 
 
 	return dd_plus;

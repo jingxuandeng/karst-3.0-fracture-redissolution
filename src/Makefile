@@ -1,57 +1,75 @@
-UNAME := $(shell uname)
 
-ifeq ($(UNAME), Linux)
-	CC		= clang        
-	CXX 	= clang++                                            
-	FL		= gfortran 
-	MDIR	=  ~/.nix-profile/opt/mumps
-	FLIBS	= -L ~/.nix-profile/lib -lgfortran -lquadmath -lblas
-else 
-	CC      = /opt/homebrew/bin/gcc-13
-	CXX 	= /opt/homebrew/bin/g++-13
-	FL      = /opt/homebrew/bin/gfortran
-	MDIR	= ~/Desktop/KARST/MUMPS_5.6.0
-	FLIBS	= -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/12.2.0/lib/gcc/12 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran
-endif	
 
 #MUMPS linking
-MLIBS	= -ldmumps -lmpiseq -lpthread -lpord  -lstdc++ $(FLIBS)
+MDIR    = /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/MUMPS_5.1.2
+
+BREW=/usr/local/Cellar
+
+CC	= clang       
+CXX 	= clang++                                            
+FL	= gfortran   
+AR      = ar vr 
+
+LSCOTCH   =  -L /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/scotch/lib -lesmumps -lscotch -lscotcherr
+LMETIS    =  -L $(BREW)/metis/5.1.0/lib -lmetis
+LPORD = -L $(MDIR)/lib -lpord
+
+# Corresponding variables reused later
+LORDERINGS = $(LMETIS) $(LPORD) $(LSCOTCH)
+
+LLAPACKDIR = $(BREW)/lapack/3.12.0/lib
+LAPACK =  -L $(LLAPACKDIR) -llapack
+
+LIBSEQ  = $(LAPACK) -L$(MDIR)/libseq -lmpiseq
+
+LBLASDIR = $(BREW)/openblas/0.3.29/lib
+LIBBLAS = -L $(LBLASDIR) -lblas
+
+LIBOTHERS = -lpthread
+LFORTRAN = -L /usr/local/opt/gcc/lib/gcc/15  -lgfortran
+LIBMUMPS = -L $(MDIR)/lib/ -ldmumps -L $(MDIR)/lib/ -lmumps_common
+
+
+
+MINCLUDES = -I $(MDIR)/include -I $(MDIR)/libseq 
 ALGDIR  = ../algorithms
+ARMINCDIR = -I ../include -I $(ALGDIR)
 
-COPTS	= -Wall -pedantic -O2  
-CINCLUDES	= -I ../include -I ../algorithms 
-MINCLUDES	= -I ../include -I $(MDIR)/include -I $(MDIR)/libseq
+COPTS	= -Wall -pedantic -O2 
+CFLAGS	= $(COPTS) $(MINCLUDES) $(ARMINCDIR)
 
-CFLAGS	 = $(COPTS) $(CINCLUDES) $(MINCLUDES) 
-CXXFLAGS = -O2 -std=c++17 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -O2
-TMP      = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-system
+CXXOPTS = -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lstdc++ $(LSFML) $(LFORTRAN)
+CXXFLAGS = $(CXXOPTS) 
 
 
-OBJ	= network.o main.o printing.o printing_net.o node.o pore.o grain.o merging.o initial_modifications.o\
+MLIBS	= $(LIBMUMPS) $(LORDERINGS) $(LIBSEQ) $(LIBBLAS) $(LIBOTHERS) -lstdc++
+MFLAGS	= $(COPTS) $(MLIBS) 
+
+TRICK	= 2>&1 >/dev/null | grep -v -e '^/var/folders/*' -e '^[[:space:]]*\.section' -e '^[[:space:]]*\^[[:space:]]*~*'
+
+
+OBJ     = network.o main.o printing.o printing_net.o node.o pore.o grain.o merging.o initial_modifications.o\
 evolution.o network_maintenance.o setup.o dissolution.o control_and_verification.o import_export.o network_generation.o\
-tests.o analysis.o pattern_analysis.o save_in_VTK.o
-INC	= network.h node.h pore.h grain.h printing.h constants.h algorithms_cc.h
+tests.o save_in_VTK.o analysis.o pattern_analysis.o
+INC     = network.h node.h pore.h grain.h printing.h constants.h algorithms_cc.h
 
 
-LINKOPTS  = $(COPTS) -lstdc++ $(FLIBS)  -lgfortran
-LIBS      = -lm -L ../algorithms -lalgorithms
-MFLAGS    = $(MLIBS) -L $(MDIR)/lib -L $(MDIR)/libseq
-LFLAGS    = $(LINKOPTS) $(LIBS) $(MFLAGS) 
+ALGLIBS      = -lm -L $(ALGDIR) -lalgorithms
+LFLAGS    = $(ALGLIBS) $(MFLAGS) 
 
 
-## Default target
-#.DEFAULT:
-#    @echo "No target specified. To build a program, use: make <program_name>"
+network_generation.o: network_generation.cc
+	$(CXX) $(CXXFLAGS) $(ARMINCDIR) -c network_generation.cc
+.c.o: 
+	$(CC)  $(CFLAGS) -c $< 
 
-.c.o:
-	$(CC) $(CFLAGS) -c $< 
+.cc.o: 
+#	$(CXX) $(CXXFLAGS) $(CINCLUDES) -c $< 
+	$(CXX)  $(CFLAGS) -c $< 
 
-.cc.o: $(INC)
-	$(CXX) $(CXXFLAGS) $(CINCLUDES) -c $<
-   	 
 
-karst: $(OBJ)
-	$(CXX)  -o ../bin/karst $^ $(LFLAGS) $(CXXFLAGS)
+karst: $(OBJ) 	
+	$(CXX) -v -o ../bin/karst $^ $(LFLAGS) $(CXXFLAGS)
 
 algorithms:
 	$(MAKE) all -C $(ALGDIR)
@@ -59,13 +77,9 @@ algorithms:
 clean:
 	rm -f *.o
 
-clean_alg:
-	rm -f ../algorithms/*.o ../algorithms/*.a
 
-all:
+all: 
 	mkdir -p ../bin
 	make algorithms
 	make karst
-
-default: all
 

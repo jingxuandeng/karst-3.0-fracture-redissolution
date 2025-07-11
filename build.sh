@@ -21,11 +21,14 @@ if [ "$system_name" = "Linux" ]; then
 elif [ "$system_name" = "Darwin" ]; then
 
     echo "This is macOS."
-    dir="build"
+#    dir="build"
+#
+#    if [ ! -d $dir ]; then
+#        mkdir $dir
+#    fi
 
-    if [ ! -d $dir ]; then
-        mkdir $dir
-    fi
+    # Configure build system in 'build' directory
+    cmake -S . -B build
 
     cd build || exit
 
@@ -33,12 +36,12 @@ elif [ "$system_name" = "Darwin" ]; then
         make clean
     fi
 
-    cmake ../CMakeLists.txt
+    cmake ..
     if ! make; then
       exit 1
     fi
 
-    cp ./karst ../tests
+    cp karst ../tests
 else
     echo "Unsupported system: $system_name"
 fi
