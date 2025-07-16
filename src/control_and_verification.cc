@@ -76,7 +76,7 @@ void Network::check_acid_balance(){
 		for(int i=0;i<N_wo;i++){
 			for (int j=0; j<wo[i]->b;j++){
 				Pore * pp = wo[i]->p[j];
-				if(pp->d>0) VB_out+=fabs(pp->q)*pp->c_in*outlet_c_b(pp)*dt*dt_unit;
+				if(pp->d>0) VB_out+= fabs(pp->q) * pp->c_in * outlet_c_b_coeff(pp) * dt * dt_unit;
 			}
 		}
 	}
@@ -348,6 +348,7 @@ void Network::print_network_for_debugging (string text, string type_n, string ty
 
 		if (type_g == "name")                for(int i=0;i<NG;i++) g[i]->tmp = g[i]->a;
 		if (type_g == "volume A")            for(int i=0;i<NG;i++) g[i]->tmp = g[i]->Va;
+
 
 		description_note = text + ": s = " + to_string(tot_steps);
 		net_ps<<*this;}

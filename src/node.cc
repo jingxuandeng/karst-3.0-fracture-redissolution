@@ -341,7 +341,41 @@ ofstream_txt & operator << (ofstream_txt & stream, Node &n){
 
 	stream <<setw(12)<<n.a<<setw(12)<<setw(6)<<n.t<<n.u<<setw(12)<<n.cb<<setw(12)<<n.cc<<endl;
 	return stream;
-}	
+}
 
+
+
+bool Node::can_be_calculated(){
+
+    for (int k=0; k<b; k++)
+        if(p[k]->d>0  and fabs(p[k]->q)>epsilon_for_c and n[k]->u > u and n[k]->tmp<2)
+            return false;
+    return true;
+}
+
+void Node::set_new_concentration(Network *N, SPECIES_NAME species){
+
+
+    double Q = 0;
+    double QB = 0;
+
+    for (int k=0; k<b; k++)
+        if(p[k]->d>0 and fabs(p[k]->q)>epsilon_for_c and n[k]->u > u ){
+            Q+=fabs(p[k]->q);
+            if (species == SPECIES_NAME::B)
+                QB += fabs(p[k]->q) * n[k]->cb * N->outlet_c_b_coeff(p[k]);
+            else if (species == SPECIES_NAME::C)
+                QB += N->outlet_c_c_1(p[k]) + fabs(p[k]->q) * n[k]->cc * N->outlet_c_c_2_coeff(p[k]);
+            else std::cerr << "Unknown SPECIES_NAME." << std::endl;
+
+        }
+
+    if(Q!=0 and QB>0){
+        if (species == SPECIES_NAME::B) cb = QB/Q;
+        else if (species == SPECIES_NAME::C) cc = QB/Q;
+        else std::cerr << "Unknown SPECIES_NAME." << std::endl;
+    }
+
+}
 
 

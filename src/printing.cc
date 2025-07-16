@@ -67,9 +67,9 @@ ostream & operator<< (ostream &os, Kropka kr) {
 ostream & operator<< (ostream &os, Kropa kr) {
 
     if(kr.nod) {
-        if (kr.nod->t == 0) kr.k = Kolor(0.7, 0.7, 0.7);
-        if (kr.nod->t == -1) kr.k = Kolor(0.1, 0.8, 0.1);
-        if (kr.nod->t == 1) kr.k = Kolor(0, 0, 1);
+        if (kr.nod->tmp == 0) kr.k = Kolor(0.7, 0.7, 0.7);
+        if (kr.nod->tmp == 1) kr.k = Kolor(0.1, 0.8, 0.1);
+        if (kr.nod->tmp == 2) kr.k = Kolor(0, 0, 1);
 
         if(kr.nod->is_fracture ) kr.k = Kolor(0.7,0,0.7);
         //if     (kr.nod->t==0 && kr.nod->cb==1) kr.k=Kolor(0,1,0); //for stream-tube mixing
@@ -87,7 +87,8 @@ ostream & operator<< (ostream &os, Kropa kr) {
         os<<Kolor(0.8,0,0);
         os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
         os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
-		os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
+        //os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
+		os<<"0 0 ("<<setprecision(5)<<kr.nod->cb<<") ashow stroke"<<endl;}
 	else os << " stroke"<<endl;
 	
 	return os;}

@@ -2,6 +2,8 @@
 #include "printing.h"
 #include "algorithms_cc.h"
 
+#include <deque>
+
 //functions related to evolution
 
 /**
@@ -393,7 +395,7 @@ void Network::recalculate_flows_to_keep_Perm() {
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-double Network::outlet_c_b (Pore *p0){
+double Network::outlet_c_b_coeff (Pore *p0){
 
 
 	if(p0->q==0 || p0->d == 0) 						return 0;    //pores with no flow
@@ -408,8 +410,8 @@ double Network::outlet_c_b (Pore *p0){
 
 
 /**
-* This function returns the rise of the concentration of species C in a given pore as a result to dissolution reaction.
-* The real value of the C_c_outlet  = C_c_inlet*outlet_c_c_2 (p0) + C_b_inlet*outlet_c_c_1 (p0)
+* This function returns the amount of species C produced in a given pore as a result to dissolution reaction.
+* The real value of the C_c_outlet  = C_c_inlet*outlet_c_c_2_coeff (p0) + C_b_inlet*outlet_c_c_1 (p0)
 * WARNING: The d_min and d_max needed to determined if the system will clogged
 *  are calculated based on old concentration field.
 *  There is no way to synchronized it. One can only use relatively small time step.
@@ -457,28 +459,28 @@ double Network::outlet_c_c_1 (Pore *p0){
 
 /**
 * This function returns the drop of the concentration of species C in a given pore as a result to precipitation reaction.
-* The real value of the C_c_outlet  = C_c_inlet*outlet_c_c_2 (p0) + C_b_inlet*outlet_c_c_1 (p0)
+* The real value of the C_c_outlet  = C_c_inlet*outlet_c_c_2_coeff (p0) + C_b_inlet*outlet_c_c_1 (p0)
 * @param pore given pore
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-double Network::outlet_c_c_2 (Pore *p0){
+double Network::outlet_c_c_2_coeff (Pore *p){
 
-	if(p0->q==0 || p0->d ==0) 				   return 0;      //pore with no flow
-	if(p0->l==l_min)          				   return 1;	  //no reactions in tiny grain
-	if(p0->d<=d_min && (!(p0->is_Va_left())))  return 1;
-    if(!p0->is_active)                         return 1;
+	if(p->q == 0 || p->d == 0) 				   return 0;      //pore with no flow
+	if(p->l == l_min)          				   return 1;	  //no reactions in tiny grain
+	if(p->d <= d_min && (!(p->is_Va_left())))  return 1;
+    if(!p->is_active)                         return 1;
 
 
-	double f2       = p0->local_Da_eff_2  (this);
-	double dd_plus  = p0->default_dd_plus (this);
-	double dd_minus = p0->default_dd_minus(this);
+	double f2       = p->local_Da_eff_2  (this);
+	double dd_plus  = p->default_dd_plus (this);
+	double dd_minus = p->default_dd_minus(this);
 
 
 	//Checking if there is enough space for full dissolution
-	if(p0->d + (dd_plus - dd_minus) *d0<d_min){
-		if(p0->is_Va_left()) return 1;            //if there is no space for full precipitation I use ugly but working formula form outlet_c_c_2
-		else                 return 1 - (p0->d-d_min)/d0/dd_minus*(1-exp(-f2));
+	if(p->d + (dd_plus - dd_minus) * d0 < d_min){
+		if(p->is_Va_left()) return 1;            //if there is no space for full precipitation I use ugly but working formula form outlet_c_c_2
+		else                 return 1 - (p->d - d_min) / d0 / dd_minus * (1 - exp(-f2));
 	}
 	else 		return  exp(-f2);	  //if there is enough space for precipitation
 
@@ -499,7 +501,7 @@ void Network::calculate_concentrations(){
 
     if(if_system_dissolved) return;
 
-	//calculating no of non zero elements of linear equations
+	//calculating no of non-zero elements of linear equations
 	for(int i=0;i<NN;i++) n[i]->tmp=i;
 
 	int R_no = 0;
@@ -534,7 +536,7 @@ void Network::calculate_concentrations(){
 			if(qq > 0){
 				ww_r[r_no] 	= i;
 				ww_c[r_no] 	= n[i]->n[s]->tmp;
-				B[r_no]		= qq*outlet_c_b(pp);
+				B[r_no]		= qq * outlet_c_b_coeff(pp);
 				S_q+=qq;
 				r_no++;}}
 		ww_r[r_no] 		= i;
@@ -611,7 +613,7 @@ void Network::calculate_concentrations_c(){
 			if(qq > 0){			
 				ww_r[r_no] 	= i;
 				ww_c[r_no] 	= n[i]->n[s]->tmp;
-				B[r_no]		= qq*outlet_c_c_2(pp);
+				B[r_no]		= qq * outlet_c_c_2_coeff(pp);
 				S_q+=qq;
 				y[i]-= outlet_c_c_1(pp);
 				r_no++;}}
@@ -736,13 +738,14 @@ void Network::calculate_concentrations_streamtube_mixing(){
 			nn->cb=1;   //just for printing, I want to single out special pores
 			N_streamtube_mixing++;
 			if(fabs(pp->q) > fabs(pp4->q)){ //if our pore takes the most of the flow
-				ww_r[r_no] = i;		ww_c[r_no] = pp4->tmp;		B[r_no++] =  fabs(pp4->q)*outlet_c_b(pp4);
-				ww_r[r_no] = i;     ww_c[r_no] = pp3->tmp;      B[r_no++] = (fabs(pp->q) - fabs(pp4->q))*outlet_c_b(pp3);
+				ww_r[r_no] = i;		ww_c[r_no] = pp4->tmp;		B[r_no++] = fabs(pp4->q) * outlet_c_b_coeff(pp4);
+				ww_r[r_no] = i;     ww_c[r_no] = pp3->tmp;      B[r_no++] = (fabs(pp->q) - fabs(pp4->q)) *
+                        outlet_c_b_coeff(pp3);
 				ww_r[r_no] = i;     ww_c[r_no] = i;             B[r_no++] = -fabs(pp->q);
 			}
 
 			else{
-				ww_r[r_no] = i;		ww_c[r_no] = pp4->tmp;		B[r_no++] =  outlet_c_b(pp4);
+				ww_r[r_no] = i;		ww_c[r_no] = pp4->tmp;		B[r_no++] = outlet_c_b_coeff(pp4);
 				ww_r[r_no] = i;     ww_c[r_no] = i;             B[r_no++] = -1;
 				}
 			}
@@ -756,7 +759,7 @@ void Network::calculate_concentrations_streamtube_mixing(){
 				if(nn==pp->n[0]) qq = -pp->q;
 				else             qq =  pp->q;
 				if(qq > 0){
-					ww_r[r_no] = i;   ww_c[r_no] = pp->tmp;  B[r_no++] = qq*outlet_c_b(pp);
+					ww_r[r_no] = i;   ww_c[r_no] = pp->tmp;  B[r_no++] = qq * outlet_c_b_coeff(pp);
 					S_q+=qq;}}
 
 			ww_r[r_no] = i;   ww_c[r_no] = i;       B[r_no]	= -S_q;
@@ -909,5 +912,62 @@ void Network::dissolve_and_precipitate(){
 
 }
 
+
+void Network::calculate_concentration_new(SPECIES_NAME species){
+
+    cerr<<"Running concentration_new"<<endl;
+    list<Node *> to_be_checked;
+
+    //Filling concentration in inlet nodes
+    switch (species) {
+        case SPECIES_NAME::B:
+            for (int i=0; i<NN; i++)   n[i]->cb=Cb_0;
+            break;
+        case SPECIES_NAME::C:
+            for (int i=0; i<NN; i++)   n[i]->cc=Cc_0;
+            break;
+        default:
+            std::cerr << "Unknown SPECIES_NAME." << std::endl;
+            break;
+    }
+
+
+
+    for (int i=0; i<NN;   i++)   n[i]->tmp=0;   //tmp == 0 - not done; tmp==1 a candidate; tmp=2 done
+    for (int i=0; i<N_wi; i++)  //setting Cb_0 for inlets and
+        {
+            wi[i]->cb = Cb_0;
+            wi[i]->tmp = 2;
+            for (int b=0;  b<wi[i]->b; b++)
+                if(wi[i]->n[b]->tmp==0){
+                    wi[i]->n[b]->tmp = 1;
+                    to_be_checked.push_back(wi[i]->n[b]);
+                }
+        }
+        while ( !to_be_checked.empty()){
+            bool new_action = false;
+            for (auto it = to_be_checked.begin(); it != to_be_checked.end(); ) {
+
+                if ((*it)->can_be_calculated()) {
+                    new_action = true;
+                    (*it)->set_new_concentration(this, species);
+                    (*it)->tmp = 2;
+                    for (int b = 0; b<(*it)->b; b++)
+                        if ((*it)->n[b]->tmp == 0 and (*it)->p[b]->q!=0) {
+                            (*it)->n[b]->tmp = 1;
+                            to_be_checked.push_back((*it)->n[b]);
+                        }
+                    it = to_be_checked.erase(it);
+                }
+                else  ++it;
+            }
+            if(!new_action){
+                Node::epsilon_for_c=Node::epsilon_for_c*2;
+                cerr<<"Node::epsilon_for_c has been updated: "<<Node::epsilon_for_c<<endl;
+            }
+            //print_network_for_debugging("Jestem w while ","nic","nic","nic");
+        }
+
+}
 
 

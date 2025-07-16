@@ -234,7 +234,8 @@ class Network
 		void calculate_concentrations();			///< calculate concentration profile for species b
 		void calculate_concentrations_c();			///< calculate concentration profile for species c
 		void calculate_concentrations_streamtube_mixing(); 		     ///< new fancy mixing method where particles prefer to go straight through the crossing
- 		void dissolve();											 ///< change the pore sizes due to the dissolution
+ 		void calculate_concentration_new(SPECIES_NAME species);                       ///< iterative version of concentration calculation;
+        void dissolve();											 ///< change the pore sizes due to the dissolution
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
 		void calculate_pressures_for_small_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
@@ -249,9 +250,9 @@ class Network
 		void check_if_dissolved();										///< checks if the system is dissolved, if yes the simulation stops
 
 		//Properties of particular pores
-		double outlet_c_b       (Pore* p);    	///< returns the outlet concentration of species b in the pore p as a function of c0_b
+		double outlet_c_b_coeff       (Pore* p0);    	///< returns the outlet concentration of species b in the pore p as a function of c0_b
 		double outlet_c_c_1     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_b
-		double outlet_c_c_2     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_c
+		double outlet_c_c_2_coeff     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_c
 		double k_eff_in_pore    (Pore* p);		///< returns the value of k_eff in the pore p
 		double k_eff_2_in_pore  (Pore* p);		///< returns the value of k_eff_2 (see precipitation) in the pore p
 		double G_in_pore        (Pore* p);		///< returns the value of G in the pore p

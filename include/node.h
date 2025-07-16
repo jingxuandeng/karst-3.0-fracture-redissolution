@@ -60,6 +60,8 @@ class Node{
 		bool is_fracture;
         bool is_LHS;        ///< for better printing only (with a fracture)
 
+        inline static double epsilon_for_c  =  1.e-20;
+
 	public:
 
 		Node  (int bb, float tt = 0);
@@ -90,7 +92,14 @@ class Node{
 		void find_forks();                                      ///< decides if the nod is a for and what is the fork generation
 		int cluster_size (int l);                               ///<returns cluster size with the root in the node and length given by l ()
 		void check_cluster(int l, int &sum, bool &if_l);        ///<cheching the cluster
-    void check_preci_pattern(double thr);
+        void check_preci_pattern(double thr);
+
+
+        //new idea of cc calculations:
+
+    bool can_be_calculated();
+    void set_new_concentration(Network *N, SPECIES_NAME);
+
 };
 
 ofstream_txt & operator << (ofstream_txt & stream, Node &p);
