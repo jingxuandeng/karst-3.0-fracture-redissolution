@@ -87,8 +87,8 @@ ostream & operator<< (ostream &os, Kropa kr) {
         os<<Kolor(0.8,0,0);
         os<<"/Times-Bold findfont "<<kr.r<<" scalefont setfont"<<endl;
         os<<Point(kr.a.x-kr.r/3,kr.a.y-kr.r/3)<<"moveto"<<endl;
-        //os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
-		os<<"0 0 ("<<setprecision(5)<<kr.nod->cb<<") ashow stroke"<<endl;}
+        os<<"0 0 ("<<setprecision(5)<<kr.nod->tmp<<") ashow stroke"<<endl;}
+
 	else os << " stroke"<<endl;
 	
 	return os;}

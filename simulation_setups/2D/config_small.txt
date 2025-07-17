@@ -28,15 +28,15 @@ l_min = 0.001                  # minimal pore length (meters with no merging mec
 #  Dynamics
 
 
-T_max       = 1 #100        # tot time of the simulation
-dt          = 0.01         # time step (in dimensionless units [2 k1 * gamma_1/d0])
+T_max       = 1        # tot time of the simulation
+dt          = 0.0001         # time step (in dimensionless units [2 k1 * gamma_1/d0])
 d_d_max     = 0.1     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
 d_d_min     = 0.01 #0.01 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
 d_V_max     = 0.01     	    # (for precipitation only) maximal change of volume in one step (in % if obtained then dt = 2/3 dt)
 d_V_min     = 0.005    	    # (for precipitation only) minimal change of grain volume in one step (in % if not obtained then dt = 1.2dt)
 d_d_dis     =  6            # minimal dissolution at the outlet to finish simulation (unit d0)
 d_max_for_u = 10            # maximal diameter that consumes pressure, for d>d_max_for_u * d0 delta u in pore is zero (for smarter pressure only)
-if_adaptive_dt      = false  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
+if_adaptive_dt      = true  # adapting dt according to d_d_max and d_d_min (alternatively d_V_max, d_V_min)
 if_full_dissolution = false  # if true evolution stops when system is fully dissolved
 time_factor_after_b = 1
 no_max_z    = false        # if true there is no limit for pore diameter, otherwise if d>H_z it is not cylinder anymore but behaves as a aperture  d x H_z
@@ -45,7 +45,7 @@ sandwich_pores = false      # if true the sandwich formula is always valid for p
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  Output
 
-printing_mode         =   grains_and_diss      # style of printing:
+printing_mode         =   debugging # grains_and_diss      # style of printing:
                                                # "debugging",
                                                # "dissolution"
                                                # "grains"

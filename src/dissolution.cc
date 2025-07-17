@@ -944,6 +944,7 @@ void Network::calculate_concentration_new(SPECIES_NAME species){
                     to_be_checked.push_back(wi[i]->n[b]);
                 }
         }
+
         while ( !to_be_checked.empty()){
             bool new_action = false;
             for (auto it = to_be_checked.begin(); it != to_be_checked.end(); ) {
@@ -965,7 +966,7 @@ void Network::calculate_concentration_new(SPECIES_NAME species){
                 Node::epsilon_for_c=Node::epsilon_for_c*2;
                 cerr<<"Node::epsilon_for_c has been updated: "<<Node::epsilon_for_c<<endl;
             }
-            //print_network_for_debugging("Jestem w while ","nic","nic","nic");
+            //print_network_for_debugging("In new concentration: ","nic","nic","nic");
         }
 
 }
