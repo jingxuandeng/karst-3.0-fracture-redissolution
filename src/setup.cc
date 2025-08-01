@@ -86,6 +86,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			k2 = stod(value);
 			cerr<< "Setting k2 = "<<k2<<endl;}
 
+		else if(name == "k3"){
+			k3 = stod(value);
+			cerr<< "Setting k2 = "<<k3<<endl;}
+
 		else if(name == "D1"){
 			D1 = stod(value);
 			cerr<< "Setting D1 = "<<D1<<endl;}
@@ -94,6 +98,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			D2 = stod(value);
 			cerr<< "Setting D2 = "<<D2<<endl;}
 
+		else if(name == "D3"){
+			D3 = stod(value);
+			cerr<< "Setting D3 = "<<D3<<endl;}
+
 		else if(name == "DD1"){
 			DD1 = stod(value);
 			cerr<< "Setting DD1 = "<<DD1<<endl;}
@@ -101,6 +109,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "DD2"){
 			DD2 = stod(value);
 			cerr<< "Setting DD2 = "<<DD2<<endl;}
+
+		else if(name == "DD3"){
+			DD2 = stod(value);
+			cerr<< "Setting DD3 = "<<DD3<<endl;}
 
 		else if(name == "Sh"){
 			Sh = stod(value);
@@ -169,9 +181,17 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			Pe2 = stod(value);
 			cerr<< "Setting Pe2 = "<<Pe2<<endl;}
 
+		else if(name == "Pe3"){
+			Pe3 = stod(value);
+			cerr<< "Setting Pe3 = "<<Pe3<<endl;}
+
 		else if(name == "gamma"){
 			gamma = stod(value);
 			cerr<< "Setting gamma = "<<gamma<<endl;}
+
+		// else if(name == "gamma2"){
+		// 	gamma2 = stod(value);
+		// 	cerr<< "Setting gamma2 = "<<gamma2<<endl;}
 
 		else if(name == "kappa"){
 			kappa = stod(value);
@@ -370,6 +390,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else if (value == "false")   if_precipitation  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_precipitation. Set true or false."<<endl;
 			cerr<< "Setting if_precipitation = "<<if_precipitation<<endl;}
+
+		else if(name == "if_redissolution"){
+			if      (value == "true" )   if_redissolution  = true;
+			else if (value == "false")   if_redissolution  = false;
+			else                     cerr<<"WARNING: Wrong value of variable if_redissolution. Set true or false."<<endl;
+			cerr<< "Setting if_redissolution = "<<if_redissolution<<endl;}
 
 		else if(name == "if_dynamical_length"){
 			if      (value == "true" )   if_dynamical_length  = true;
@@ -599,12 +625,11 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	P_out = 0;	     //pressure at the outlet, always should be set to zero
 	NN    = N_x * N_y;
 	Da2   = kappa * Da;
+	Da3= kappa2 * Da;
 	G2    = theta * G1;  //TODO: Tu mogloby być G2 = kappa*theta*G1
 	G3   = theta2 * G1;
-	Da3= kappa2 * Da;
-
 
 	// cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;
-	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<endl;
+	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<"\nG3 = "<<G3<<endl;
 
 }

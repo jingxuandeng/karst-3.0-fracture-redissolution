@@ -35,8 +35,9 @@ Network::Network (string input_file_name) {
 	G3    = 1;       //DaPe for redissolution
 	Pe1   = 1;		 //Peclet number for dissolution (D along pore)
 	Pe2   = 1;		 //Peclet number for precipitation (D along pore)
+	Pe3   = 1;		 //Peclet number for redissolution (D along pore)
 	gamma = 1;	     //ratio of acid capacity numbers between dissolution and precipitation (gamma1/gamma2)
-	kappa = 1;	     //ratio of Da_1/Da_2 = ratio of reaction rates
+	kappa = 1;	     //ratio of Da_2/Da_1 = ratio of reaction rates
 	kappa2 = 1;		 //ratio of Da_3/Da_1 = ratio of reaction rates. Ratio of Da_redissolution to Da_dissolution. (20250616 Question: or Da_3/Da_1?)
 	theta = 1;	     //ratio of G_1/G_2
 	theta2 = 1;      //ratio of G_1/G_3
@@ -57,13 +58,17 @@ Network::Network (string input_file_name) {
 	
 	k1	= 10e-8;		//reaction rate for dissolution
 	k2	= 1;			//reaction rate for precipitation
+	//k3=1;             //reaction rate for redissolution
 	D1	= 0;			//diffusion coefficient for dissolution
 	D2	= 1;			//diffusion coefficient for precipitation
+	D3	= 0;			//diffusion coefficient for redissolution
 	DD1 =-1;			//transversal diffusion coefficient for dissolution
 	DD2 = 1;			//transversal diffusion coefficient for precipitation
+	DD3 =-1;			//transversal diffusion coefficient for redissolution
 	Sh  = 4;			//Sherwood number for pipe
 	gamma_1	= 1;		//capacity number for dissolution   (c_sol = 1 by default)
 	gamma_2 = 1;		//capacity number for precipitation (c_sol = 1 by default)
+	// gamma_3 = 1;        //capacity number for redissolution   (c_sol = 1 by default)
 	Cb_0 	= 1;		//acid inlet concentration 
 	Cc_0	= 0;		//precipitating species inlet concentration
 	mu_0    = M_PI*pow(d0,4)/(128*l0);		//viscosity  always set to M_PI*pow(d0,4)/(128*l0)
@@ -126,6 +131,7 @@ Network::Network (string input_file_name) {
 	if_recalculate_physical_parameters   = true;         //if true recalculate physical parameters according to dimensionless one
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps
 	if_precipitation				     = false;		 //if true apart from dissolution the precipitation in on
+	if_redissolution				     = false;		 //if true apart from dissolution the redissolution of secondary mineral in on
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
 	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
     if_cut_d_min                         = false;        //if true the d<=d_min -> d=0

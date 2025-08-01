@@ -2,14 +2,14 @@
 
 printf "Preparing the simulation...\n\n"
 
-bash ~/Desktop/KARST/karst_3.0/build.sh
-if ! bash ~/Desktop/KARST/karst_3.0/build.sh; then
+bash ./build.sh
+if ! bash ./build.sh; then # change the path for build.sh
     echo "Problem with compilation."
     exit 1
 fi
 
-cd ~/Desktop/KARST/DATA/fracture/100x100 || exit
-
+#cd ~/Desktop/KARST/DATA/fracture/100x100 || exit
+cd ../DATA/fracture/50x50 || exit
 # Creating proper directory
 current_date_time=$(date +small_%Y_%m_%d_%H_%M)
 
@@ -25,7 +25,7 @@ cd "$current_date_time" || exit
 #mkdir debuging_tmp
 #cd debuging_tmp || exit
 
-cp ~/Desktop/KARST/karst_3.0/simulation_setups/fracture/config_small.txt ./config.txt || exit
+cp /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/simulation_setups/fracture/config_small.txt ./config.txt || exit
 
 
 printf "Running the simulation...\n\n"
@@ -55,12 +55,12 @@ for Da in 0.5 #0.02 0.5
 do
 for d0 in 0.24  # 0.2 0.3
 do
-for C_eq in 0.1 0   #5 3 #0.999 #3 4 5
+for C_eq in 0.1 #0   #5 3 #0.999 #3 4 5
 
 do
 for kappa in 1 # 0.1 10 #100 10 1000  #0.1 0.
 do
-  for gamma in  1.0 1.5 0.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
+  for gamma in  1.0 #1.5 0.5  #1 1.1 1.05  #2 1 1.5   #0.01 0.1 0.2 0.5 1 2 5 10 100
   do
   (
                 param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-Ceq-$C_eq
@@ -89,7 +89,8 @@ do
 
                 } >> config.txt
 
-                ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
+#                ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
+                /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt  >run_output.txt 2>run_errors.txt&
 
              )
 done

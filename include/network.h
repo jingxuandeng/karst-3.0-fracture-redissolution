@@ -86,13 +86,17 @@ class Network
 
 		double k1;			///< reaction rate of dissolution
 		double k2;			///< reaction rate of precipitation
+		double k3;			///< reaction rate of redissolution
 		double D1;			///< diffusion coefficient for dissolution (not implemented yet, we assume that flow is faster then diffusion along pore)
 		double D2;			///< diffusion coefficient for precipitation (not implemented yet)
+		double D3;			///< diffusion coefficient for redissolution
 		double DD1;			///< transversal diffusion coefficient for dissolution
 		double DD2;			///< transversal diffusion coefficient for precipitation
+		double DD3;			///< transversal diffusion coefficient for dissolution
 		double Sh;			///< Sherwood number for pipe
 		double gamma_1;		///< capacity number for dissolution (important only for unit of dt, generally should be set to 1)
 		double gamma_2;		///< capacity number for precipitation
+		//double gamma_3;		///< capacity number for redissolution (maybe this is the same as gamma_1, double check)
 		double Cb_0;		///< acid inlet concentration
 		double Cc_0;		///< inlet concentration of precipitating species
 		double mu_0;        ///< viscosity  (by default set to M_PI*pow(d0,4)/(128*l0))
@@ -109,6 +113,7 @@ class Network
 		double G3;		///< DaPe for redissolution
 		double Pe1;		///< Peclet number for dissolution (D along pore) (not used now)
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
+		double Pe3;     ///< Peclet number for redissolution (D along pore)  (not used now)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
 	    double kappa2;	///< ratio of Da_3/Da_1 of reaction rates (redissolution vs dissolution)
@@ -179,6 +184,7 @@ class Network
 		bool if_recalculate_physical_parameters;    ///< if true, recalculate physical parameters according to dimensionless one, by now must be true
 		bool if_smarter_calculation_of_pressure;    ///< if true pressure and flow is calculate in two steps
 		bool if_precipitation;					 	///< if true apart form dissolution the precipitation in on
+		bool if_redissolution;					 	///< if true apart form dissolution the redissolution of secondary mineral in on
 		bool if_dynamical_length;					///< if true length of pore is changing according to dissolution and precipitation
 		bool if_streamtube_mixing;					///< if true and we have square lattice  stream-tube mixing is performed while calculating the species B concentration
         bool if_cut_d_min;                          ///< if true, d<=d_min -> d=0;
@@ -260,8 +266,8 @@ class Network
 		double k_eff_2_in_pore  (Pore* p);		///< returns the value of k_eff_2 (see precipitation) in the pore p
 		double k_eff_3_in_pore  (Pore* p);		///< returns the value of k_eff_3 (see redissolution) in the pore p
 		double G_in_pore        (Pore* p);		///< returns the value of G in the pore p
-		// double G2_in_pore       (Pore* p);		///< returns the value of g2 (see precipitation) in the pore p
-		// double G3_in_pore       (Pore* p);		///< returns the value of g3 (see redissolution) in the pore p
+		double G2_in_pore       (Pore* p);		///< returns the value of g2 (see precipitation) in the pore p
+		fdouble G3_in_pore       (Pore* p);		///< returns the value of g3 (see redissolution) in the pore p
 		double Da_eff_in_pore   (Pore* p);		///< returns the value of Da_eff in the pore p
 		double Da_eff_2_in_pore (Pore* p);		///< returns the value of Da_eff_2 (see precipitation) in the pore p
 		double Da_eff_3_in_pore (Pore* p);		///< returns the value of Da_eff_3 (see redissolution) in the pore p

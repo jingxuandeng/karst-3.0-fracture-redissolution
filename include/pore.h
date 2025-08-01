@@ -109,7 +109,7 @@ class Pore{
         std::tuple<double,double>   calculate_d_nbr_direction();
 
         double is_there_precipitation(Network *S);                       ///< checking if precipitation is in the pore: 1-cc>=0 everywhere, 0-noprecipitation
-
+		double is_there_redissolution(Network *S);                       ///< checking if redissolution is in the pore: (Todo)xxx everywhere, (Todo)xxx-noredissolution
 };
 
 ofstream_txt & operator << (ofstream_txt & stream, Pore &p); ///< print info about pore p in one line

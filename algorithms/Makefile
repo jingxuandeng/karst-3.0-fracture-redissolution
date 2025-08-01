@@ -7,22 +7,27 @@ CXX 	= clang++
 FL	= gfortran   
 AR      = ar vr
 
+# home-brew directory
 BREW=/usr/local/Cellar
 
-LSCOTCH   =  -L /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/scotch/lib -lesmumps -lscotch -lscotcherr
+# LSCOTCH   =  -L /Users/jingxuandeng/phd/KRG/research/network_dissol_project/karst_code/Libraries/scotch/lib -lesmumps -lscotch -lscotcherr
+LSCOTCHDIR = $(BREW)/scotch/7.0.7/lib
+LSCOTCH   = -L$(LSCOTCHDIR) -lesmumps -lscotch -lscotcherr
 LMETIS    =  -L $(BREW)/metis/5.1.0/lib -lmetis
 LPORD = -L $(MDIR)/lib -lpord
 
 # Corresponding variables reused later
 LORDERINGS = $(LMETIS) $(LPORD) $(LSCOTCH)
 
-LLAPACKDIR = $(BREW)/lapack/3.12.0/lib
-LAPACK =  -L $(LLAPACKDIR) -llapack
+# LLAPACKDIR = $(BREW)/lapack/3.12.0/lib
+# LAPACK =  -L $(LLAPACKDIR) -llapack
+LAPACK = -L /usr/local/opt/lapack/lib  -llapack
 
 LIBSEQ  = $(LAPACK) -L$(MDIR)/libseq -lmpiseq
 
-LBLASDIR = $(BREW)/openblas/0.3.29/lib
-LIBBLAS = -L $(LBLASDIR) -lblas
+# LBLASDIR = $(BREW)/openblas/0.3.29/lib
+# LIBBLAS = -L $(LBLASDIR) -lblas
+LIBBLAS = -L /usr/local/opt/openblas/lib -lblas
 
 LIBOTHERS = -lpthread
 

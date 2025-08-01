@@ -235,31 +235,18 @@ double Pore::is_there_precipitation(Network *S){
     return (1-alpha);
 
 }
-// // To do 20250708
-// // this function should be value between 0 and 1, value inbetween means we are redissolving that not comes from the euqation
-// double Pore::is_there_redissolution(Network *S){
-//
-// 	if (S->C_eq==0 and is_Ve_left()) return  1;  //if C_eq == 0 the precipitation is reversible
-//
-// 	double cc0 = calculate_inlet_cc(); // 20250708: This could be negative because the definition of R=k2theta(c_eq-c) for reversible precipitation
-// 	double cb0 = calculate_inlet_cb();
-// 	if(!is_Va_left()) cb0 = 0;
-//
-// 	if(cc0 >= 0)
-// 		return 1;       //normal behaviour with precipitation
-//
-// 	double f1 = local_Da_eff(S);
-// 	double dcc = cb0*(1-exp(-f1));
-//
-// 	if(cc0+dcc < 0)
-// 		return 0;
-//
-// 	// 20250708: because cb0 must be positive, so if cc0 is negative
-// 	double alpha = 1./f1 * log(cb0/(cb0+cc0));
-// 	if(alpha>1 or alpha<0) {cerr<<"ERROR: is_there_precipitation has wrong value."; return 0;}
-// 	return (1-alpha);
-//
-// }
+// To do 20250708
+// this function should be value between 0 and 1, value inbetween means we are redissolving that not comes from the euqation
+double Pore::is_there_redissolution(Network *S){
+	double alpha =
+	if (alpha>1) return 1; // normal behavior
+
+
+
+	// if(xxx) return
+
+	// if (is_Ve_left()) return  1;  //if C_eq == 0 the precipitation is reversible
+}
 
 /**
 * This function returns the local value of Da_eff_2 (used in precipitation) parameter for the pore.
@@ -308,12 +295,14 @@ double Pore::local_Da_eff_2(Network* S){
 * @author Jingxuan Deng
 * @date 16/06/2025
 */
+// To do, modify this
 double Pore::local_Da_eff_3(Network* S){
 
 	if (q==0) return -1;
 	double G = this->local_G_3(S); // TO DO: define local_G_3
+	double Da3local = S->Da3;
 
-	// Da3local = Da3local * is_there_redissolution(S); // this could be useful form for redissolution as well
+	Da3local = Da3local * is_there_redissolution(S); // this could be useful form for redissolution as well
 
 	if      (G>0)    return S->Da3*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
 	else if (G==0)   return S->Da3*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));

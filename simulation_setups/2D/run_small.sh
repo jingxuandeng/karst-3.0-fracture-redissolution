@@ -60,7 +60,7 @@ do
                 } >> config.txt
 
 #                ../../../../fracture/build/karst config.txt  >wyjscie.out 2>bledy.out&
-                 ../../../../fracture/build/karst config.txt  >run_output.txt 2>run_errors.txt&
+                 ../../../../fracture/bin/karst config.txt  >run_output.txt 2>run_errors.txt&
 
              )
 done

@@ -19,6 +19,7 @@ G1    = 1		# DaPe for dissolution
 gamma = 1       # parameters of precipitation: V_pre/V_diss
 theta = 1       # parameters of precipitation: G_pre / G_diss
 kappa = 0.5     # parameters of precipitation: Da_pre / Da_diss
+kappa2 = 0.5    # parameters of redissolution: Da_diss2 / Da_diss
 
 d_min_factor = 100;            # minimal pore diameter
 l_min = 0.001                  # minimal pore length (meters with no merging mechanism)
@@ -44,7 +45,7 @@ sandwich_pipe = true      # if true the sandwitch formula is always valid for pi
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  Output
 
-printing_mode         =   grains_and_diss      # style of printing:
+printing_mode         =   debugging #grains_and_diss      # style of printing:
                                                # "debugging",
                                                # "dissolution"
                                                # "grains"
@@ -91,6 +92,7 @@ max_rand_shift_xy                  = 0       		# if randomness is on this gives 
 #  Model properties
 
 if_precipitation                   = true       # if true the precipitation is added to dissolution
+if_redissolution                   = true       # if true the precipitation is added to dissolution
 if_track_grains                    = true        # if true grains and their volume are tracked (important for merging and precipitation)
 if_dynamical_length                = true        # if true pore length is addapted in each time step
 if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)
