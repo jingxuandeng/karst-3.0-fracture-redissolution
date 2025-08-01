@@ -8,7 +8,7 @@
 #define _plus(x) 	(x>0 ? 1 : 0 )
 #define _if(x) 		(x 	 ? 1 : 0 )
 
-
+enum class SPECIES_NAME {B,C};
 
 class ofstream_ps  : public std::ofstream {};  ///< output PostScript file
 class ofstream_txt : public std::ofstream {};  ///< output text file

@@ -74,18 +74,21 @@ void Network::do_one_euler_step(){
 
 	if(if_smarter_calculation_of_pressure)	{calculate_pressures_and_flows_smarter(d_max_for_u);}
 	else 									{calculate_pressures();           calculate_flows();}
-
+    //check_flow_balance();
 	if(if_precipitation){
 
-		calculate_concentrations();
-		calculate_concentrations_c();
+//		calculate_concentrations();
+//        calculate_concentrations_c();
+        calculate_concentration_new(SPECIES_NAME::B);
+        calculate_concentration_new(SPECIES_NAME::C);
 		dissolve_and_precipitate();
 		}
 	else{
-		if(if_streamtube_mixing) 	calculate_concentrations_streamtube_mixing();
-		else						calculate_concentrations();
-
+		//if(if_streamtube_mixing) 	calculate_concentrations_streamtube_mixing();
+		//else						calculate_concentrations();
+        calculate_concentration_new(SPECIES_NAME::B);
 	    dissolve();
+
 	}
 
 	//checking acid and flow balance

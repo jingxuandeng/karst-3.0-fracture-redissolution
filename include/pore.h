@@ -77,6 +77,7 @@ class Pore{
 		double calculate_inlet_cc();									///< calculate inlet concentration of the species C
 		double calculate_outlet_cc();									///< calculate outlet concentration of the species C
 
+
 		void   calculate_actual_length (Network *S = NULL, double l_max=10, double l_0=1);	///< calculate initial pore length
 		double local_G        (Network* S);			///< dissolution parameters
 		double local_Da_eff   (Network* S); 		///< dissolution parameter
