@@ -354,18 +354,22 @@ bool Node::can_be_calculated(){
 }
 
 void Node::set_new_concentration(Network *N, SPECIES_NAME species){
-
+	cerr<< "set_new_concentartion is called"<<endl;
 
     double Q = 0;
     double QB = 0;
 
     for (int k=0; k<b; k++)
-        if(p[k]->d>0 and fabs(p[k]->q)>epsilon_for_c and n[k]->u > u ){
-            Q+=fabs(p[k]->q);
-            if (species == SPECIES_NAME::B)
-                QB += fabs(p[k]->q) * n[k]->cb * N->outlet_c_b_coeff(p[k]);
+    	// cerr<< "k="<<k<<endl;
+        if(p[k]->d>0 and fabs(p[k]->q)>epsilon_for_c and n[k]->u > u ) {
+	        Q+=fabs(p[k]->q);
+        	if (species == SPECIES_NAME::B){
+        	cerr<< "Calculating QB in set_new_concentration"<<endl;
+        	QB += fabs(p[k]->q) * n[k]->cb * N->outlet_c_b_coeff(p[k]); // To do need to modify
+        	cerr<< "QB="<<QB<<", k="<<k<<endl;
+			}
             else if (species == SPECIES_NAME::C)
-                QB += N->outlet_c_c_1(p[k]) + fabs(p[k]->q) * n[k]->cc * N->outlet_c_c_2_coeff(p[k]);
+                QB += N->outlet_c_c_1(p[k]) + fabs(p[k]->q) * n[k]->cc * N->outlet_c_c_2_coeff(p[k]); // To do need to modify
             else std::cerr << "Unknown SPECIES_NAME." << std::endl;
 
         }

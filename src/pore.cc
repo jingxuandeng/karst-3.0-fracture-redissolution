@@ -3,6 +3,8 @@
 #include "printing.h"
 #include "grain.h"
 #include <tuple>
+// #define _USE_MATH_DEFINES
+// #include <cmath>
 
 Pore::Pore (double dd, double ll, float name, int bb){
 	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
@@ -92,6 +94,36 @@ bool Pore::is_Ve_left(){
     for (int b=0;b<bG;b++) Ve_tot+=g[b]->Ve;
     if(Ve_tot>0)   return true;
     else		   return false;
+}
+
+/**
+* This function returns true if the species E is being generated from precipitation step.
+* This information is important when deciding if the redissolution can still occur in the pore.
+* @author Jingxuan Deng
+* @date 04/08/2025
+*/
+
+bool Pore::is_Ve_generated(Network *S){
+
+	// The is_Ve_generated() function returns false only when there is full conversion of A to C.
+	// Therefore, before computing Ve_prec, we can check certain conditions (ccin == 0 and Va == 0)
+	// to avoid unnecessary computations and save time.
+	// Va == 0 means there is no dissolution of A to generate C, and thus, no precipitation occurs.
+	// Precipitation also depends on the inlet concentration of species C,
+	// so if cc0 == 0, it indicates no precipitation can happen.
+	double cc0 = calculate_inlet_cc();
+	if (cc0==0||!is_Va_left()) return false;
+
+	double cb0 = calculate_inlet_cb();
+	double f1= local_Da_eff(S);
+	double f2= local_Da_eff_2(S);
+	double f3= local_Da_eff_3(S);
+	double g= local_G(S);
+
+	// Compute total volume of mineral E precipitated during this step.
+	double Ve_prec_tmp = (S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*(cc0*(1-exp(-f1-f3))+(cb0*((f1+f3)*(1-exp(-f2))-f2*(1-exp(-f1-f3)))/(f1+f3-f2)));
+	if (Ve_prec_tmp>0) return true;
+	else		   return false;
 }
 
 /**
@@ -224,7 +256,8 @@ double Pore::is_there_precipitation(Network *S){
         return 1;       //normal behaviour with precipitation
 
     double f1 = local_Da_eff(S);
-    double dcc = cb0*(1-exp(-f1));
+    // double dcc = cb0*(1-exp(-f1));
+	double dcc = cb0*(1-exp(-f1)); // (FIXME) This form should be changed because of redissolution
 
     if(cc0+dcc < 0)
         return 0;
@@ -236,16 +269,58 @@ double Pore::is_there_precipitation(Network *S){
 
 }
 // To do 20250708
-// this function should be value between 0 and 1, value inbetween means we are redissolving that not comes from the euqation
+// this function should be value between 0 and 1, value inbetween means we are redissolving that not comes from the equation
+/**
+* This function returns a value between 0 and 1 that control the redissolution process.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 08/07/2025
+*/
 double Pore::is_there_redissolution(Network *S){
-	double alpha =
-	if (alpha>1) return 1; // normal behavior
+
+	double cc0 = calculate_inlet_cc();
+	double cb0 = calculate_inlet_cb();
+	double f1 = local_Da_eff(S);
+	double f2 = local_Da_eff_2(S);
+	double f3 = local_Da_eff_3(S);
+	double g = local_G(S);
+
+	// 1. Compute initial total volume of mineral E in all grains around the pore
+	double Ve_0= 0;
+	for (int b = 0; b < bG; ++b) {
+		double Ve_b=this->g[b]->Ve;
+		double Ve_diss2_max_tot=0;
+		for (int pi = 0; pi < this->g[b]->bP; ++pi) {
+			auto* pore_i = this->g[b]->p[pi];
+			double cb0_i = pore_i ->calculate_inlet_cb();
+			double f1_i = pore_i ->local_Da_eff(S);
+			double f3_i = pore_i ->local_Da_eff_3(S);
+			double g_i = pore_i ->local_G(S);
+			double d_i= pore_i ->d;
+			double l_i= pore_i ->l;
+
+			// total maximum amount of mineral E of a grain will be redissolved.
+			Ve_diss2_max_tot += 0.5*(f3_i/(f1_i+f3_i))*(S->dt*S->d0*M_PI*d_i*l_i/(2*f1_i*(1+g_i)))*S->gamma*cb0_i*(1-exp(-f1_i-f3_i));
+		}
+
+		double Ve_diss2_b =0.5*(f3/(f1+f3))*(S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*cb0*(1-exp(-f1-f3));
+		double w_b = Ve_diss2_b/Ve_diss2_max_tot;
+		Ve_0 +=w_b*Ve_b;
+	}
+	// for (int b=0;b<bG;b++) Ve_tot+=this->g[b]->Ve;
 
 
 
-	// if(xxx) return
+	// 2. Compute total volume of mineral E precipitated during this step
+	double Ve_prec_tmp = (S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*(cc0*(1-exp(-f1-f3))+(cb0*((f1+f3)*(1-exp(-f2))-f2*(1-exp(-f1-f3)))/(f1+f3-f2)));
+	// 3. Compute total redissolution of mineral E during this step
+	double Ve_diss2_tmp =(f3/(f1+f3))*(S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*cb0*(1-exp(-f1-f3));
 
-	// if (is_Ve_left()) return  1;  //if C_eq == 0 the precipitation is reversible
+	double alpha = (Ve_0+Ve_prec_tmp) / Ve_diss2_tmp;
+	if (alpha>=1) return 1; // normal behavior
+	else if (alpha==0) return 0;
+	else if (alpha<0) {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
+	else return -f1-log(1-((f1+f3)/f3)*(alpha*Ve_diss2_tmp)*(2*f1*(1+g))/(S->dt*S->d0*M_PI*d*l*S->gamma)*(1/cb0)); // use f3 inside exp as unknow
 }
 
 /**
@@ -298,15 +373,15 @@ double Pore::local_Da_eff_2(Network* S){
 // To do, modify this
 double Pore::local_Da_eff_3(Network* S){
 
-	if (q==0) return -1;
-	double G = this->local_G_3(S); // TO DO: define local_G_3
+	// if (q==0) return -1; // the model will not reach this step. Just comment this out.
+	double G = this->local_G_3(S);
 	double Da3local = S->Da3;
 
-	Da3local = Da3local * is_there_redissolution(S); // this could be useful form for redissolution as well
+	Da3local = Da3local * is_there_redissolution(S);
 
-	if      (G>0)    return S->Da3*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
-	else if (G==0)   return S->Da3*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
-	else             return S->Da3*(l/S->l0)*(S->q_in_0/fabs(q));
+	if      (G>0)    return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
+	else if (G==0)   return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	else             return Da3local*(l/S->l0)*(S->q_in_0/fabs(q));
 }
 
 /**
@@ -350,15 +425,15 @@ double Pore::default_dd_plus(Network*S){
 
 double Pore::default_dd_plus_rediss(Network*S){
 	// even if E is present, check how much will be redissolved, make sure that this amount is not larger than Ve left, do not have negative volume. check dissolution.cc file, for tracking and checking mineral A
-	if(S->if_track_grains && !is_Ve_left())  return 0;   //no reaction if there is no E species available
+	if(S->if_track_grains && !is_Ve_left() && !is_Ve_generated(S))  return 0;   //no reaction if there is no E species available
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
 
 	//redissolution parameters
 	double f1      = local_Da_eff(S);
-	double f3      = local_Da_eff_3(S);
-	double g       = local_G_3(S);
-	// To do: check what c0 should be for redissoltuion
+	double f3      = local_Da_eff_3(S); // This Damkoehler number considered all the situation when Ve0+Ve_prec<Ve_diss2_max
+	double g       = local_G(S);
+
 	double c0;
 	if(S->if_streamtube_mixing) c0 = c_in;
 	else                        c0 = calculate_inlet_cb();
@@ -371,6 +446,11 @@ double Pore::default_dd_plus_rediss(Network*S){
 	else if (S->G3 >=0)  dd_plus = S->gamma*S->dt*(f3/(f1+f3))*c0*(1-exp(-f1-f3))/(1+g)/f1;
 	else        	     dd_plus = S->gamma*S->dt*(f3/(f1+f3))*c0*(1-exp(-f1-f3))/f1/d;
 
+
+	// //finding redissolution contribution
+	// if      (-f1-f3==0)      dd_plus = 0;
+	// else if (S->G3 >=0)  dd_plus = S->gamma*S->dt*(f3/(f1+f3))*(1-exp(-f1-f3))/(1+g)/f1;
+	// else        	     dd_plus = S->gamma*S->dt*(f3/(f1+f3))*(1-exp(-f1-f3))/f1/d;
 
 	return dd_plus;
 }
@@ -416,7 +496,7 @@ double Pore::default_dd_minus(Network*S){
 
 
     if(!is_Ve_left() and dd_minus<0)  return 0;         //no E dissolution if there is no E left
-	else                              return dd_minus ; //* is_there_precipitation(S);
+    else                              return dd_minus ; //* is_there_precipitation(S);
 
 }
 

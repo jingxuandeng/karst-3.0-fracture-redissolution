@@ -92,7 +92,7 @@ max_rand_shift_xy                  = 0       		# if randomness is on this gives 
 #  Model properties
 
 if_precipitation                   = true       # if true the precipitation is added to dissolution
-if_redissolution                   = true       # if true the precipitation is added to dissolution
+if_redissolution                   = true       # if true the redissolution is added to dissolution
 if_track_grains                    = true        # if true grains and their volume are tracked (important for merging and precipitation)
 if_dynamical_length                = true        # if true pore length is addapted in each time step
 if_streamtube_mixing               = false 	     # if true, and we have square lattice  stream-tube mixing is performed while calculating the species B concentration (some new Rishab feature)

@@ -247,6 +247,7 @@ class Network
  		void calculate_concentration_new(SPECIES_NAME species);                       ///< iterative version of concentration calculation;
         void dissolve();											 ///< change the pore sizes due to the dissolution
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
+		void dissolve_and_precipitate_and_redissolve();				 ///< change the pore sizes due to dissolution, precipitation, and redissolution
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
 		void calculate_pressures_for_small_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
 		void calculate_pressures_for_large_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
@@ -268,7 +269,7 @@ class Network
 		double k_eff_3_in_pore  (Pore* p);		///< returns the value of k_eff_3 (see redissolution) in the pore p
 		double G_in_pore        (Pore* p);		///< returns the value of G in the pore p
 		double G2_in_pore       (Pore* p);		///< returns the value of g2 (see precipitation) in the pore p
-		fdouble G3_in_pore       (Pore* p);		///< returns the value of g3 (see redissolution) in the pore p
+		double G3_in_pore       (Pore* p);		///< returns the value of g3 (see redissolution) in the pore p
 		double Da_eff_in_pore   (Pore* p);		///< returns the value of Da_eff in the pore p
 		double Da_eff_2_in_pore (Pore* p);		///< returns the value of Da_eff_2 (see precipitation) in the pore p
 		double Da_eff_3_in_pore (Pore* p);		///< returns the value of Da_eff_3 (see redissolution) in the pore p

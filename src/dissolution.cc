@@ -397,15 +397,17 @@ void Network::recalculate_flows_to_keep_Perm() {
 */
 double Network::outlet_c_b_coeff (Pore *p0){
 
-
-	if(p0->q==0 || p0->d == 0) 						return 0;    //pores with no flow
+	cerr << "Calculating concentration B coefficient..." << endl;
+	if(p0->q==0 || p0->d == 0) 				 		return 0;    //pores with no flow
 	if(p0->l==l_min)           						return 1;    //no reaction in tiny pore
 	if(if_track_grains && !(p0->is_Va_left()))      return 1;    //no dissolution if there is no A material
     if(!p0->is_active)                              return 1;
 
     double f = p0->local_Da_eff(this);      //effective reaction rate (taking into account both reaction and transversal diffusion)
+	double f3 = p0->local_Da_eff_3(this);
 
-	return exp(-f);
+	cerr << "The concentration B coefficient is"<< exp(-f-f3) << endl;
+	return exp(-f-f3);
 }   
 
 
@@ -421,6 +423,8 @@ double Network::outlet_c_b_coeff (Pore *p0){
 */
 double Network::outlet_c_c_1 (Pore *p0){
 
+	cerr << "Calculating concentration C coefficient cC1..." << endl;
+
 	if(p0->q==0 || p0->d ==0) return 0;   //pore with no flow
 	if(!(p0->is_Va_left()))   return 0;   //no contribution if there is no A material
 	if(p0->l == l_min)        return 0;   //no reaction in tiny grain
@@ -429,9 +433,11 @@ double Network::outlet_c_c_1 (Pore *p0){
 
 	double f1 = p0->local_Da_eff   (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
 	double f2 = p0->local_Da_eff_2 (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
+	double f3 = p0->local_Da_eff_3 (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
 
 	double dd_plus  = p0->default_dd_plus (this);
 	double dd_minus = p0->default_dd_minus(this);
+	// double dd_plus2 = p0->default_dd_plus_rediss(this);
 
 	double q_tmp = fabs(p0->q);
 	double c_tmp_in;
@@ -441,15 +447,17 @@ double Network::outlet_c_c_1 (Pore *p0){
 
 
 	double x = 0;   //value to be returned
+	// Question: do i need to take into account the effect of the diameter change due to redissolution?
 	if(p0->d + (dd_plus - dd_minus)*d0 < d_min)   { //if there is no space for full precipitation
+		// adding dd_plus_diss2
 		dd_minus=(p0->d/d0 + dd_plus - d_min/d0);
-		x = c_tmp_in*q_tmp*(1-exp(-f1)) - (M_PI*(p0->d)*(dd_minus*d0)/2*p0->l)/(gamma*dt*dt_unit);
+		x = c_tmp_in*q_tmp*(1-exp(-f1-f3)) - (M_PI*(p0->d)*(dd_minus*d0)/2*p0->l)/(gamma*dt*dt_unit);
 		if(x<0) {
 			if (if_verbose) cerr<< "WARNING: STH wrong in outlet_c_c_1 with calculating x!!!"<<endl;
 			x=0;}
 		}
 	else{	//if there is no problem with a space for precipitation
-		if (f1!=f2) x = c_tmp_in*q_tmp*    (exp(-f1) - exp(-f2))*(f1)/(f2-f1);
+		if ((f1+f3)!=f2) x = c_tmp_in*q_tmp*    (exp(-f1-f3) - exp(-f2))*(f1+f3)/(f2-f1-f3);
 		else        x = c_tmp_in*q_tmp*    f2*exp(-f2);
 		}
 
@@ -465,6 +473,8 @@ double Network::outlet_c_c_1 (Pore *p0){
 * @date 25/09/2019
 */
 double Network::outlet_c_c_2_coeff (Pore *p){
+
+	cerr << "Calculating concentration C coefficient cC2..." << endl;
 
 	if(p->q == 0 || p->d == 0) 				   return 0;      //pore with no flow
 	if(p->l == l_min)          				   return 1;	  //no reactions in tiny grain
@@ -497,7 +507,7 @@ double Network::outlet_c_c_2_coeff (Pore *p){
 */
 void Network::calculate_concentrations(){
 
-	cerr<<"Calculating concentrations for species B..."<<endl;
+	cerr<<"Calculating old concentrations for species B..."<<endl;
 
     if(if_system_dissolved) return;
 
@@ -913,6 +923,109 @@ void Network::dissolve_and_precipitate(){
 
 }
 
+/**
+* This function update the diameters of all pores due to dissolution, precipitation, and redissolution reactions.
+*
+* @author Jingxuan Deng
+* @date 08/08/2025
+*/
+void Network::dissolve_and_precipitate_and_redissolve() {
+	cerr<<"Dissolving and precipitating..."<<endl;
+
+	//for updating grains volume;
+	if(if_track_grains) for (int i=0;i<NG;i++) {g[i]->tmp=0; g[i]->tmp2=0; g[i]->tmp3=0;}
+
+	for(int i=0;i<NP;i++){ //for each pore...
+
+
+		Pore* p0 = p[i];
+		if (p0->q == 0 || p0->d == 0 || p0->l==l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+		if (p0->d<=d_min && (!(p0->is_Va_left())))     continue;    //no reactions at all in this pore
+		if(!p0->is_active)                             continue;
+
+		double d_old    = p0->d;
+		double dd_plus  = p0->default_dd_plus (this);
+		double dd_minus = p0->default_dd_minus(this);
+		double dd_plus_rediss = p0->default_dd_plus_rediss(this);
+
+		//        ///WARNING (FIXME): To linijka dodana dla sprawdzenia hipotezy zakładającej, że rozgałęzianie jest związane z
+		//        //if(p0->is_fracture and p0->d  < d0*inlet_cut_factor and p0->n[0]->xy.y> N_y/2){
+		//        if(p0->is_fracture and  (dd_plus - dd_minus) < 0){
+		//            dd_plus=0;
+		//            dd_minus=0;
+		//            //p0->d=d0*inlet_cut_factor;
+		//        }
+
+		//Checking if there is enough space for full dissolution
+		// Question 1: do we need to add the dd_plus_rediss? the redissolution happens after the precipitation right?
+		// Or do the prec and rediss happens at the same time? This is the key for addressing this question
+		// Question for redissolution: here, we readjust dd_mimus (aka the diameter change due to precipitation) to make sure the minimum pore diameter.
+		// But what if we readjust the dd_plus_rediss? Does it make any difference to the result?
+		// adding dd_plus_rediss will impact the ve_prec so be mindful to this step.
+		if(p0->d + (dd_plus + dd_plus_rediss - dd_minus) *d0<d_min){		//there is not enough space for all precipitating material
+			dd_minus = p0->d/d0 + dd_plus + dd_plus_rediss - d_min/d0;
+			p0->d=d_min;
+
+		}
+		else{											//there is enough space for all precipitating material
+			p0->d += (dd_plus + dd_plus_rediss - dd_minus) *d0;
+		}
+
+
+		//updating Va and Ve volumes
+		int bG_tmp_A=0; int bG_tmp_E=0; int bG_tmp_E2=0;
+		bool pipe_formula = (!(sandwich_pores and p0->is_fracture) and (d_old<H_z or no_max_z)); //pip_formular is for pore
+		double pipe_factor = M_PI * (pipe_formula ? d_old : 1.0) * p0->l / 2.0;
+		double d_V_A  = pipe_factor * (dd_plus        * d0);
+		double d_V_E  = pipe_factor * (dd_minus       * d0);
+		double d_V_E2 = pipe_factor * (dd_plus_rediss * d0);
+		// double d_V_A = pipe_formula ? (M_PI*(d_old)*(dd_plus *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus *d0)*p0->l)/2.;
+		// double d_V_E = pipe_formula ? (M_PI*(d_old)*(dd_minus*d0)*p0->l)/2. :  (M_PI*(1.0)*(dd_minus*d0)*p0->l)/2.; // d_V_E could be smaller than zero if the reversible precipitation is enable
+		// double d_V_E2 = pipe_formula ? (M_PI*(d_old)*(dd_plus_rediss *d0)*p0->l)/2. : (M_PI*(1.0)*(dd_plus_rediss *d0)*p0->l)/2.;
+		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
+		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0 or p0->g[s]->Ve >0) bG_tmp_E++;
+		// for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve+p0->g[s]->tmp2) >0 or (p0->g[s]->tmp2>0 && p0->g[s]->Va >0)) bG_tmp_E2++; // Question 3: do i need to add "or if d_V_E>0", if there is precipitation ongoing in the grain and if previously the grain volume is nozero, then there will be grain E generated for redissolution?
+		for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) bG_tmp_E2++;
+
+		for(int s=0; s<p0->bG;s++) {
+			//looking for grains that connect to this pore
+			if(p0->g[s]->Va > 0)                          p0->g[s]->tmp -=d_V_A/bG_tmp_A; // if A is available in the grain, then reduce the amount of A by the total amount of A in pore divided by total number of grain that consist of A.
+			if(p0->g[s]->Va > 0 or p0->g[s]->Ve > 0)      p0->g[s]->tmp2+=d_V_E/bG_tmp_E; //Question2: why if there is Ve left in grain then it will precipitate in this grain?
+			if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) p0->g[s]->tmp2-=d_V_E2/bG_tmp_E2;
+			// if(p0->g[s]->Ve > 0 or (d_V_E>0 && p0->g[s]->Va >0)) p0->g[s]->tmp2-=d_V_E2/bG_tmp_E2;
+			// if d_V_E is negative, check if I have enough mineral to be dissolved.
+			// For redissolution, check if mineral E is positive or negative (unclear, check Ve or d_V_E?), If E is positive, then this dont need to change, if E is negative, then i need to change it
+
+
+			// else {cerr<<"ERROR: dissolve_and_precipitate_and_redissolve has wrong value."; exit(EXIT_FAILURE);}
+			// to do after coming back from break: what is tmp? and what is the looping for, what's the difference between adding the tmp to gain before and after if_adaptive_dt?
+			// should i check the comparison between Ve+d_V_E and d_V_E2 here and constrains tmp3 here or later in line994?
+
+			if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus + dd_plus_rediss)*d0/p0->d, fabs(d_V_A) + fabs(d_V_E) + fabs(d_V_E2));
+		}
+
+
+		//updating Va and Vc (must be done after main dissolution for c_out to be calculated correctly)
+		if(if_track_grains){
+			for (int i=0;i<NG;i++) {g[i]->Va+=g[i]->tmp;   if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}} // if Va is negative, setting the grain volume to zero. It's a trick. For Ve we cannot use this. Need to think about how to address for redissolution
+			for (int i=0;i<NG;i++) {g[i]->Ve+=g[i]->tmp2;  if(g[i]->Ve<0) {Ve_tot-=g[i]->Ve; g[i]->Ve = 0;}}
+			for (int i=0;i<NG;i++) {g[i]->Ve+=g[i]->tmp3;  if(g[i]->Ve<0) {Ve_tot-=g[i]->Ve; g[i]->Ve = 0;}} // why not this is not working for redissolution? we seperated precipitation and redissolution. until this step, the tmp2 for precipitation has added into Ve, so we set Ve to 0 because maximum redissolution volume is larger than Ve0+d_V_E
+			// for (int i=0;i<NG;i++) {g[i]->Ve2+=g[i]->tmp3;  if(g[i]->(Ve2+g[i]->Ve)<0) {Ve_tot2-=g[i]->Ve2; g[i]->Ve2 = g[i]->Ve;}}
+		}
+
+		if(if_cut_d_min) {
+			for(int i=0; i<NP; i++) if(p[i]->d <= d_min) p[i]->d = 0;
+			//if(type_of_merging=="merge_empty_grains") clear_unconeccted_pores();
+		}
+		if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
+
+
+
+		//additional printing for debugging
+		print_network_for_debugging ("After dissolution, precipitation, and redissolution","pressure", "diameter","volume A");
+
+	}
+}
 
 void Network::calculate_concentration_new(SPECIES_NAME species){
 

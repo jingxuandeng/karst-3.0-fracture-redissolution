@@ -58,6 +58,7 @@ class Grain{
 
 		double tmp;		 ///< temporal information (name or type of grain)///
 		double tmp2;	 ///< temporal information (for precipitation only)///
+		double tmp3;     ///< temporal information (for redissolution only)///
 		int a;           ///< name of a grain
 		int bN;          ///< numbers of nodes in vicinity (used for non-triangular network)
 		int bP;          ///< numbers of pores in vicinity (used for non-triangular network)
