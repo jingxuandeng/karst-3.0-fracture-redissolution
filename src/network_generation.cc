@@ -100,7 +100,7 @@ void Network :: calculate_initial_total_Ve(){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::createHexagonalNetwork(int N, int M){
+void Network::      createHexagonalNetwork(int N, int M){
 
 	if(M%2==1) {cerr<<"ERROR: N_y must be even in hexagonal network!"<<endl; exit(123);}
 
@@ -217,7 +217,7 @@ void Network::createHexagonalNetwork(int N, int M){
 
 
 	//saving network topology
-	export_topology_file ("topology_befor_cleaning.out");
+	export_topology_file ("topology_before_cleaning.out");
 
 	NN_max = NN; NP_max = NP; NG_max = NG;
 

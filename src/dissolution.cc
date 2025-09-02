@@ -40,7 +40,7 @@ void Network::calculate_pressures(){
 
 	//filling rhs (pressures in nodes)
 	for(int i=0;i<NN;i++) if(n[i]->t==1) y[i]=P_in; else y[i]=0;
-	
+
 	//filing matrix of eqs for each node
 	int r_no=0; double S=0;
 	for(int i=0;i<NN;i++){
@@ -55,15 +55,15 @@ void Network::calculate_pressures(){
 		ww_r[r_no] 		= i;
 		ww_c[r_no] 		= i;
 		B[r_no]			=-S;
-		r_no++;	
+		r_no++;
 	}
 	if(r_no!=R_no) {cerr<<"Problem with filling linear equations for pressures!"<<endl; exit(666);}
 
 	int M_out = solve_matrix(R_m, R_no, ww_r, ww_c, B, y);
 	if(M_out!=0) cerr<<"Problem with solving linear equations; M_out = "<<M_out<<endl;
-	
+
 	for(int i=0;i<NN;i++) n[i]->u = y[i];  //filling the solution
-	
+
 	//checking if the matrix has been solved correctly
 	double S_tmp=0;
 	for(int i=0;i<NN;i++) if(y[i]!=P_in) S_tmp+= y[i];
@@ -78,7 +78,7 @@ void Network::calculate_pressures(){
 
 	//additional printing for debugging
 	print_network_for_debugging ("After calculating pressure field","pressure", "diameter");
-	
+
 	delete[] ww_r;
 	delete[] ww_c;
 	delete[] B;
@@ -469,7 +469,7 @@ double Network::outlet_c_c_2_coeff (Pore *p){
 	if(p->q == 0 || p->d == 0) 				   return 0;      //pore with no flow
 	if(p->l == l_min)          				   return 1;	  //no reactions in tiny grain
 	if(p->d <= d_min && (!(p->is_Va_left())))  return 1;
-    if(!p->is_active)                         return 1;
+    if(!p->is_active)                          return 1;
 
 
 	double f2       = p->local_Da_eff_2  (this);
