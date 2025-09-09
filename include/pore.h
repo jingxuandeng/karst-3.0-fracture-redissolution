@@ -85,6 +85,7 @@ class Pore{
 		double local_Da_eff_2 (Network* S);      	///< precipitation parameter
 		double local_G_3      (Network* S);      	///< redissolution parameter
 		double local_Da_eff_3 (Network* S);      	///< redissolution parameter
+		double local_Da_eff_3_tmp (Network* S);		///< redissolution parameter
 		bool   is_Va_left();						///< return false if there is no Va material left
 		bool   is_Ve_left();						///< return false if there is no Ve material left
 		bool   is_Ve_generated(Network*S);					///< return false if there is no Ve material has been generated

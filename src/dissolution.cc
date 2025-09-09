@@ -397,7 +397,7 @@ void Network::recalculate_flows_to_keep_Perm() {
 */
 double Network::outlet_c_b_coeff (Pore *p0){
 
-	cerr << "Calculating concentration B coefficient..." << endl;
+	// cerr << "Calculating concentration B coefficient..." << endl;
 	if(p0->q==0 || p0->d == 0) 				 		return 0;    //pores with no flow
 	if(p0->l==l_min)           						return 1;    //no reaction in tiny pore
 	if(if_track_grains && !(p0->is_Va_left()))      return 1;    //no dissolution if there is no A material
@@ -405,8 +405,9 @@ double Network::outlet_c_b_coeff (Pore *p0){
 
     double f = p0->local_Da_eff(this);      //effective reaction rate (taking into account both reaction and transversal diffusion)
 	double f3 = p0->local_Da_eff_3(this);
+	// cerr<<"f3= "<<f3<<endl;
 
-	cerr << "The concentration B coefficient is"<< exp(-f-f3) << endl;
+	// cerr << "The concentration B coefficient is"<< exp(-f-f3) << endl;
 	return exp(-f-f3);
 }   
 
@@ -423,7 +424,7 @@ double Network::outlet_c_b_coeff (Pore *p0){
 */
 double Network::outlet_c_c_1 (Pore *p0){
 
-	cerr << "Calculating concentration C coefficient cC1..." << endl;
+	// cerr << "Calculating concentration C coefficient cC1..." << endl;
 
 	if(p0->q==0 || p0->d ==0) return 0;   //pore with no flow
 	if(!(p0->is_Va_left()))   return 0;   //no contribution if there is no A material
@@ -474,7 +475,7 @@ double Network::outlet_c_c_1 (Pore *p0){
 */
 double Network::outlet_c_c_2_coeff (Pore *p){
 
-	cerr << "Calculating concentration C coefficient cC2..." << endl;
+	// cerr << "Calculating concentration C coefficient cC2..." << endl;
 
 	if(p->q == 0 || p->d == 0) 				   return 0;      //pore with no flow
 	if(p->l == l_min)          				   return 1;	  //no reactions in tiny grain
@@ -507,7 +508,7 @@ double Network::outlet_c_c_2_coeff (Pore *p){
 */
 void Network::calculate_concentrations(){
 
-	cerr<<"Calculating old concentrations for species B..."<<endl;
+	cerr<<"Calculating concentrations for species B (matrix)..."<<endl;
 
     if(if_system_dissolved) return;
 
@@ -546,7 +547,11 @@ void Network::calculate_concentrations(){
 			if(qq > 0){
 				ww_r[r_no] 	= i;
 				ww_c[r_no] 	= n[i]->n[s]->tmp;
+				// cerr<<"node number "<< n[i]->n[s]->tmp<<endl;
+				// cerr<<"Calculating cb coefficient starts..."<<endl;
+				// cerr<<"r_no="<<r_no<<endl;
 				B[r_no]		= qq * outlet_c_b_coeff(pp);
+				// cerr<<"Calculating cb coefficient ends..."<<endl;
 				S_q+=qq;
 				r_no++;}}
 		ww_r[r_no] 		= i;
@@ -930,7 +935,7 @@ void Network::dissolve_and_precipitate(){
 * @date 08/08/2025
 */
 void Network::dissolve_and_precipitate_and_redissolve() {
-	cerr<<"Dissolving and precipitating..."<<endl;
+	cerr<<"Dissolving, precipitating, and redissolving..."<<endl;
 
 	//for updating grains volume;
 	if(if_track_grains) for (int i=0;i<NG;i++) {g[i]->tmp=0; g[i]->tmp2=0; g[i]->tmp3=0;}

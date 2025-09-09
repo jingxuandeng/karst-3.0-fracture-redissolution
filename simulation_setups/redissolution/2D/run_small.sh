@@ -25,7 +25,7 @@ cd "$current_date_time" || exit
 #mkdir debuging_tmp
 #cd debuging_tmp || exit
 
-cp /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/simulation_setups/redissolution/config_small.txt ./config.txt || exit
+cp /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/simulation_setups/redissolution/2D/config_small.txt ./config.txt || exit
 
 
 printf "Running the simulation...\n\n"
@@ -91,6 +91,7 @@ do
 
 #                ../../../../../karst_3.0/build/karst config.txt   >wyjscie.out 2>bledy.out &
                 /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt  >run_output.txt 2>run_errors.txt&
+#                 /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt
 
              )
 done

@@ -277,12 +277,12 @@ double Pore::is_there_precipitation(Network *S){
 * @date 08/07/2025
 */
 double Pore::is_there_redissolution(Network *S){
-
+	// cerr<<"running is_there_redissolution..."<<endl;
 	double cc0 = calculate_inlet_cc();
 	double cb0 = calculate_inlet_cb();
 	double f1 = local_Da_eff(S);
 	double f2 = local_Da_eff_2(S);
-	double f3 = local_Da_eff_3(S);
+	double f3 = local_Da_eff_3_tmp(S);
 	double g = local_G(S);
 
 	// 1. Compute initial total volume of mineral E in all grains around the pore
@@ -294,33 +294,71 @@ double Pore::is_there_redissolution(Network *S){
 			auto* pore_i = this->g[b]->p[pi];
 			double cb0_i = pore_i ->calculate_inlet_cb();
 			double f1_i = pore_i ->local_Da_eff(S);
-			double f3_i = pore_i ->local_Da_eff_3(S);
+			double f3_i = pore_i ->local_Da_eff_3_tmp(S);
 			double g_i = pore_i ->local_G(S);
 			double d_i= pore_i ->d;
 			double l_i= pore_i ->l;
 
 			// total maximum amount of mineral E of a grain will be redissolved.
-			Ve_diss2_max_tot += 0.5*(f3_i/(f1_i+f3_i))*(S->dt*S->d0*M_PI*d_i*l_i/(2*f1_i*(1+g_i)))*S->gamma*cb0_i*(1-exp(-f1_i-f3_i));
+			double k_ratio=f3_i/(f1_i+f3_i);
+			double time_factor=(S->dt*S->d0*M_PI*d_i*l_i/(2*f1_i*(1+g_i)));
+			double exp_factor=1-exp(-f1_i-f3_i);
+			Ve_diss2_max_tot += 0.5*k_ratio*time_factor*(S->gamma)*cb0_i*exp_factor;
+			// cerr<<"k_ratio= "<<k_ratio<<". time factor= "<<time_factor<<". exp_factor= "<<exp_factor<<". gamma= "<<S->gamma<<". cb0_i= "<<cb0_i<<". Ve_diss2_max_tot= "<<Ve_diss2_max_tot<<endl;
 		}
-
+		// cerr<<"Ve_diss2_max_tot_final= "<<Ve_diss2_max_tot<<endl;
 		double Ve_diss2_b =0.5*(f3/(f1+f3))*(S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*cb0*(1-exp(-f1-f3));
-		double w_b = Ve_diss2_b/Ve_diss2_max_tot;
-		Ve_0 +=w_b*Ve_b;
-	}
-	// for (int b=0;b<bG;b++) Ve_tot+=this->g[b]->Ve;
+		// cerr<<"Ve_diss2_b = "<<Ve_diss2_b<<endl;
 
+		double w_b = 0;
+		if (Ve_diss2_max_tot>0) w_b = Ve_diss2_b/Ve_diss2_max_tot;
+		Ve_0 +=w_b*Ve_b;
+
+		// cerr<<"w_b= "<<w_b<<" and Ve_b= "<<Ve_b<<endl;
+		// cerr<<"Ve_0= "<<Ve_0<<endl;
+	}
+
+	// // Compute total available Ve in grain
+	// double Ve_tot=0;
+	// for (int b=0;b<bG;b++) Ve_tot+=this->g[b]->Ve;
+	// cerr<<"Ve_tot= "<<Ve_tot<<endl;
 
 
 	// 2. Compute total volume of mineral E precipitated during this step
 	double Ve_prec_tmp = (S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*(cc0*(1-exp(-f1-f3))+(cb0*((f1+f3)*(1-exp(-f2))-f2*(1-exp(-f1-f3)))/(f1+f3-f2)));
+
+	// cerr<<"Ve_prec_tmp = "<<Ve_prec_tmp<<endl;
+
 	// 3. Compute total redissolution of mineral E during this step
 	double Ve_diss2_tmp =(f3/(f1+f3))*(S->dt*S->d0*M_PI*d*l/(2*f1*(1+g)))*S->gamma*cb0*(1-exp(-f1-f3));
 
-	double alpha = (Ve_0+Ve_prec_tmp) / Ve_diss2_tmp;
-	if (alpha>=1) return 1; // normal behavior
-	else if (alpha==0) return 0;
-	else if (alpha<0) {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
-	else return -f1-log(1-((f1+f3)/f3)*(alpha*Ve_diss2_tmp)*(2*f1*(1+g))/(S->dt*S->d0*M_PI*d*l*S->gamma)*(1/cb0)); // use f3 inside exp as unknow
+	// cerr<<"Ve_diss2_tmp = "<<Ve_diss2_tmp<<endl;
+
+	double alpha = 0;
+	if (Ve_diss2_tmp>0) alpha = (Ve_0+Ve_prec_tmp) / Ve_diss2_tmp;
+
+	// cerr<<"alpha= "<<alpha<<endl;
+
+	// if (alpha>=1) return 1; // normal behavior
+	// else if (alpha==0) return 0;
+	// else if (alpha<0) {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
+	// else return -f1-log(1-((f1+f3)/f3)*(alpha*Ve_diss2_tmp)*(2*f1*(1+g))/(S->dt*S->d0*M_PI*d*l*S->gamma)*(1/cb0));
+
+	double Da_factor=0;
+	// if (alpha>=1) Da_factor=1; // normal behavior
+	// else if (alpha==0) Da_factor= 0;
+	// else if (alpha<0) {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
+	// else {
+	// 	double k_factor=(f3+f1)/f3;
+	// 	double scale_t=(2*f1*(1+g))/(S->dt*S->d0*M_PI*d*l*S->gamma*cb0);
+	// 	Da_factor=-f1-log(1-k_factor*(alpha*Ve_diss2_tmp)*scale_t);
+	// }
+	if (alpha>=1) Da_factor=1; // normal behavior
+	else if (alpha<1 and alpha>=0) Da_factor=0; // no redissolution
+	else  {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
+
+	// cerr<<"Da_factor= "<<Da_factor<<endl;
+	return  Da_factor;
 }
 
 /**
@@ -372,16 +410,50 @@ double Pore::local_Da_eff_2(Network* S){
 */
 // To do, modify this
 double Pore::local_Da_eff_3(Network* S){
-
+	// cerr<<"running local_Da_eff_3..."<<endl;
 	// if (q==0) return -1; // the model will not reach this step. Just comment this out.
 	double G = this->local_G_3(S);
 	double Da3local = S->Da3;
 
+	// cerr<<"Da3local= "<<Da3local<<endl;
 	Da3local = Da3local * is_there_redissolution(S);
+	// cerr<<"Da3local*is_there_redissolution= "<<Da3local<<endl;
+	//
+	// if      (G>0)    return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
+	// else if (G==0)   return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	// else             return Da3local*(l/S->l0)*(S->q_in_0/fabs(q));
+
+	double f3_tmp=0.0;
+	if      (G>0) f3_tmp=Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
+	else if (G==0) f3_tmp=Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	else f3_tmp=Da3local*(l/S->l0)*(S->q_in_0/fabs(q));
+	// cerr<<"local_Da_eff_3 with constrain = "<<f3_tmp<<endl;
+
+	return f3_tmp;
+}
+
+/**
+* This function returns the local value of Da_eff_3 without constrain (used in determining maximal redissolution volume) parameter for the pore.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 22/08/2025
+*/
+double Pore::local_Da_eff_3_tmp(Network* S){
+	// cerr<<"running local_Da_eff_3_tmp..."<<endl;
+	// if (q==0) return -1; // the model will not reach this step. Just comment this out.
+	double G = this->local_G_3(S);
+	double Da3local = S->Da3;
 
 	if      (G>0)    return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
 	else if (G==0)   return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
 	else             return Da3local*(l/S->l0)*(S->q_in_0/fabs(q));
+
+	// double f3_tmp=0.0;
+	// if      (G>0)    f3_tmp=Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
+	// else if (G==0)   f3_tmp=Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	// else             f3_tmp=Da3local*(l/S->l0)*(S->q_in_0/fabs(q));
+	// // cerr<<"local_Da_eff_3_tmp= "<< f3_tmp <<endl;
+	// return f3_tmp;
 }
 
 /**
