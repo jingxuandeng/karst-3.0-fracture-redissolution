@@ -48,8 +48,8 @@ printing_mode         = grains_and_diss         # style of printing:
                                                 # "grains"
                                                 # "grains_and_diss"
 L_out                 = 1		# printing scale
-pages_tot             = 100		# total nr of pages in the pictures (should be recalculated in future)
-s_save_data           = 0.02          # how often save txt and ps files
+pages_tot             = 50		# total nr of pages in the pictures (should be recalculated in future)
+s_save_data           = 0.02         # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_A_tot is used for saving

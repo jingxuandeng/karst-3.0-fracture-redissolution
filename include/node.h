@@ -99,6 +99,7 @@ class Node{
 
     bool can_be_calculated();
     void set_new_concentration(Network *N, SPECIES_NAME);
+	void set_new_concentration_rediss(Network *N, SPECIES_NAME);
 
 };
 

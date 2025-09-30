@@ -39,20 +39,20 @@ printf "Running the simulation...\n\n"
 
 Da=0.02
 d0=0.3
-kappa2=0.00001
-kappa=1
-#C_eq = 0.1
+C_eq=0
+inlet_cut_factor=1
 
-for kappa2 in 0.00001
+for kappa2 in 0.0001 #0.1 0.5 1
 do
 for kappa in 0.1
 do
-for gamma in  1  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for gamma in 1 #0.001  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
 for dmin in  0.0001
 do
   (
-                param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-kappa2-$kappa2-dmin-$dmin
+                #param=Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-1-dyn--0.3-dmin-$dmin-kappa2-$kappa2
+                param=kappa2-${kappa2}-Da-$Da-d0-$d0-gamma-$gamma-kappa-$kappa-cut_factor-${inlet_cut_factor}-dyn-${C_eq} #folder name matching Mathematica notebook
                 printf "Creating variant: %s\n" "$param"
                 mkdir $param
                 cd    $param || exit
@@ -65,11 +65,12 @@ do
                   echo Da    = $Da
                   echo d0    = $d0
                   echo d_min = $dmin
-#                  echo C_eq = $C_eq
+                  echo "C_eq = $C_eq"
+                  echo "inlet_cut_factor = $inlet_cut_factor"
                 } >> config.txt
 
-#                /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt  >run_output.txt 2>run_errors.txt&
-                /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt > >(tee run_output.txt) 2> >(tee run_errors.txt >&2) &
+                /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt  >run_output.txt 2>run_errors.txt&
+#                /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/bin/karst config.txt > >(tee run_output.txt) 2> >(tee run_errors.txt >&2) &
              )
 done
 done

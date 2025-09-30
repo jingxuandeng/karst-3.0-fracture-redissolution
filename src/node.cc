@@ -360,16 +360,13 @@ void Node::set_new_concentration(Network *N, SPECIES_NAME species){
     double QB = 0;
 
     for (int k=0; k<b; k++)
-    	// cerr<< "k="<<k<<endl;
         if(p[k]->d>0 and fabs(p[k]->q)>epsilon_for_c and n[k]->u > u ) {
 	        Q+=fabs(p[k]->q);
         	if (species == SPECIES_NAME::B){
-        	// cerr<< "Calculating QB in set_new_concentration"<<endl;
-        	QB += fabs(p[k]->q) * n[k]->cb * N->outlet_c_b_coeff(p[k]); // To do need to modify
-        	// cerr<< "QB="<<QB<<", k="<<k<<endl;
+        	QB += fabs(p[k]->q) * n[k]->cb * N->outlet_c_b_coeff(p[k]);
 			}
             else if (species == SPECIES_NAME::C)
-                QB += N->outlet_c_c_1(p[k]) + fabs(p[k]->q) * n[k]->cc * N->outlet_c_c_2_coeff(p[k]); // To do need to modify
+                QB += N->outlet_c_c_1(p[k]) + fabs(p[k]->q) * n[k]->cc * N->outlet_c_c_2_coeff(p[k]);
             else std::cerr << "Unknown SPECIES_NAME." << std::endl;
 
         }
@@ -379,6 +376,32 @@ void Node::set_new_concentration(Network *N, SPECIES_NAME species){
         else if (species == SPECIES_NAME::C) cc = QB/Q;
         else std::cerr << "Unknown SPECIES_NAME." << std::endl;
     }
+
+}
+
+void Node::set_new_concentration_rediss(Network *N, SPECIES_NAME species){
+	// cerr<< "set_new_concentartion is called"<<endl;
+
+	double Q = 0;
+	double QB = 0;
+
+	for (int k=0; k<b; k++)
+			if(p[k]->d>0 and fabs(p[k]->q)>epsilon_for_c and n[k]->u > u ) {
+				Q+=fabs(p[k]->q);
+				if (species == SPECIES_NAME::B){
+					QB += fabs(p[k]->q) * n[k]->cb * N->outlet_c_b_coeff_rediss(p[k]);
+				}
+				else if (species == SPECIES_NAME::C)
+					QB += N->outlet_c_c_1_rediss(p[k]) + fabs(p[k]->q) * n[k]->cc * N->outlet_c_c_2_coeff(p[k]);
+				else std::cerr << "Unknown SPECIES_NAME." << std::endl;
+
+			}
+
+	if(Q!=0 and QB>0){
+		if (species == SPECIES_NAME::B) cb = QB/Q;
+		else if (species == SPECIES_NAME::C) cc = QB/Q;
+		else std::cerr << "Unknown SPECIES_NAME." << std::endl;
+	}
 
 }
 

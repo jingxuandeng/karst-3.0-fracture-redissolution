@@ -262,7 +262,9 @@ class Network
 
 		//Properties of particular pores
 		double outlet_c_b_coeff       (Pore* p0);    	///< returns the outlet concentration of species b in the pore p as a function of c0_b
+		double outlet_c_b_coeff_rediss       (Pore* p0);    	///< returns the outlet concentration of species b in the pore p as a function of c0_
 		double outlet_c_c_1     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_b
+		double outlet_c_c_1_rediss     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_b
 		double outlet_c_c_2_coeff     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_c
 		double k_eff_in_pore    (Pore* p);		///< returns the value of k_eff in the pore p
 		double k_eff_2_in_pore  (Pore* p);		///< returns the value of k_eff_2 (see precipitation) in the pore p
