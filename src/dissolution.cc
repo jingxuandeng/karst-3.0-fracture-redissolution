@@ -422,7 +422,7 @@ double Network::outlet_c_b_coeff_rediss (Pore *p0){
 	if(p0->q==0 || p0->d == 0) 				 		return 0;    //pores with no flow
 	if(p0->l==l_min)           						return 1;    //no reaction in tiny pore
 	// if(if_track_grains && !(p0->is_Va_left() or p0->is_Ve_left()))      return 1;    //no dissolution if there is no A or E material
-	if(if_track_grains && !(p0->is_Va_left() or p0->is_Ve_left()))      return 1;
+	if(!(p0->is_Va_left()) and p0->is_there_redissolution(this) == 0)      return 1;
 	if(!p0->is_active)                              return 1;
 
 	double f = p0->local_Da_eff(this);      //effective reaction rate (taking into account both reaction and transversal diffusion)
@@ -498,7 +498,7 @@ double Network::outlet_c_c_1_rediss (Pore *p0){
 
 	if(p0->q==0 || p0->d ==0) return 0;   //pore with no flow
 	// if(!(p0->is_Va_left() or p0->is_Ve_left()))   return 0;   //no contribution if there is no A or E material
-	if(!(p0->is_Va_left() or p0->is_Ve_left()))   return 0;
+	if(!(p0->is_Va_left()) and p0->is_there_redissolution(this)==0)   return 0;
 	if(p0->l == l_min)        return 0;   //no reaction in tiny grain
     if(!p0->is_active)        return 0;
 
