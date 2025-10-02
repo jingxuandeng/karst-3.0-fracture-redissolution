@@ -38,15 +38,15 @@ echo "Config file copied as ./config.txt"
 printf "Running the simulation...\n\n"
 
 Da=0.02
-d0=0.3
+d0=0.6
 C_eq=0
 inlet_cut_factor=1
 
-for kappa2 in 0.0001 #0.1 0.5 1
+for kappa2 in 0.1 #0.5 1 #0.0001
 do
-for kappa in 0.1
+for kappa in 0.75
 do
-for gamma in 1 #0.001  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for gamma in 0.05 #0.001  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
 for dmin in  0.0001
 do

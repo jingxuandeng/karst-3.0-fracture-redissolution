@@ -28,7 +28,7 @@ l_min = 0.01            # minimal pore length
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Dynamics
 
-T_max       = 500           # tot time of the simulation
+T_max       = 2000           # tot time of the simulation
 dt          = 0.00001             # time step (in dimensionless units [2 k1 * gamma_1/d0])
 d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
 d_d_min     = 0 #0.01 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
