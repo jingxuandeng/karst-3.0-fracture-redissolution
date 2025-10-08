@@ -257,8 +257,9 @@ double Pore::is_there_precipitation(Network *S){
         return 1;       //normal behaviour with precipitation
 
     double f1 = local_Da_eff(S);
+	double f3= local_Da_eff_3(S);
     // double dcc = cb0*(1-exp(-f1));
-	double dcc = cb0*(1-exp(-f1)); // (FIXME) This form should be changed because of redissolution
+	double dcc = cb0*(1-exp(-f1-f3));
 
     if(cc0+dcc < 0)
         return 0;
