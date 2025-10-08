@@ -229,6 +229,7 @@ double Pore::local_G_3(Network* S){
 */
 double Pore::local_Da_eff(Network* S){
 
+   // if(!is_Va_left()) return 0.000001;
 	if (q==0) return -1;
 	double G = this->local_G(S);
 

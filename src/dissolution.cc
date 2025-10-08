@@ -426,6 +426,7 @@ double Network::outlet_c_b_coeff_rediss (Pore *p0){
 	if(!p0->is_active)                              return 1;
 
 	double f = p0->local_Da_eff(this);      //effective reaction rate (taking into account both reaction and transversal diffusion)
+	if(!p0->is_Va_left()) f=0;
 	double f3 = p0->local_Da_eff_3(this);
 	// cerr<<"f3= "<<f3<<endl;
 
@@ -503,6 +504,7 @@ double Network::outlet_c_c_1_rediss (Pore *p0){
 
 
 	double f1 = p0->local_Da_eff   (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
+	if(!p0->is_Va_left()) f1=0;
 	double f2 = p0->local_Da_eff_2 (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
 	double f3 = p0->local_Da_eff_3 (this);  //effective reaction rate (taking into account both reaction and transversal diffusion)
 
