@@ -166,9 +166,14 @@ void Grain::calculate_initial_volume (Network *S){
 
         //Va = (pow(3. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(3.*sqrt(3));   //Felerny błąd ze wzorem \Delta d/ 2 : Wzór stary, dla dwuch ruszających się poprzeczek!!! (dla rombów i 1D itp.)
         //Va = (pow(2. - (pow(d_mean,2)*M_PI)/Va_0,1.5)*Va_0)/(2.*sqrt(2.)); //Felerny błąd ze wzorem \Delta d/ 2 : Poprawiony wzór na wszystkie poprzeczki ruszające się.
-        Va = (pow(4. - (pow(d_mean,2)*M_PI)/V0,1.5)*V0)/(8);             //wersja 2D, wszystkie poprzeczki się ruszają
-        //Va = (pow(6. - (pow(S->d0,2)*M_PI)/Va_0,1.5)*Va_0)/(6.*sqrt(6));   //Wersja 1D dla "rombow"
-    }
+
+
+
+			//Va = (pow(6. - (pow(S->d0,2)*M_PI)/V0,1.5)*V0)/(6.*sqrt(6));   // the best 1D version, for half diamonds
+			Va = (pow(4. - (pow(d_mean, 2) * M_PI) / V0, 1.5) * V0) / (8); //generic 2D version, all pores are changing
+
+	}
+
 	//WARNING: the general formula should be implemented for cubic network with added random node positions
 	else if(bN==8){
 		Va = 1; V0=1;
@@ -192,7 +197,15 @@ void Grain::calculate_initial_volume (Network *S){
 		Va += sqrt(P*(P-x)*(P-y)*(P-z))*S->H_z;
         V0=Va;
 
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
+
+		double d_mean = 0;
+		for (int i=0;i<bP;i++)
+			if (!(p[i]->is_fracture))  d_mean += p[i]->d / bP;
+			else                       d_mean += S->d0 / bP;
+
+
+		Va  = 2* (pow(6. - (pow(S->d0,2)*M_PI)/(V0/2),1.5)*(V0/2))/(6.*sqrt(6));
+		//cerr<<"I calculated initial volume for diamonds."<<endl;
 	}
 
 
