@@ -28,7 +28,7 @@ l_min = 0.01            # minimal pore length
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #  Dynamics
 
-T_max       = 2000           # tot time of the simulation
+T_max       = 500           # tot time of the simulation
 dt          = 0.00001             # time step (in dimensionless units [2 k1 * gamma_1/d0])
 d_d_max     = 0     	    # maximal change of pore diameter in one step (in % if obtained then dt = 2/3 dt)
 d_d_min     = 0 #0.01 	        # minimal change of pore diameter in one step (in % if not obtained then dt = 1.2dt)
@@ -51,11 +51,11 @@ L_out                 = 1		# printing scale
 pages_tot             = 51		# total nr of pages in the pictures (should be recalculated in future)
 s_save_data           = 0.02        # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
-                                       #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
+                                       #  if s_save_data < 0 then saving is automathised and saving is done after dissolution front get up to n*save_data row)
                                        #  if s_save_data<1 && s_save_data>0 then the condition for delta V_B_tot is used for saving 1/s_save_data is the number of pages
 print_diss_factor     = 2       # for printing_mode==dissolution, defines threshold for dissolution pattern (pores larger then factor x d0 are printed)
-if_save_ps            = true    # if true ps pictures are created
-if_save_txt           = false    # if true data about network (nodes, grains, pores) is seved in text file
+if_save_ps            = false    # if true ps pictures are created
+if_save_txt           = false    # if true data about network (nodes, grains, pores) is saved in text file
 if_save_topology      = false    # if true topology is saved in each save_all
 if_save_table         = true    # if true tables with diameters, flows and concentration is saved
 if_verbose            = false   # if true verbose version for debugging
