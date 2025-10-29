@@ -16,7 +16,7 @@ Pore::Pore (double dd, double ll, float name, int bb){
 	}
 }
 
-double Pore::perm(Network*S) const{
+double Pore::perm(Network*S){
     bool pipe_formula = (!(S->sandwich_pores and is_fracture) and (d<S->H_z or S->no_max_z));
 
     if(!pipe_formula and d<S->H_z)
@@ -229,7 +229,7 @@ double Pore::local_G_3(Network* S){
 */
 double Pore::local_Da_eff(Network* S){
 
-	if (!is_Va_left()) return 0;
+    //if(!is_Va_left()) return 0; //0.000001;
 	if (q==0) return -1;
 	double G = this->local_G(S);
 
@@ -357,9 +357,7 @@ double Pore::is_there_redissolution(Network *S){
 	// }
 	if (alpha>=1) Da_factor=1; // normal behavior
 	else if (alpha<1 and alpha>=0) Da_factor=0; // no redissolution
-	else  {
-		cerr<<"ERROR: alpha has wrong value in is_there_redissolution. alpha="<<alpha<<". Ve_diss2_tmp= "<<Ve_diss2_tmp<<". f1= "<<f1<<". f3="<<f3<<endl;
-		return 0;}
+	else  {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
 
 	// cerr<<"Da_factor= "<<Da_factor<<endl;
 	return  Da_factor;
