@@ -96,9 +96,9 @@ int main(int argc, char** argv){
 		system("gzip -q *.out");
         system("gzip -q *.txt");
 
-        // system("open net.pdf");
-        // system("open net_2.pdf");
-        //system("open bledy.out.gz");
+        system("open net.pdf");
+        system("open net_2.pdf");
+        // system("open run_errors.txt.gz");
 	}
 	
 

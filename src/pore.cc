@@ -357,7 +357,9 @@ double Pore::is_there_redissolution(Network *S){
 	// }
 	if (alpha>=1) Da_factor=1; // normal behavior
 	else if (alpha<1 and alpha>=0) Da_factor=0; // no redissolution
-	else  {cerr<<"ERROR: is_there_redissolution has wrong value."; return 0;}
+	else  {
+		cerr<<"ERROR: alpha has wrong value in is_there_redissolution. alpha="<<alpha<<". Ve_diss2_tmp= "<<Ve_diss2_tmp<<". f1= "<<f1<<". f3="<<f3<<endl;
+		return 0;}
 
 	// cerr<<"Da_factor= "<<Da_factor<<endl;
 	return  Da_factor;
