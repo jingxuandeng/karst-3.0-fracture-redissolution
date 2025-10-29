@@ -16,7 +16,7 @@ Pore::Pore (double dd, double ll, float name, int bb){
 	}
 }
 
-double Pore::perm(Network*S){
+double Pore::perm(Network*S) const{
     bool pipe_formula = (!(S->sandwich_pores and is_fracture) and (d<S->H_z or S->no_max_z));
 
     if(!pipe_formula and d<S->H_z)
