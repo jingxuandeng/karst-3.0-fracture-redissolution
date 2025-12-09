@@ -1,5 +1,5 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-#  Size of the network
+#  Size of the netwrok
 
 N_x = 100         # size of the regular network
 N_y = 200        # size of the regular network
@@ -54,7 +54,7 @@ pages_tot             = 51		#was 100 # total nr of pages in the pictures (should
 s_save_data           = 0.01        # how often save txt and ps files
                                        #  if s_save_data > 1 then we save every s_save_data time step
                                        #  if s_save_data < 0 then saving is automathised and saving is done after dissotution front get up to n*save_data row)
-                                       #  if s_save_data<1 && s_save_data>0 then the condition for total time is used for saving in T_tot/s_save_data period
+                                       #  if s_save_data<1 && s_save_data>0 then the condition for delta V_B_tot is used for saving 1/s_save_data is the number of pages
 print_diss_factor     = 2       # for printing_mode==dissolution, defines threshold for dissolution pattern (pores larger then factor x d0 are printed)
 if_save_ps            = true    # if true ps pictures are created
 if_save_txt           = true    # if true data about network (nodes, grains, pores) is seved in text file
@@ -78,12 +78,12 @@ type_of_topology                   =  triangulation    # six options:
 in_topology_file_name              = ../../../siatki_z_triangulacji/200x200/seed-3/net.out          # file name with input topology of the network
 in_topology_file_name_g            = ../../../siatki_z_triangulacji/200x200/seed-3/net_g.out        # file name with input topology of the network
 in_pore_size_file_name             = ../../../siatki_z_triangulacji/200x200/seed-3/brak_pliku.out   # file name with input pore sizes
-if_radial_geometry                 = false        # if true (false is default) one input in the centre and output along circle
+if_radial_geometry                 = false         # if true (false is default) one input in the centre and output along circle
 if_periodic_bc                     = true           # if true (default) horizontal periodic conditions are set
 if_clear_unused_pores              = true           # if true unused pores and nodes and grains are deleted (mess with printing tables)
 random_seed                        = 12             # if -1 then srand(time(NULL)) else srand(time(random_seed))
-if_randomness_in_regular_net       = false	        # if true randomness is added to hexagonal or cubic network (working for hexagonal net)
-gauss_sigma_d                      = 0  		    # if randomness is on this gives information about width of the initial diameter distribution
+if_randomness_in_regular_net       = true	        # if true randomness is added to hexagonal or cubic network (working for hexagonal net)
+gauss_sigma_d                      = 0.1  		    # if randomness is on this gives information about width of the initial diameter distribution
 max_rand_shift_xy                  = 0       		# if randomness is on this gives information about max shift in node positions
 
 
@@ -102,9 +102,9 @@ if_cut_d_min                       = true        # cutting completely pores with
 
 
 # dynamic k2!!!
-#if_dynamic_k2                       = false       # if true the Da2_eff will be multiplied by sigma function
-#dyn_k2_alpha                        = 10          # sigma parameters
-#dyn_k2_c0                           = 1        # sigma parameters
+if_dynamic_k2                       = false       # if true the Da2_eff will be multiplied by sigma function
+dyn_k2_alpha                        = 101          # sigma parameters
+dyn_k2_c0                           = 0.5        # sigma parameters
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  Initial inlet cut

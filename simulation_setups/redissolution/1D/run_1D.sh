@@ -13,7 +13,7 @@ cd /Users/jingxuandeng/phd/KRG/research/diss_pre_ML/DATA/1D_test/ || exit 1
 
 # Generate timestamped folder name
 # Use hourly/minute if you want unique runs, otherwise daily
- current_date_time=$(date +"test_%Y_%m_%d_%H_%M")
+current_date_time=$(date +small_%Y_%m_%d_%H_%M_%S)
 #current_date_time=$(date +"test_%Y_%m_%d")
 
 echo "Target directory: $current_date_time"
@@ -31,7 +31,8 @@ cd "$current_date_time" || { echo "Failed to enter directory."; exit 1; }
 echo "Now in $(pwd)"
 
 # Copy config file
-cp "/Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/simulation_setups/redissolution/1D/config_small.txt" "./config.txt" || { echo "Failed to copy config file."; exit 1; }
+#cp "/Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/simulation_setups/redissolution/1D/config_small.txt" "./config.txt" || { echo "Failed to copy config file."; exit 1; }
+cp "/Users/jingxuandeng/phd/KRG/research/diss_pre_ML/fracture/simulation_setups/redissolution/1D/config_pH_threshold.txt" "./config.txt" || { echo "Failed to copy config file."; exit 1; }
 
 echo "Config file copied as ./config.txt"
 
@@ -43,11 +44,11 @@ C_eq=0
 inlet_cut_factor=1
 if_redissolution=true
 
-for kappa2 in 0.1 #0.5 1 #0.0001
+for kappa2 in 0.1 1 10 #0.5 1 #0.0001
 do
-for kappa in 0.5 #0.75
+for kappa in 0.1 1 10 #0.75
 do
-for gamma in 0.1 #1 0.1 0.5 #0.001  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
+for gamma in 0.5 #1 0.1 0.5 #0.001  #0.1 0.5 0.7 0.9 0.99 1.0 1.01 1.1 1.5
 do
 for dmin in  0.0001
 do

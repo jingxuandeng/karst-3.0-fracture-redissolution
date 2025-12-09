@@ -42,7 +42,7 @@ ARMINCDIR = -I ../include -I $(ALGDIR)
 COPTS	= -Wall -pedantic -O2 
 CFLAGS	= $(COPTS) $(MINCLUDES) $(ARMINCDIR)
 
-CXXOPTS = -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lstdc++ $(LSFML) $(LFORTRAN)
+CXXOPTS = -std=c++17 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lstdc++ $(LSFML) $(LFORTRAN)
 CXXFLAGS = $(CXXOPTS) 
 
 
