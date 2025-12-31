@@ -69,7 +69,7 @@ class Pore{
 		Pore (double dd = 0.02, double ll = 1, float name=0, int bb=2);
 		~Pore ()						{if(bG>0) delete[] g; g=NULL; }
 
-		double perm(Network *S) const;
+		double perm(Network *S);
 
 		//void   diss (double Va, double Ve);							///< precipitation and dissolution of the material: calculate change of d and l
 		double calculate_inlet_cb();									///< calculate inlet concentration of the species B
