@@ -77,6 +77,12 @@ void Network :: calculate_initial_total_Va(){
 
 }
 
+
+void Network :: calculate_initial_total_V() {
+	V_TOT = 0;
+	for(int i=0;i<NG;i++) V_TOT += g[i]->calculate_maximal_volume( this);
+	cerr<<"V_TOT = "<<V_TOT<<endl;
+}
 /**
 * This function calculates the initial total volume of species E
 *
@@ -88,8 +94,6 @@ void Network :: calculate_initial_total_Ve(){
 	for(int i=0;i<NG;i++) Ve_tot+=g[i]->Ve;
 
 }
-
-
 
 /**
 * This function generates the 2D hexagonal network.

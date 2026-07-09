@@ -382,7 +382,7 @@ double Pore::local_Da_eff_2(Network* S){
 
         if(abs(S->dyn_k2_alpha)>100){
             if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)>S->dyn_k2_c0*_sign(S->dyn_k2_alpha))
-                return 0; // if inlet cB_in concentration of a given pore is larger than treshold value, then 0. Right now this is implemented, dont need to worry about the else{...}
+                return 0; // if inlet cB_in concentration of a given pore is larger than treshold value, then 0. Right now this is implemented, don't need to worry about the else{...}
         }
         else{
             double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
@@ -417,6 +417,19 @@ double Pore::local_Da_eff_3(Network* S){
 	double G = this->local_G_3(S);
 	double Da3local = S->Da3;
 
+	// // redissolution depends on pH treshold
+	// if(S->if_dynamic_k2){
+	//
+	// 	if(abs(S->dyn_k2_alpha)>100){
+	// 		if(calculate_inlet_cb()*_sign(S->dyn_k2_alpha)<=S->dyn_k2_c0*_sign(S->dyn_k2_alpha))
+	// 			return 0; // if inlet cB_in concentration of a given pore is larger than treshold value, then 0. Right now this is implemented, dont need to worry about the else{...}
+	// 	}
+	// 	else{
+	// 		double kappa = 1./(1+pow(calculate_inlet_cb()/S->dyn_k2_c0,S->dyn_k2_alpha));
+	// 		Da3local = Da3local*kappa;
+	// 	}
+	// }
+
 	// cerr<<"Da3local= "<<Da3local<<endl;
 	Da3local = Da3local * is_there_redissolution(S);
 	// cerr<<"Da3local*is_there_redissolution= "<<Da3local<<endl;
@@ -424,6 +437,8 @@ double Pore::local_Da_eff_3(Network* S){
 	// if      (G>0)    return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));
 	// else if (G==0)   return Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
 	// else             return Da3local*(l/S->l0)*(S->q_in_0/fabs(q));
+
+
 
 	double f3_tmp=0.0;
 	if      (G>0) f3_tmp=Da3local*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G3)/(1+G));

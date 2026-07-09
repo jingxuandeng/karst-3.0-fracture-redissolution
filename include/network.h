@@ -122,6 +122,7 @@ class Network
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double d_min_factor; ///< d_min = d0*d_min_factor
 		double l_min;   ///< minimal pore length (for numerical reason)
+		double V_TOT;	///< maximal volume of the system
 
         double K_goal       = 1;    ///< our goal permeability
         double K_0          = 0;    ///< permeability at the beggining of the simulation
@@ -284,6 +285,7 @@ class Network
 		void calculate_initial_d0_and_l0 ();    ///< calculate initial mean pore length and diameter, important for setting Da_eff and G correctly
 		void calculate_initial_total_Va();		///< calculate initial amount of species A, important for mass balance
 		void calculate_initial_total_Ve();		///< calculate initial amount of species E, important for mass balance
+		void calculate_initial_total_V();		///< calculate initial total volume of the system
 		void recalculate_k1 ();					///< recalculate reaction rate, k, has no impact on the simulation, just for potential curiosity
 		void recalculate_DD1();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
 		void recalculate_k2 ();					///< recalculate reaction rate for second reaction, has no impact on the simulation, just for potential curiosity

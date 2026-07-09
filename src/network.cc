@@ -4,24 +4,23 @@
 //functions connected with creation of the network
 
 Network::Network (string input_file_name) {
-
 	cerr<<endl<<"Network is being created."<<endl<<endl;
 
-//default values
+	//default values
 
 	N_x = 10;		//size of regular network
 	N_y = 10;		//size of regular network
-    H_z = 1.0;      //height of the system for 2D networks, once was set to 1, now its defoult value is 0.5 (to be consistent with the error with dV formula)
+	H_z = 1.0;      //height of the system for 2D networks, once was set to 1, now its defoult value is 0.5 (to be consistent with the error with dV formula)
 
 	P_in   = N_y-1;   //pressure at the inlet (must by positive)
 	P_out  = 0;	      //pressure at the outlet, always should be set to zero
 	Q_tot  = 2*N_x;   //total flow through the system (if == 0 the constant pressure is kept)
-    Q_tot_tmp =0;     // total flow calculated in each time step, can differ form Q_tot if const P is set
+	Q_tot_tmp =0;     // total flow calculated in each time step, can differ form Q_tot if const P is set
 	Va_tot = 0;       //total volume of dissolving species
 	Ve_tot = 0;       //total volume of precipitating species
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
-    merge_factor = 0.1; //  ratio of actual an initial volume of a grain below the merging will occur
+	merge_factor = 0.1; //  ratio of actual an initial volume of a grain below the merging will occur
 
 	//dimenssionless parameters describing evolution of the system
 
@@ -42,20 +41,20 @@ Network::Network (string input_file_name) {
 	theta = 1;	     //ratio of G_1/G_2
 	theta2 = 1;      //ratio of G_1/G_3
 	d_min = d0/100.; //minimal possible pore diameter (important in precipitation)
-    d_min_factor= 100; //d_min = d0*d_min_factor
+	d_min_factor= 100; //d_min = d0*d_min_factor
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 
 
-    K_goal       = 0;    // our goal permeability
-    K_0          = 0;    //Permeability at the beginning of the simulation
-    K_tmp        = 0;    // best approx of temporal permeability
-    K_tmp_old    = 0;    // best approx of last permeability
-    K_f0         = 0;    // stabilizing force, proportional to Perm_goal-P_tmp
-    K_f1         = 0;    // stabilizing force, proportional to P_tmp(0)
+	K_goal       = 0;    // our goal permeability
+	K_0          = 0;    //Permeability at the beginning of the simulation
+	K_tmp        = 0;    // best approx of temporal permeability
+	K_tmp_old    = 0;    // best approx of last permeability
+	K_f0         = 0;    // stabilizing force, proportional to Perm_goal-P_tmp
+	K_f1         = 0;    // stabilizing force, proportional to P_tmp(0)
 
 
-    //physical parameters -> should be set after choosing dimenssionless one
-	
+	//physical parameters -> should be set after choosing dimenssionless one
+
 	k1	= 10e-8;		//reaction rate for dissolution
 	k2	= 1;			//reaction rate for precipitation
 	//k3=1;             //reaction rate for redissolution
@@ -69,7 +68,7 @@ Network::Network (string input_file_name) {
 	gamma_1	= 1;		//capacity number for dissolution   (c_sol = 1 by default)
 	gamma_2 = 1;		//capacity number for precipitation (c_sol = 1 by default)
 	// gamma_3 = 1;        //capacity number for redissolution   (c_sol = 1 by default)
-	Cb_0 	= 1;		//acid inlet concentration 
+	Cb_0 	= 1;		//acid inlet concentration
 	Cc_0	= 0;		//precipitating species inlet concentration
 	mu_0    = M_PI*pow(d0,4)/(128*l0);		//viscosity  always set to M_PI*pow(d0,4)/(128*l0)
 	dt_unit = d0/(2*k1 * gamma_1);            //(in dimensionless units [2 k1 * gamma_1/d0])
@@ -87,7 +86,7 @@ Network::Network (string input_file_name) {
 	d_V_max     = 0.1;        //(only for precipitation)  maximal change of pore volume in one step (if obtained the dt = 2/3dt)
 	set_new_dt  =-1;          //0-don't change dt; 1 - increase dt by factor 1.2; -1 - decrease dt by factor 0.75
 	d_max_for_u = 1000;       //maximal diameter that consume pressure, for d>d_max_for_u * d0 delta u in pore is zero
-    time_factor_after_b = 1;  //how long after breakthrough run simulation (as a fraction fof tot_steps)
+	time_factor_after_b = 1;  //how long after breakthrough run simulation (as a fraction fof tot_steps)
 
 	//merging parameters
 	type_of_merging = "merge_empty_grains"; //type of merging: "none", "merge_empty_grains", not implemented yet: "merge_pores"
@@ -104,13 +103,13 @@ Network::Network (string input_file_name) {
 	initial_xy          = NULL;                   //initial position of nodes: for printing in grains style
 	pattern_anal_factor = 2;
 
-//CONTROL PARAMETERS
+	//CONTROL PARAMETERS
 	//type of network
 	type_of_topology                   = "from_file";    //three options: "hexagonal", "from_file", "triangularization"
 	in_topology_file_name              = "net_0.out";    //file name with input topology of the network
 	in_topology_file_name_g            = "net_g_0.out";  //file name with input topology of the network
 	in_pore_size_file_name             = "pores_0.out";  //file name with input pore sizes
-    if_radial_geometry                 = false;          // if true (false is default) one input in the centre and output along circle
+	if_radial_geometry                 = false;          // if true (false is default) one input in the centre and output along circle
 	if_randomness_in_regular_net       = true;  	     //if true randomness is added to hexagonal network (working for hexagonal net)
 	if_clear_unused_pores              = true;           //if true unused pores and nodes and grains are deleted
 	if_track_grains                    = true;           //if true grains and their volume are tracked (important for merging and precipitation)
@@ -118,15 +117,15 @@ Network::Network (string input_file_name) {
 	random_seed                        = -1;
 	gauss_sigma_d                      = 0;    			 //if randomness is on this give information about width of the initial diameter distribution (log normal used here)
 	max_rand_shift_xy                  = 1;       	     //if randomness is on this give information about max shift in positions
-    no_max_z                           = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
-    sandwich_pores                     = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
+	no_max_z                           = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
+	sandwich_pores                     = false;          //if true the cylinder formulas are always true, the pore always behave as a cylinder not aperture
 
 
 	//dynamics
 	if_leapfrog                          = false;        //if true frog leap instead of Euler algorithm is used in evolution (not implemented yet)
 	if_full_dissolution                  = true;         //if true evolution stops when system is fully dissolved
 	if_system_dissolved                  = false;        //check if system is dissolved (fulfilling condition given by d_d_diss)
-    sim_state                            = 1;            // 1-ok, 2-warningi, minus - after breackthrough
+	sim_state                            = 1;            // 1-ok, 2-warningi, minus - after breackthrough
 	if_adaptive_dt                       = true; 	     //adapting dt according to d_d_max and d_d_min;
 	if_recalculate_physical_parameters   = true;         //if true recalculate physical parameters according to dimensionless one
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps
@@ -134,14 +133,14 @@ Network::Network (string input_file_name) {
 	if_redissolution				     = false;		 //if true apart from dissolution the redissolution of secondary mineral in on
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
 	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
-    if_cut_d_min                         = false;        //if true the d<=d_min -> d=0
+	if_cut_d_min                         = false;        //if true the d<=d_min -> d=0
 
-    if_dynamic_k2                        = false;        // if true the Da2_eff will be multiplied by sigma function
-    dyn_k2_alpha                         = 2;            //sigma parameters
-    dyn_k2_c0                            = 0.1;          //sigma parameters
-    C_eq                                 = 0;            //below C_eq precipitation do not occur (or occurs in the other direction)
+	if_dynamic_k2                        = false;        // if true the Da2_eff will be multiplied by sigma function
+	dyn_k2_alpha                         = 2;            //sigma parameters
+	dyn_k2_c0                            = 0.1;          //sigma parameters
+	C_eq                                 = 0;            //below C_eq precipitation do not occur (or occurs in the other direction)
 
-    //output
+	//output
 	if_save_ps            = true;     //if true ps pictures are created
 	if_save_txt           = true;     //if true data about network (nodes, pores and grains) is saved in text file
 	if_save_table         = true;     //if true save tables with diameters, flow and concentration
@@ -151,29 +150,29 @@ Network::Network (string input_file_name) {
 
 	//addition inlet cut
 	inlet_cut_factor = 1;      //factor of an inlet cut (in a cut: d = d*factor)
-    if_tilted_cut = 0;
+	if_tilted_cut = 0;
 	inlet_cut_w = 0;           //width of an inlet cut, if 0 the single layer fracture is created (the best option)
 	inlet_cut_l = 0;		   //length of aGn inlet cut
-    add_well    = false;       //if true additional cut will be added
+	add_well    = false;       //if true additional cut will be added
 	point_inlet = false;	   // if true the inlet is a point at the top of the crack
-    point_outlet = false;	   // if true the outlet is a point at the top of the crack
-    if_reactions_in_the_fracture = true;
+	point_outlet = false;	   // if true the outlet is a point at the top of the crack
+	if_reactions_in_the_fracture = true;
 
-//Reading from the config. file
+	//Reading from the config. file
 
 	conf_in.open (input_file_name,	ios_base::in);
 	if(conf_in.is_open() == false) 	cerr<<"Problem with reading file "<<input_file_name<<endl;
 	else 							read_setup_file(conf_in);
 
-//input/output files
+	//input/output files
 	net_ps    .open("net.ps",	      ios_base::out | ios_base::trunc );
-    net_ps2   .open("net_2.ps",	      ios_base::out | ios_base::trunc );
+	net_ps2   .open("net_2.ps",	      ios_base::out | ios_base::trunc );
 	pores_out .open("pores.out",	  ios_base::out | ios_base::trunc );
 	grains_out.open("grains.out",	  ios_base::out | ios_base::trunc );
 	nodes_out .open("nodes.out",	  ios_base::out | ios_base::trunc );
 	net_out   .open("net.out",   	  ios_base::out | ios_base::trunc );
 	net_g_out .open("net_g.out",      ios_base::out | ios_base::trunc );
-    tmp_out   .open("tmp.out",        ios_base::out | ios_base::trunc );
+	tmp_out   .open("tmp.out",        ios_base::out | ios_base::trunc );
 
 	time_evolution_out      .open("time_evolution.out"           ,ios_base::out | ios_base::trunc );
 	pattern_analysis_out    .open("pattern_analysis.out"         ,ios_base::out | ios_base::trunc );
@@ -195,14 +194,14 @@ Network::Network (string input_file_name) {
 		VE_out			  .open("VE.out",	      ios_base::out | ios_base::trunc );
 		VX_out			  .open("VX.out",	      ios_base::out | ios_base::trunc );
 		lengths_out		  .open("l.out",	      ios_base::out | ios_base::trunc );
-        f_pores_out       .open("f_pores.out",    ios_base::out | ios_base::trunc );
-        f_nodes_out       .open("f_nodes.out",    ios_base::out | ios_base::trunc );
-        d_nbr_out         .open("d_nbr.out",	  ios_base::out | ios_base::trunc );
-        l_nbr_out         .open("l_nbr.out",	  ios_base::out | ios_base::trunc );
-        angle_out         .open("angle.out",	  ios_base::out | ios_base::trunc );
-        max_out           .open("max.out",   	  ios_base::out | ios_base::trunc );
-        fff_out           .open("flow_focusing_factor.out",	  ios_base::out | ios_base::trunc );
-        d_nbr_direction_out .open("d_nbr_dir.out",	  ios_base::out | ios_base::trunc );
+		f_pores_out       .open("f_pores.out",    ios_base::out | ios_base::trunc );
+		f_nodes_out       .open("f_nodes.out",    ios_base::out | ios_base::trunc );
+		d_nbr_out         .open("d_nbr.out",	  ios_base::out | ios_base::trunc );
+		l_nbr_out         .open("l_nbr.out",	  ios_base::out | ios_base::trunc );
+		angle_out         .open("angle.out",	  ios_base::out | ios_base::trunc );
+		max_out           .open("max.out",   	  ios_base::out | ios_base::trunc );
+		fff_out           .open("flow_focusing_factor.out",	  ios_base::out | ios_base::trunc );
+		d_nbr_direction_out .open("d_nbr_dir.out",	  ios_base::out | ios_base::trunc );
 
 	}
 
@@ -210,7 +209,7 @@ Network::Network (string input_file_name) {
 
 	cerr<<endl<<"Initialization of the network."<<endl<<endl;
 
-//creating network of nodes
+	//creating network of nodes
 	//srand(0); //provisional setting of random seed
 	if     (type_of_topology == "hexagonal")     	createHexagonalNetwork 			(N_x,N_y);
 	else if(type_of_topology == "cubic")         	createCubicNetwork     			(N_x,N_y,N_x);
@@ -241,31 +240,33 @@ Network::Network (string input_file_name) {
 						"\"from_file\" \n \"triangulation\"."<<endl;
 		exit(1);}
 
-//Check node/pore sequence (is n[s] connected through p[s])
+	//Check node/pore sequence (is n[s] connected through p[s])
 	for(int i=0;i<NN;i++)
 		for(int s=0;s<n[i]->b;s++) if(findPore(n[i],n[i]->n[s])!= n[i]->p[s]) {cerr<<"WARNING: Problem with pore/node sequence."<<endl; exit(123);}
 
 
-//check if to track grains, if not NG=0
+	//check if to track grains, if not NG=0
 	if (!if_track_grains) NG = 0;
 
-//additional options
+	//additional options
 	//inlet cuts and setting proper point inlet or outlet
 	create_a_fracture(inlet_cut_factor);
 
 
-    //create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
+	//create_an_inlet_cut (inlet_cut_w, inlet_cut_l, inlet_cut_factor);
 	//if(if_tilted_cut && inlet_cut_factor!=1) create_tilted_fracture(inlet_cut_w,inlet_cut_factor);
-    //create_an_initial_pattern();
+	//create_an_initial_pattern();
 
 
 
-//calculating initial Va volume for grains
+	//calculating initial Va volume for grains
 	if(if_track_grains){
 		cerr<<"Calculating initial grain volume..."<<endl;
 		if(type_of_topology != "from_file") for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
 		calculate_initial_total_Va();
-		calculate_initial_total_Ve();}
+		calculate_initial_total_Ve();
+		calculate_initial_total_V();
+}
 
 
 //updating pore lengths

@@ -171,6 +171,7 @@ void Network::write_time_step_properties(){
                 "plots"         <<setw(15)<<\
                 "percolation"   <<setw(15)<<\
                 "sim_state"     <<setw(15)<<\
+				"porosity"		<<setw(15)<<\
 				"d_in_max"      <<setw(15)<<\
 				"d_out_max"     <<setw(15)<<endl;
 		time_evolution_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
@@ -204,6 +205,7 @@ void Network::write_time_step_properties(){
 			Vx_tot     <<setw(15)<<\
             pages_saved<<setw(15)<<\
             percolation<<setw(15)<<\
+			(V_TOT-Va_tot-Ve_tot-Vx_tot)/V_TOT<<setw(15)<<\
             sim_state  <<setw(15)<<\
 			d_in_max   <<setw(15)<<\
 			d_out_max  <<endl<<flush;
