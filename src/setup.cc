@@ -401,7 +401,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			if      (value == "true" )   if_save_vtk  = true;
 			else if (value == "false")   if_save_vtk  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_save_vtk. Set true or false."<<endl;
-			cerr<< "Setting if_redissolution = "<<if_save_vtk<<endl;}
+			cerr<< "Setting if_save_vtk = "<<if_save_vtk<<endl;}
 
 		else if(name == "if_dynamical_length"){
 			if      (value == "true" )   if_dynamical_length  = true;
