@@ -698,6 +698,7 @@ void Network::  save_all_data(bool if_save_now) {
 		if(if_save_ps)        {net_ps<< *this;  Print_network_in_dissolution_style (net_ps2,*this);} //Not very pretty but I want two net.pdf files -- one with pores and one with gains.
 		if(if_save_txt)       print_net_txt();
 		if(if_save_table)     print_tables_txt();
+		if(if_save_vtk) write_vtk_data();
 		if(if_save_topology) {export_topology_file(); export_topology_file_with_grains();}
 		pages_saved++;
 	}

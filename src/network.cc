@@ -147,6 +147,7 @@ Network::Network (string input_file_name) {
 	if_save_topology      = true; 	  //if true topology is saved in each save_all
 	if_verbose            = false;    //if true verbose version for debugging
 	if_debugging_printing = false;	  //if true debugging printing is done after each calculation
+	if_save_vtk           = false;    ///< if true saves data in VTK format
 
 	//addition inlet cut
 	inlet_cut_factor = 1;      //factor of an inlet cut (in a cut: d = d*factor)

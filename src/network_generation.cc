@@ -77,7 +77,12 @@ void Network :: calculate_initial_total_Va(){
 
 }
 
-
+/**
+* This function calculates the initial total volume of species E
+*
+* @author Jingxuan Deng
+* @date 20/07/2026
+*/
 void Network :: calculate_initial_total_V() {
 	V_TOT = 0;
 	for(int i=0;i<NG;i++) V_TOT += g[i]->calculate_maximal_volume( this);
