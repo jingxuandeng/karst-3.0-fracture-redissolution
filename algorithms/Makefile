@@ -31,7 +31,7 @@ LIBBLAS = -L /usr/local/opt/openblas/lib -lblas
 
 LIBOTHERS = -lpthread
 
-LFORTRAN = -L /usr/local/opt/gcc/lib/gcc/15  -lgfortran
+LFORTRAN = -L /usr/local/opt/gcc/lib/gcc/16  -lgfortran
 LIBMUMPS = -L $(MDIR)/lib/ -ldmumps -L $(MDIR)/lib/ -lmumps_common
 
 MINCLUDES = -I $(MDIR)/include -I $(MDIR)/libseq 

@@ -54,6 +54,7 @@ class Grain{
 		double Va;		 ///< volume of material A
 		double Ve;		 ///< volume of material E
 		double Vx;       ///< volume of non-reacting material
+		double Va1;       ///< volume of material A1 (host mineral with less reactivity)
 		double V0;
 
 		double tmp;		 ///< temporal information (name or type of grain)///

@@ -26,6 +26,7 @@ void Network::write_vtk_data()
 	write_diameter("network_"+to_string(tot_steps)+".vtk");
 	write_flow_rate("network_"+to_string(tot_steps)+".vtk");
 	write_concentration("network_"+to_string(tot_steps)+".vtk");
+	write_concentration_c("network_"+to_string(tot_steps)+".vtk");
 	network_vtk.close();
 }
 
@@ -149,6 +150,24 @@ void Network::write_concentration(string file_name)
 
 	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< p[i]->c_in << endl;
 	else for (int i = 0; i < NP; ++i)	file<< p[i]->n[0]->cb << endl;
+	file.close();
+}
+
+void Network::write_concentration_c(string file_name)
+{
+
+	ofstream os_tmp;
+	ofstream *os_p = NULL;
+
+	os_tmp.open(file_name, ios::app);
+	if (os_tmp.is_open() == false) cout << "Problem in writing VTK files" << endl;
+	else os_p = &os_tmp;
+
+	ofstream &file = *os_p;
+	file << endl <<"SCALARS Concentration_C float" << endl << "LOOKUP_TABLE custom_table" << endl;
+
+	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< Cc_0 << endl; // this is not working in streamline routing. Need modification
+	else for (int i = 0; i < NP; ++i)	file<< p[i]->n[0]->cc << endl;
 	file.close();
 }
 

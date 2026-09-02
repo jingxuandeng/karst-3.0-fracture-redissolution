@@ -77,6 +77,7 @@ class Network
 		double Q_tot;		///< total flow through the system
         double Q_tot_tmp;	///< total flow through the system calculated in each time step
 		double Va_tot;		///< total amount of volume of dissolving species
+		double Va1_tot;		///< total amount of volume of dissolving species (mineral A1)
 		double Ve_tot;		///< total amount of volume of precipitating species
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
@@ -87,6 +88,7 @@ class Network
 		double k1;			///< reaction rate of dissolution
 		double k2;			///< reaction rate of precipitation
 		double k3;			///< reaction rate of redissolution
+		double k4;			///< reaction rate of dissolution of less reactive mineral
 		double D1;			///< diffusion coefficient for dissolution (not implemented yet, we assume that flow is faster then diffusion along pore)
 		double D2;			///< diffusion coefficient for precipitation (not implemented yet)
 		double D3;			///< diffusion coefficient for redissolution
@@ -108,15 +110,18 @@ class Network
 		double Da;		///< effective Damkohler number for dissolution
 		double Da2;		///< effective Damkohler number for precipitation
 		double Da3;		///< effective Damkohler number for redissolution of secondary mindral
+		double Da4;		///< effective Damkohler number for dissolution of less reactive mineral A1
 		double G1;		///< DaPe for dissolution
 		double G2;		///< DaPe for precipitation
 		double G3;		///< DaPe for redissolution
+		double G4;		///< DaPe for dissolution of less reactive mineral A1
 		double Pe1;		///< Peclet number for dissolution (D along pore) (not used now)
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
 		double Pe3;     ///< Peclet number for redissolution (D along pore)  (not used now)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
 	    double kappa2;	///< ratio of Da_3/Da_1 of reaction rates (redissolution vs dissolution)
+		double kappa3;	///< ratio of Da_4/Da_1 of reaction rates (dissolution of less reactive mineral vs major host mineral)
 		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double theta2;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
@@ -381,6 +386,7 @@ class Network
 		void write_diameter(string file_name);
 		void write_flow_rate(string file_name);
 		void write_concentration(string file_name);
+		void write_concentration_c(string file_name);
 
 
 

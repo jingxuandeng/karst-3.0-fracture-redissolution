@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.12)  # Adjust the required version as needed
-#cmake_minimum_required(VERSION 3.6)  # Adjust the required version as needed
+#cmake_minimum_required(VERSION 3.12)  # Adjust the required version as needed
+#cmake_minimum_required(VERSION 3.31.6)  # Adjust the required version as needed
+cmake_minimum_required(VERSION 4.4.2)  # Adjust the required version as needed
 #set(CMAKE_C_COMPILER "gcc")
 #set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_C_COMPILER "clang")
