@@ -28,6 +28,93 @@ void Network::write_vtk_data()
 	write_concentration("network_"+to_string(tot_steps)+".vtk");
 	write_concentration_c("network_"+to_string(tot_steps)+".vtk");
 	network_vtk.close();
+
+	write_grains_vtk_data();
+}
+
+/**
+* This function writes a separate VTK file (grains_<step>.vtk) representing the material
+* grains as polygonal cells, with the grain volume fields attached as CELL_DATA:
+*   Va   - volume of mineral A
+*   Va1  - volume of the less reactive mineral A1
+*   Vx   - volume of the non-reacting material
+*   Ve   - volume of the precipitated mineral E
+*   Vtot - Va + Va1 + Vx + Ve (total solid volume left in the grain)
+* Grains with fewer than 3 nodes, or grains that wrap around a periodic boundary, are
+* written as a degenerate (invisible) cell so the data arrays stay aligned with NG.
+*
+* @author Jingxuan Deng
+* @date 02/09/2026
+*/
+void Network::write_grains_vtk_data()
+{
+	string fname = "grains_"+to_string(tot_steps)+".vtk";
+
+	ofstream f;
+	f.open(fname, ios_base::out | ios_base::trunc);
+	if(f.is_open() == false){ cout << "Problem in writing grain VTK file" << endl; return; }
+
+	cout << "Writing grain volume VTK data to " << fname << endl;
+
+	for (int i = 0; i < NN; ++i) n[i]->tmp = i;   //node -> point index
+
+	double max_dist = (N_x > 0) ? N_x/2.0 : 1e30; //consecutive grain nodes further apart => periodic wrap
+
+	//classify each grain: real polygon (bN>=3, no wrap) or degenerate placeholder
+	bool *drawn = new bool[NG];
+	long  conn_size = 0;
+	for (int i = 0; i < NG; ++i){
+		Grain *gg = g[i];
+		bool ok = (gg->bN >= 3);
+		for (int b = 0; ok && b < gg->bN; ++b)
+			if ( (gg->n[b]->xy - gg->n[(b+1)%gg->bN]->xy) > max_dist ) ok = false;
+		drawn[i]   = ok;
+		conn_size += (ok ? gg->bN : 3) + 1;
+	}
+
+	f << "# vtk DataFile Version 1.0" << endl;
+	f << "2D Network grains model" << endl << "ASCII" << endl << endl << "DATASET UNSTRUCTURED_GRID" << endl;
+
+	f << "POINTS " << NN << " float" << endl;
+	for (int j = 0; j < NN; ++j)
+		f << n[j]->xy.x << " " << n[j]->xy.y << " " << n[j]->xy.z << endl;
+
+	f << endl << "CELLS " << NG << " " << conn_size << endl;
+	for (int i = 0; i < NG; ++i){
+		Grain *gg = g[i];
+		if (drawn[i]){
+			f << gg->bN;
+			for (int b = 0; b < gg->bN; ++b) f << " " << (int)gg->n[b]->tmp;
+			f << endl;
+		}
+		else{
+			int idx = (gg->bN > 0) ? (int)gg->n[0]->tmp : 0;
+			f << "3 " << idx << " " << idx << " " << idx << endl;
+		}
+	}
+
+	f << endl << "CELL_TYPES " << NG << endl;
+	for (int i = 0; i < NG; ++i) f << 7 << endl;   //7 == VTK_POLYGON
+
+	f << endl << "CELL_DATA " << NG << endl;
+
+	f << "SCALARS Va float 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << g[i]->Va << endl;
+
+	f << "SCALARS Va1 float 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << g[i]->Va1 << endl;
+
+	f << "SCALARS Vx float 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << g[i]->Vx << endl;
+
+	f << "SCALARS Ve float 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << g[i]->Ve << endl;
+
+	f << "SCALARS Vtot float 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << (g[i]->Va + g[i]->Va1 + g[i]->Vx + g[i]->Ve) << endl;
+
+	delete[] drawn;
+	f.close();
 }
 
 void Network::write_point_data(string file_name)

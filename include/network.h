@@ -381,6 +381,7 @@ class Network
 
 //other output generation (for Rishabh)
 		void write_vtk_data();
+		void write_grains_vtk_data();               ///< separate VTK file with grain volume fields (Va, Va1, Vx, Ve, Vtot)
 		void write_point_data(string file_name);
 		void write_line_data(string file_name);
 		void write_cell_data(string file_name);
