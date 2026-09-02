@@ -84,6 +84,19 @@ bool Pore::is_Va_left(){
 }
 
 /**
+* This function returns true if the less reactive mineral A1 is still present in neighboring grains.
+* This information is important when deciding if the dissolution of A1 can still occur in the pore.
+* @author Jingxuan Deng
+* @date 02/09/2026
+*/
+bool Pore::is_Va1_left(){
+	double Va1_tot=0;
+	for (int b=0;b<bG;b++) Va1_tot+=g[b]->Va1;
+	if(Va1_tot>0)  return true;
+	else		   return false;
+}
+
+/**
 * This function returns true if the species E is still present in neighboring grains.
 * This information is important when deciding if the redissolution can still occur in the pore.
 * @author Jingxuan Deng
@@ -151,7 +164,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 	double factor=0; double V_max=0; double V_act=0;
 	for (int s=0; s<bG; s++){
 		V_max = g[s]->V0;
-		V_act = g[s]->Va + g[s]->Ve + g[s]->Vx;
+		V_act = g[s]->Va + g[s]->Ve + g[s]->Vx + g[s]->Va1;
 		if(V_max>0 && V_act>0) factor += pow(V_act/V_max,1./3);  //One may ask about exponent for semi 2D network, maybe it should be two?
 		}
 
@@ -167,6 +180,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 					<<"Grain:"<<*g[s]<<endl;
 			S->Va_tot -= g[s]->Va; g[s]->Va =0;
             S->Ve_tot -= g[s]->Ve; g[s]->Ve =0;
+            S->Va1_tot -= g[s]->Va1; g[s]->Va1 =0;
 
 
 		}
@@ -222,6 +236,20 @@ double Pore::local_G_3(Network* S){
 }
 
 /**
+* This function returns the local value of G4 (used in dissolution of the less reactive mineral A1) parameter for the pore.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 02/09/2026
+*/
+double Pore::local_G_4(Network* S){
+
+	if     (S->G4==0)	return	0;						         // reaction limited case, G = 0
+	else if(S->G4>0 )	return  S->G4*d/S->d0;	             // mixed case: k4 ~ DD1
+	else			    return  -1;							     // diffusion limited case, convention: G<0 => G = Inf
+
+}
+
+/**
 * This function returns the local value of Da_eff parameter for the pore.
 * @param S pointer to the network
 * @author Agnieszka Budek
@@ -243,6 +271,35 @@ double Pore::local_Da_eff(Network* S){
 	if      (G>0)    return S->Da*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G1)/(1+G));
 	else if (G==0)   return S->Da*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
 	else             return S->Da*(l/S->l0)*(S->q_in_0/fabs(q));
+}
+
+/**
+* This function returns the local value of Da_eff_4 parameter for the pore, i.e. the effective
+* reaction rate of the dissolution of the less reactive mineral A1 (A1 + B -> inert products).
+* It mirrors Pore::local_Da_eff but uses Da4 = kappa3*Da and G4 = kappa3*G1.
+* Returns 0 when there is no A1 material left in the neighboring grains.
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 02/09/2026
+*/
+double Pore::local_Da_eff_4(Network* S){
+
+	if (q==0) return -1;
+	if (S->Da4==0) return 0;
+	if (S->if_track_grains && !is_Va1_left()) return 0;   //no A1 dissolution if there is no A1 left
+
+	double G = this->local_G_4(S);
+
+	//formula for aperture
+	if((d>S->H_z and !S->no_max_z) or (S->sandwich_pores and is_fracture)) {
+		if (G > 0)  return S->Da4 * (1 / S->d0) * (l / S->l0) * (S->q_in_0 / fabs(q)) * ((1 + S->G4) / (1 + G));
+		if (G == 0) return S->Da4 * (1 / S->d0) * (l / S->l0) * (S->q_in_0 / fabs(q));
+	}
+
+	// old formula for a cylinder
+	if      (G>0)    return S->Da4*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q))*((1+S->G4)/(1+G));
+	else if (G==0)   return S->Da4*(d/S->d0)*(l/S->l0)*(S->q_in_0/fabs(q));
+	else             return S->Da4*(l/S->l0)*(S->q_in_0/fabs(q));
 }
 
 double Pore::is_there_precipitation(Network *S){
@@ -488,6 +545,8 @@ double Pore::default_dd_plus(Network*S){
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);
+	double f4      = local_Da_eff_4(S);   //parallel dissolution of the less reactive mineral A1
+	double f_tot   = f1 + f4;
 	double g       = local_G(S);
 	double c0;
 	if(S->if_streamtube_mixing) c0 = c_in;
@@ -496,11 +555,52 @@ double Pore::default_dd_plus(Network*S){
 	double dd_plus = 0; 		//diameter change
     //double d_tmp = min(1,d);       //possible feature for a fracture
 
-	//finding dissolution contribution
+	//finding dissolution contribution: species B is consumed by A and A1 in parallel,
+	//the total drop (1-exp(-f_tot)) is split between the reactions proportionally to f1 and f4
 	if      (f1==0)      dd_plus = 0;
-	else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
-	else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
+	else if (S->G1 >=0)  dd_plus = S->dt*c0*(f1/f_tot)*(1-exp(-f_tot))/(1+g)/f1;
+	else        	     dd_plus = S->dt*c0*(f1/f_tot)*(1-exp(-f_tot))/f1/d;
 
+
+	return dd_plus;
+}
+
+/**
+* This function returns the change in pore diameter due to dissolution of the less reactive
+* mineral A1 in one time step. It is the A1 counterpart of Pore::default_dd_plus: A1 dissolves
+* in parallel with A, consuming species B, and the total drop (1-exp(-f_tot)) is split
+* between the two reactions proportionally to f1 (mineral A) and f4 (mineral A1).
+* @param S pointer to the network
+* @author Jingxuan Deng
+* @date 02/09/2026
+*/
+double Pore::default_dd_plus_A1(Network*S){
+
+	if(S->if_track_grains && !is_Va1_left())  return 0;   //no reaction if there is no A1 species available
+	if(d==0 || q ==0)  return 0;   //pore with no flow
+	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
+	if(!is_active)     return 0;
+
+	//dissolution parameters.
+	//f1_geo is the geometric (reaction-limited) rate of mineral A: (1+g)*f1_geo = K, a pore
+	//property independent of the reaction, so it also sets the length scale for the A1 term.
+	//f1_eff is the actual rate of the A reaction (zero once A is exhausted).
+	double f1_geo  = local_Da_eff(S);
+	double f1_eff  = (S->if_track_grains && !is_Va_left()) ? 0.0 : f1_geo;
+	double f4      = local_Da_eff_4(S);
+	double f_tot   = f1_eff + f4;
+	double g       = local_G(S);
+	double c0;
+	if(S->if_streamtube_mixing) c0 = c_in;
+	else                        c0 = calculate_inlet_cb();
+
+	double dd_plus = 0; 		//diameter change
+
+	//A1 gets the f4/f_tot share of the total consumed B (1-exp(-f_tot)); the denominator
+	//(1+g)*f1_geo == K keeps the A + A1 volume change consistent with the B drop exp(-f_tot).
+	if      (f4==0 || f1_geo==0) dd_plus = 0;
+	else if (S->G1 >=0)          dd_plus = S->dt*c0*(f4/f_tot)*(1-exp(-f_tot))/(1+g)/f1_geo;
+	else        	            dd_plus = S->dt*c0*(f4/f_tot)*(1-exp(-f_tot))/f1_geo/d;
 
 	return dd_plus;
 }
@@ -560,7 +660,8 @@ double Pore::default_dd_minus(Network*S){
     if(!is_active)      return 0;
 
 	//dissolution parameters
-	double f1      = local_Da_eff(S);
+	double f1      = local_Da_eff(S);          //geometric rate of mineral A ((1+g)*f1 == K)
+	double f4      = local_Da_eff_4(S);        //dissolution of the less reactive mineral A1 (also consumes B)
 	double g       = local_G(S);
 	double c0;
 	if(S->if_streamtube_mixing) c0 = c_in;
@@ -573,14 +674,19 @@ double Pore::default_dd_minus(Network*S){
     double c0_c     = calculate_inlet_cc();
     if(S->C_eq!=0)   c0_c     = fmax(0,calculate_inlet_cc());   //irreversible reaction
 
+	double f1s      = is_Va_left() ? f1 : 0.0;   //rate at which species C is produced from A dissolution
+	double fb       = f1s + f4;                   //total decay rate of species B in the pore (A + A1)
 
 
-	//finding precipitation contribution
+
+	//finding precipitation contribution.
+	//Species B decays at rate fb (dissolution of A and of A1), but only the A reaction (rate f1s)
+	//feeds species C; A1 consumes B without producing C.
 	if      (f2==0)         dd_minus = 0;
-	else if (f1==f2 && is_Va_left())        dd_minus = S->gamma*S->dt/(1+g)/f1*((c0_c + c0)*(1-exp(-f1)) -c0*exp(-f1)*f1);
+	else if (fb==f2 && is_Va_left())        dd_minus = S->gamma*S->dt/(1+g)/f1*( c0*f1s*((1-exp(-f2))/f2 - exp(-f2)) + c0_c*(1-exp(-f2)) );
 	else if (!is_Va_left()) 				dd_minus = S->gamma*S->dt/(1+g)/f1*  c0_c*      (1-exp(-f2));
 	else                    				dd_minus = S->gamma*S->dt/(1+g)/f1*(\
-								       	   	   	   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
+								       	   	   	   c0  * f1s*(f2*(1-exp(-fb))/fb - (1-exp(-f2)))/(f2-fb)+\
 												   c0_c*  (1-exp(-f2)) );
 
 

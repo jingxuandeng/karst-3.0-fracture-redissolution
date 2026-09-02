@@ -86,10 +86,14 @@ class Pore{
 		double local_G_3      (Network* S);      	///< redissolution parameter
 		double local_Da_eff_3 (Network* S);      	///< redissolution parameter
 		double local_Da_eff_3_tmp (Network* S);		///< redissolution parameter
+		double local_G_4      (Network* S);      	///< dissolution parameter for less reactive mineral A1
+		double local_Da_eff_4 (Network* S);      	///< dissolution parameter for less reactive mineral A1
 		bool   is_Va_left();						///< return false if there is no Va material left
+		bool   is_Va1_left();						///< return false if there is no Va1 (mineral A1) material left
 		bool   is_Ve_left();						///< return false if there is no Ve material left
 		bool   is_Ve_generated(Network*S);					///< return false if there is no Ve material has been generated
 		double default_dd_plus(Network*S);		///< change in diameter as a result of dissolution
+		double default_dd_plus_A1(Network*S);		///< change in diameter as a result of dissolution of less reactive mineral A1
 		double default_dd_plus_rediss(Network*S);		///< change in diameter as a result of redissolution of secondary mineral
 		double default_dd_minus(Network*S);    ///< default change in diameter as a result of precipitation (no space condition is checked)
 

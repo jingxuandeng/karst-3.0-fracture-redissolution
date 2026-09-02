@@ -201,6 +201,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		 	kappa2 = stod(value);
 		 	cerr<< "Setting kappa2 = "<<kappa2<<endl;}
 
+		else if(name == "kappa3"){
+		 	kappa3 = stod(value);
+		 	cerr<< "Setting kappa3 = "<<kappa3<<endl;}
+
 		else if(name == "theta"){
 			theta = stod(value);
 			cerr<< "Setting theta = "<<theta<<endl;}
@@ -231,6 +235,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "Vx_perc"){
 			Vx_perc = stod(value);
 			cerr<< "Setting Vx_perc = "<<Vx_perc<<endl;}
+
+		else if(name == "Va1_perc"){
+			Va1_perc = stod(value);
+			cerr<< "Setting Va1_perc = "<<Va1_perc<<endl;}
 
 		else if(name == "T_max"){
 			T_max = stod(value);
@@ -632,10 +640,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	NN    = N_x * N_y;
 	Da2   = kappa * Da;
 	Da3= kappa2 * Da;
+	Da4= kappa3 * Da;    //dissolution of the less reactive mineral A1: k4/k1 = kappa3
 	G2    = theta * G1;  //TODO: Tu mogloby być G2 = kappa*theta*G1
 	G3   = theta2 * G1;
+	G4   = kappa3 * G1;  //G scales with the reaction rate, so G4/G1 = k4/k1 = kappa3
 
 	// cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;
-	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<"\nG3 = "<<G3<<endl;
+	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<"\nG3 = "<<G3<<"\nDa4 = "<<Da4<<"\nG4 = "<<G4<<endl;
 
 }

@@ -71,9 +71,10 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 * @date 25/09/2019
 */
 void Network :: calculate_initial_total_Va(){
-	Va_tot = 0;   Vx_tot = 0;
+	Va_tot = 0;   Vx_tot = 0;   Va1_tot = 0;
 	for(int i=0;i<NG;i++) Va_tot+=g[i]->Va;
 	for(int i=0;i<NG;i++) Vx_tot+=g[i]->Vx;
+	for(int i=0;i<NG;i++) Va1_tot+=g[i]->Va1;
 
 }
 

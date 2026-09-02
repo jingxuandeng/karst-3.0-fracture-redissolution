@@ -81,13 +81,13 @@ void Network::export_topology_file_with_grains (string out_file_name){
 	os << "Ny = "<<N_y<<endl;
 	os << "No = "<<N_wo<<endl;
 	os << "Ni = "<<N_wi<<endl<<endl;
-	os << "#" <<setw(8)<<"name"<<setw(14)<<" Va"<<setw(14)<<" Ve"<<setw(7)<<"bN"<<setw(7)<<"bP"<<"   list of nodes: (node_name,...)      list of pores: (pore_name,...)"<<endl;
+	os << "#" <<setw(8)<<"name"<<setw(14)<<" Va"<<setw(14)<<" Ve"<<setw(14)<<" Vx"<<setw(14)<<" Va1"<<setw(7)<<"bN"<<setw(7)<<"bP"<<"   list of nodes: (node_name,...)      list of pores: (pore_name,...)"<<endl;
 	os << "#  ----------------------------------------------------------------------------------"<<endl;
 
 
 	for (int i=0;i<NG;i++) {
 		Grain * gg = g[i];
-		os<<setw(8)<<gg->a<<setw(14)<<setprecision(5)<<gg->Va<<setw(14)<<setprecision(5)<<gg->Ve<<setw(14)<<gg->Vx<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
+		os<<setw(8)<<gg->a<<setw(14)<<setprecision(5)<<gg->Va<<setw(14)<<setprecision(5)<<gg->Ve<<setw(14)<<gg->Vx<<setw(14)<<setprecision(5)<<gg->Va1<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
 		os << "  (";
 		for(int bb=0;bb<gg->bN;bb++)   os<<setw(w_tmp_n)<< gg->n[bb]->a;
 		os << ")\t\t(";
@@ -284,16 +284,28 @@ void Network::import_grains_from_file (string in_file_name){
 		if(s[0]=='N')   continue;
 
 		if(j>=NG) {cerr<<"WARNING: To many grains to be read in "<< in_file_name<<endl; return;}
-		istringstream line(s);
 
-		int name, bN_tmp, bP_tmp;
-		double Va_tmp, Ve_tmp, Vx_tmp;
+		//parse the numeric prefix (everything before the first '(') separately, so that an
+		//optional extra Va1 column stays backward compatible with old grain topology files.
+		//layout:  name  Va Ve Vx [Va1]  bN bP   (node_name,...)   (pore_name,...)
+		size_t paren_pos = s.find('(');
+		if(paren_pos == string::npos) {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
 
-		if(line >> name >> Va_tmp >> Ve_tmp >> Vx_tmp >> bN_tmp >> bP_tmp) {
-			g[j] = new Grain(name,Va_tmp,Ve_tmp,Vx_tmp,bN_tmp, bP_tmp);
-			line.clear();
-		}
-		else {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
+		istringstream head(s.substr(0, paren_pos));
+		double buf[16]; int nb=0;
+		while(nb<16 && (head >> buf[nb])) nb++;
+		if(nb < 5) {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
+
+		int name   = (int) buf[0];
+		int bN_tmp = (int) buf[nb-2];
+		int bP_tmp = (int) buf[nb-1];
+		double Va_tmp  = buf[1];
+		double Ve_tmp  = buf[2];
+		double Vx_tmp  = buf[3];
+		double Va1_tmp = (nb >= 6) ? buf[4] : 0.0;   //Va1 column present only in new-format files
+		g[j] = new Grain(name,Va_tmp,Ve_tmp,Vx_tmp,bN_tmp, bP_tmp, Va1_tmp);
+
+		istringstream line(s.substr(paren_pos));
 		//reading info about nodes
 		char c;
 		line >> c;
@@ -414,7 +426,7 @@ void Network::print_net_txt(){
 	nodes_out<<"#" <<setw(11)<<"name"<<setw(6)<<"type"<<setw(12)<<"u"<<setw(12)<<"cb"<<setw(12)<<"cc"<<endl;
 	nodes_out<<"#  ------------------------------------------------"<<endl;
 
-	grains_out<<"#" <<setw(11)<<"name"<<setw(12)<<"Va"<<setw(12)<<"Ve"<<setw(12)<<"Vx"<<endl;
+	grains_out<<"#" <<setw(11)<<"name"<<setw(12)<<"Va"<<setw(12)<<"Ve"<<setw(12)<<"Vx"<<setw(12)<<"Va1"<<endl;
 	grains_out<<"#  ------------------------------------------------"<<endl;
 
 

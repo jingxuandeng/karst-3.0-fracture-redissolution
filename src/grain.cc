@@ -11,8 +11,8 @@
 */
 Grain::Grain (){
 
-	Va = 0; 	Ve=0;     Vx=0;
-	tmp = -1; a = -1; tmp2=-1;
+	Va = 0; 	Ve=0;     Vx=0;    Va1=0;
+	tmp = -1; a = -1; tmp2=-1; tmp3=-1; tmp4=-1;
 	bN=0; bP=0;
 
 	n = NULL;
@@ -31,8 +31,8 @@ Grain::Grain (){
 */
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 		
-	Va = 0; 	Ve=0;     Vx=0;
-	tmp = name; a = name; tmp2=0;  x=1;
+	Va = 0; 	Ve=0;     Vx=0;    Va1=0;
+	tmp = name; a = name; tmp2=0; tmp3=0; tmp4=0;  x=1;
 	bN=3; bP=3;
 
 	n = new Node*[3];
@@ -59,8 +59,8 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 */
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 
-	Va = 0; 	Ve=0;      Vx=0;
-	tmp = name; a = name; tmp2=0; x=1; is_lhs=false;
+	Va = 0; 	Ve=0;      Vx=0;    Va1=0;
+	tmp = name; a = name; tmp2=0; tmp3=0; tmp4=0; x=1; is_lhs=false;
 	bN=4; bP=4;
 
 	n = new Node*[4];
@@ -83,8 +83,8 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 */
 Grain::Grain (Grain &g){
 
-	Va  = g.Va;  Ve = g.Ve;   Vx = g.Vx;
-	tmp = g.tmp; a  = g.a; tmp2=0; x=g.x; is_lhs=g.is_lhs;
+	Va  = g.Va;  Ve = g.Ve;   Vx = g.Vx;   Va1 = g.Va1;
+	tmp = g.tmp; a  = g.a; tmp2=0; tmp3=0; tmp4=0; x=g.x; is_lhs=g.is_lhs;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -99,8 +99,8 @@ Grain::Grain (Grain &g){
 Grain& Grain::operator = (Grain &g){
 
 
-	Va  = g.Va;  Ve = g.Ve;  Vx = g.Vx; is_lhs=g.is_lhs;
-	tmp = g.tmp; a  = g.a; tmp2=g.tmp2; x=g.x;
+	Va  = g.Va;  Ve = g.Ve;  Vx = g.Vx; Va1 = g.Va1; is_lhs=g.is_lhs;
+	tmp = g.tmp; a  = g.a; tmp2=g.tmp2; tmp3=g.tmp3; tmp4=g.tmp4; x=g.x;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -119,8 +119,8 @@ Grain& Grain::operator = (Grain &g){
 */
 Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 
-	Va = 0; 	Ve=0;     Vx=0;
-	tmp = name; a = name; tmp2=0; x=1; is_lhs=false;
+	Va = 0; 	Ve=0;     Vx=0;    Va1=0;
+	tmp = name; a = name; tmp2=0; tmp3=0; tmp4=0; x=1; is_lhs=false;
 	bN=bbN; bP=bbP;
 
 	n = new Node*[bN];
@@ -130,9 +130,9 @@ Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 	for(int i=0;i<bP;i++) p[i] = pp0[i];
 }
 
-Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_x_tmp, int bb_N, int bb_P){
-	Va = V_a_tmp; 	Ve = V_e_tmp;   Vx = V_x_tmp;
-	tmp = name; a = name; tmp2=0; x=1; is_lhs=false;
+Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_x_tmp, int bb_N, int bb_P, double V_a1_tmp){
+	Va = V_a_tmp; 	Ve = V_e_tmp;   Vx = V_x_tmp;   Va1 = V_a1_tmp;
+	tmp = name; a = name; tmp2=0; tmp3=0; tmp4=0; x=1; is_lhs=false;
 	bN=bb_N; bP=bb_P;
 
 	n = new Node*[bN];
@@ -235,6 +235,12 @@ void Grain::calculate_initial_volume (Network *S){
 		Va = (1-S->Vx_perc)*Va;
 	}
 
+	//carving out the less reactive mineral A1 from the remaining reactive volume
+	if(S->Va1_perc > 0){
+		Va1 = S->Va1_perc*Va;
+		Va  = (1-S->Va1_perc)*Va;
+	}
+
 }
 
 /**
@@ -320,7 +326,7 @@ int Grain::to_be_merge(Network *S){
             if (p[i]->is_fracture) if_fracture++;
 
     //if (if_fracture==0)               return false;   // this was hindering horizontal channels
-    if((Va+Ve+Vx)/V0 < S->merge_factor or Va+Ve+Vx<=0) {
+    if((Va+Ve+Vx+Va1)/V0 < S->merge_factor or Va+Ve+Vx+Va1<=0) {
         if (if_fracture > 1) return 2;
         else return 1;
     }
@@ -618,6 +624,7 @@ ostream& operator << (ostream & stream, Grain &g){
 	stream<<"  Va = "  << g.Va;
 	stream<<"  Ve = "  << g.Ve;
 	stream<<"  Vx = "  << g.Vx;
+	stream<<"  Va1 = " << g.Va1;
 	return stream;
 }
 
@@ -630,7 +637,7 @@ ostream& operator << (ostream & stream, Grain &g){
 * @date 25/09/2019
 */
 ofstream_txt & operator << (ofstream_txt & stream, Grain &g){
-	stream <<setw(12)<<g.a<<setw(12)<<g.Va<<setw(12)<<g.Ve<<setw(12)<<g.Vx<<endl;
+	stream <<setw(12)<<g.a<<setw(12)<<g.Va<<setw(12)<<g.Ve<<setw(12)<<g.Vx<<setw(12)<<g.Va1<<endl;
 	return stream;
 }
 

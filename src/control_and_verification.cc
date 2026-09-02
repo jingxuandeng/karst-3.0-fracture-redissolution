@@ -96,11 +96,13 @@ void Network::check_acid_balance(){
 			}
 	}
 
-	//calculate consumption of acid
+	//calculate consumption of acid (species B is consumed by dissolution of both A and the less reactive mineral A1)
 	double Va_tot_tmp = 0;
 	for(int i=0;i<NG;i++) Va_tot_tmp+= g[i]->Va;
+	double Va1_tot_tmp = 0;
+	for(int i=0;i<NG;i++) Va1_tot_tmp+= g[i]->Va1;
 
-	double Va_delta = Va_tot - Va_tot_tmp;
+	double Va_delta = (Va_tot - Va_tot_tmp) + (Va1_tot - Va1_tot_tmp);
 	double Vb_delta = VB_in - VB_out;
 
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
@@ -109,6 +111,7 @@ void Network::check_acid_balance(){
 	else
 		cerr<<"Mass is conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<setprecision(10)<<Va_delta<<"."<<endl;
 	if(!if_precipitation) Va_tot=Va_tot_tmp;
+	Va1_tot = Va1_tot_tmp;   //A1 never precipitates, so its running total can always be resynced here
 
 }
 

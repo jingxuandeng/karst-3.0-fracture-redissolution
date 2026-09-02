@@ -17,9 +17,11 @@ Network::Network (string input_file_name) {
 	Q_tot  = 2*N_x;   //total flow through the system (if == 0 the constant pressure is kept)
 	Q_tot_tmp =0;     // total flow calculated in each time step, can differ form Q_tot if const P is set
 	Va_tot = 0;       //total volume of dissolving species
+	Va1_tot = 0;      //total volume of the less reactive mineral A1
 	Ve_tot = 0;       //total volume of precipitating species
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
+	Va1_perc= 0;      // fraction of the initial reactive grain volume that is the less reactive mineral A1
 	merge_factor = 0.1; //  ratio of actual an initial volume of a grain below the merging will occur
 
 	//dimenssionless parameters describing evolution of the system
@@ -29,15 +31,18 @@ Network::Network (string input_file_name) {
 	Da    = 1;		 //effective Damkohler number for dissolution
 	Da2   = 1;		 //effective Damkohler number for precipitation
 	Da3   = 1;		 //effective Damkohler number for redissolution
+	Da4   = 0;		 //effective Damkohler number for dissolution of less reactive mineral A1
 	G1    = 1;		 //DaPe for dissolution
 	G2    = 1;		 //DaPe for precipitation
 	G3    = 1;       //DaPe for redissolution
+	G4    = 0;       //DaPe for dissolution of less reactive mineral A1
 	Pe1   = 1;		 //Peclet number for dissolution (D along pore)
 	Pe2   = 1;		 //Peclet number for precipitation (D along pore)
 	Pe3   = 1;		 //Peclet number for redissolution (D along pore)
 	gamma = 1;	     //ratio of acid capacity numbers between dissolution and precipitation (gamma1/gamma2)
 	kappa = 1;	     //ratio of Da_2/Da_1 = ratio of reaction rates
 	kappa2 = 1;		 //ratio of Da_3/Da_1 = ratio of reaction rates. Ratio of Da_redissolution to Da_dissolution. (20250616 Question: or Da_3/Da_1?)
+	kappa3 = 0;		 //ratio of Da_4/Da_1 = k4/k1 = ratio of reaction rate of mineral A1 dissolution to that of the main host mineral A
 	theta = 1;	     //ratio of G_1/G_2
 	theta2 = 1;      //ratio of G_1/G_3
 	d_min = d0/100.; //minimal possible pore diameter (important in precipitation)
@@ -58,6 +63,7 @@ Network::Network (string input_file_name) {
 	k1	= 10e-8;		//reaction rate for dissolution
 	k2	= 1;			//reaction rate for precipitation
 	//k3=1;             //reaction rate for redissolution
+	k4	= 0;			//reaction rate for dissolution of the less reactive mineral A1
 	D1	= 0;			//diffusion coefficient for dissolution
 	D2	= 1;			//diffusion coefficient for precipitation
 	D3	= 0;			//diffusion coefficient for redissolution

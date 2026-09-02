@@ -100,6 +100,7 @@ void Network::merge_for_fracture() {
             g_tmp->Va+= gg->Va/g_list.size();
             g_tmp->Ve+= gg->Ve/g_list.size();
             g_tmp->Vx+= gg->Vx/g_list.size();
+            g_tmp->Va1+= gg->Va1/g_list.size();
         }
 
         if(g_list.empty()) {
@@ -107,8 +108,9 @@ void Network::merge_for_fracture() {
             Va_tot-=gg->Va;
             Ve_tot-=gg->Ve;
             Vx_tot-=gg->Vx;
+            Va1_tot-=gg->Va1;
         }
-        gg->Va=0; gg->Ve=0; gg->Vx=0;
+        gg->Va=0; gg->Ve=0; gg->Vx=0; gg->Va1=0;
 
     }
 
@@ -263,12 +265,13 @@ void Network::merge_one_pore_grain (Grain *gg){
                 if(g[i]!=gg){
                     p[0]->g[i]->Va+=gg->Va/p[0]->bG;
                     p[0]->g[i]->Ve+=gg->Ve/p[0]->bG;
+                    p[0]->g[i]->Va1+=gg->Va1/p[0]->bG;
                     }
                 }
-		else 				{Va_tot -= gg->Va; Ve_tot -= gg->Ve;}
+		else 				{Va_tot -= gg->Va; Ve_tot -= gg->Ve; Va1_tot -= gg->Va1;}
     }
 
-	else          			{Va_tot -= gg->Va; Ve_tot -= gg->Ve;}
+	else          			{Va_tot -= gg->Va; Ve_tot -= gg->Ve; Va1_tot -= gg->Va1;}
 	move_grain_to_the_end(gg->tmp,NG);
 
 }
@@ -413,16 +416,19 @@ void Network::merge_one_grain(Grain *gg, Grain* gg_special) {
     if(gg_special!=NULL && gg_special!=gg) {
         gg_special->Va += gg->Va;
         gg_special->Ve += gg->Ve;
+        gg_special->Va1 += gg->Va1;
     }
     else if (ng_tmp>0) {
         for (int i = 0; i < p1->bG; i++) if (p1->g[i]->Va>0 && gg->is_lhs == p1->g[i]->is_lhs) {
             p1->g[i]->Va += gg->Va / ng_tmp;
             p1->g[i]->Ve += gg->Ve / ng_tmp;
+            p1->g[i]->Va1 += gg->Va1 / ng_tmp;
             }
     }
     else{
         Va_tot -= gg->Va;
         Ve_tot -= gg->Ve;
+        Va1_tot -= gg->Va1;
     }
 
 	move_grain_to_the_end(gg->tmp,NG);

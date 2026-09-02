@@ -81,6 +81,7 @@ class Network
 		double Ve_tot;		///< total amount of volume of precipitating species
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
+		double Va1_perc;    ///< fraction of the initial reactive grain volume that is the less reactive mineral A1
 		double merge_factor;  ///< ratio of actual an initial volume of a grain below the merging will occur
 
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
