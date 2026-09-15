@@ -189,9 +189,9 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			gamma = stod(value);
 			cerr<< "Setting gamma = "<<gamma<<endl;}
 
-		// else if(name == "gamma2"){
-		// 	gamma2 = stod(value);
-		// 	cerr<< "Setting gamma2 = "<<gamma2<<endl;}
+		else if(name == "gamma_a1"){
+			gamma_a1 = stod(value);
+			cerr<< "Setting gamma_a1 = "<<gamma_a1<<endl;}
 
 		else if(name == "kappa"){
 			kappa = stod(value);
@@ -210,8 +210,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			cerr<< "Setting theta = "<<theta<<endl;}
 
 		else if(name == "theta2"){
-			theta = stod(value);
+			theta2 = stod(value);
 			cerr<< "Setting theta2 = "<<theta2<<endl;}
+
+		else if(name == "theta3"){
+			theta3 = stod(value);
+			cerr<< "Setting theta3 = "<<theta3<<endl;}
 
 		else if(name == "d_min_factor"){
             d_min_factor = stod(value);
@@ -643,7 +647,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	Da4= kappa3 * Da;    //dissolution of the less reactive mineral A1: k4/k1 = kappa3
 	G2    = theta * G1;  //TODO: Tu mogloby być G2 = kappa*theta*G1
 	G3   = theta2 * G1;
-	G4   = kappa3 * G1;  //G scales with the reaction rate, so G4/G1 = k4/k1 = kappa3
+	G4   = theta3 * G1;  //G scales with the reaction rate, so G4/G1 = k4/k1 = kappa3
 
 	// cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;
 	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<"\nG3 = "<<G3<<"\nDa4 = "<<Da4<<"\nG4 = "<<G4<<endl;

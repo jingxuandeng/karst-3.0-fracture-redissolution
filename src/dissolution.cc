@@ -404,7 +404,7 @@ double Network::outlet_c_b_coeff (Pore *p0){
 
     //species B is consumed by the dissolution of A (f) and of the less reactive mineral A1 (f4) in parallel
     double f  = (if_track_grains && !(p0->is_Va_left())) ? 0 : p0->local_Da_eff(this);
-    double f4 = p0->local_Da_eff_4(this);
+    double f4 = (if_track_grains && !(p0->is_Va1_left())) ? 0 :p0->local_Da_eff_4(this);
 
 	return exp(-f-f4);
 }

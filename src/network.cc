@@ -35,16 +35,18 @@ Network::Network (string input_file_name) {
 	G1    = 1;		 //DaPe for dissolution
 	G2    = 1;		 //DaPe for precipitation
 	G3    = 1;       //DaPe for redissolution
-	G4    = 0;       //DaPe for dissolution of less reactive mineral A1
+	G4    = 1;       //DaPe for dissolution of less reactive mineral A1
 	Pe1   = 1;		 //Peclet number for dissolution (D along pore)
 	Pe2   = 1;		 //Peclet number for precipitation (D along pore)
 	Pe3   = 1;		 //Peclet number for redissolution (D along pore)
 	gamma = 1;	     //ratio of acid capacity numbers between dissolution and precipitation (gamma1/gamma2)
+	gamma_a1 = 1;	 //ratio of acid capacity numbers between dissolution of host mineral A	and A1 (gamma_1/gamma_3)
 	kappa = 1;	     //ratio of Da_2/Da_1 = ratio of reaction rates
 	kappa2 = 1;		 //ratio of Da_3/Da_1 = ratio of reaction rates. Ratio of Da_redissolution to Da_dissolution. (20250616 Question: or Da_3/Da_1?)
 	kappa3 = 0;		 //ratio of Da_4/Da_1 = k4/k1 = ratio of reaction rate of mineral A1 dissolution to that of the main host mineral A
 	theta = 1;	     //ratio of G_1/G_2
 	theta2 = 1;      //ratio of G_1/G_3
+	theta3 = 1;      //ratio of G_1/G_4
 	d_min = d0/100.; //minimal possible pore diameter (important in precipitation)
 	d_min_factor= 100; //d_min = d0*d_min_factor
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)

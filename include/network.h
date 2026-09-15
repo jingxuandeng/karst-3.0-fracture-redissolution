@@ -120,11 +120,13 @@ class Network
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
 		double Pe3;     ///< Peclet number for redissolution (D along pore)  (not used now)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
+		double gamma_a1; ///< ratio of acid capacity numbers between dissolution of A and A1
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
 	    double kappa2;	///< ratio of Da_3/Da_1 of reaction rates (redissolution vs dissolution)
 		double kappa3;	///< ratio of Da_4/Da_1 of reaction rates (dissolution of less reactive mineral vs major host mineral)
 		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double theta2;   ///< ratio of G2/G1 (dissolution vs precipitation)
+		double theta3;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double d_min_factor; ///< d_min = d0*d_min_factor
 		double l_min;   ///< minimal pore length (for numerical reason)

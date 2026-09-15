@@ -599,8 +599,8 @@ double Pore::default_dd_plus_A1(Network*S){
 	//A1 gets the f4/f_tot share of the total consumed B (1-exp(-f_tot)); the denominator
 	//(1+g)*f1_geo == K keeps the A + A1 volume change consistent with the B drop exp(-f_tot).
 	if      (f4==0 || f1_geo==0) dd_plus = 0;
-	else if (S->G1 >=0)          dd_plus = S->dt*c0*(f4/f_tot)*(1-exp(-f_tot))/(1+g)/f1_geo;
-	else        	            dd_plus = S->dt*c0*(f4/f_tot)*(1-exp(-f_tot))/f1_geo/d;
+	else if (S->G4 >=0)          dd_plus = S->gamma_a1*S->dt*c0*(f4/f_tot)*(1-exp(-f_tot))/(1+g)/f1_geo;
+	else        	            dd_plus = S->gamma_a1*S->dt*c0*(f4/f_tot)*(1-exp(-f_tot))/f1_geo/d;
 
 	return dd_plus;
 }

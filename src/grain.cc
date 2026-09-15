@@ -229,6 +229,8 @@ void Grain::calculate_initial_volume (Network *S){
 		//cerr<<"Problematic pores: "<<" p = ("<<p[0]->l<<","<<p[1]->l<<","<<p[2]->l<<")"<<endl;
 	}
 
+
+// To-do: combine Vx_prec and Va1_prec so that Va_prec=1-Vx_prec-Va1_prec and error message when Vx_prec+Va1_prec>1
 	//updating Vx percentage
 	if(S->Vx_perc > 0){
 		Vx = S->Vx_perc*Va;
