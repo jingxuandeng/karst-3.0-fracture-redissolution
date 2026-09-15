@@ -102,7 +102,10 @@ void Network::check_acid_balance(){
 	double Va1_tot_tmp = 0;
 	for(int i=0;i<NG;i++) Va1_tot_tmp+= g[i]->Va1;
 
-	double Va_delta = (Va_tot - Va_tot_tmp) + (Va1_tot - Va1_tot_tmp);
+	//A1's physical volume change already carries the gamma_a1 stoichiometric scaling
+	//(see Pore::default_dd_plus_A1), so it must be divided back out here to compare
+	//against Vb_delta, which is a raw amount of consumed acid.
+	double Va_delta = (Va_tot - Va_tot_tmp) + (Va1_tot - Va1_tot_tmp)/gamma_a1;
 	double Vb_delta = VB_in - VB_out;
 
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
