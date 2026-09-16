@@ -173,7 +173,8 @@ void Network::write_time_step_properties(){
                 "sim_state"     <<setw(15)<<\
 				"porosity"		<<setw(15)<<\
 				"d_in_max"      <<setw(15)<<\
-				"d_out_max"     <<setw(15)<<endl;
+				"d_out_max"     <<setw(15)<<\
+				"Va1_tot"<<setw(15)<<endl;
 		time_evolution_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
 	}
 
