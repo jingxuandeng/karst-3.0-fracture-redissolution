@@ -84,7 +84,10 @@ void Network::write_grains_vtk_data()
 		Grain *gg = g[i];
 		if (drawn[i]){
 			f << gg->bN;
-			for (int b = 0; b < gg->bN; ++b) f << " " << (int)gg->n[b]->tmp;
+			//reversed on purpose: gg->n[] is wound clockwise in (x,y), which points the
+			//polygon normal along -z and makes the grain mesh appear upside down/backface-on
+			//in ParaView relative to the (orientation-less) line cells in network_<step>.vtk
+			for (int b = gg->bN-1; b >= 0; --b) f << " " << (int)gg->n[b]->tmp;
 			f << endl;
 		}
 		else{
@@ -128,7 +131,7 @@ void Network::write_point_data(string file_name)
 
 	ofstream &file = *obj;
 
-	for (int j = 0; j < NN; ++j) file<< n[j]->xy.x << setw(10) << n[j]->xy.y << setw(10) << n[j]->xy.z << endl;
+	for (int j = 0; j < NN; ++j) file<< n[j]->xy.x << " " << n[j]->xy.y << " " << n[j]->xy.z << endl;
 	file.close();
 }
 
