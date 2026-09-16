@@ -238,7 +238,8 @@ void Grain::calculate_initial_volume (Network *S){
 	}
 
 	//carving out the less reactive mineral A1 from the remaining reactive volume
-	if(S->Va1_perc > 0){
+	//if Va1_discrete is set, grains are instead assigned entirely to A or A1 afterwards, in Network::assign_discrete_Va1_grains()
+	if(S->Va1_perc > 0 && !S->Va1_discrete){
 		Va1 = S->Va1_perc*Va;
 		Va  = (1-S->Va1_perc)*Va;
 	}

@@ -65,6 +65,44 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 
 
 /**
+* This function converts the per-grain fractional split between mineral A and A1
+* (set by Va1_perc in Grain::calculate_initial_volume) into a discrete assignment,
+* where each grain is made entirely of A or entirely of A1. Grains are shuffled and
+* then greedily filled into the A1 group until the target network-wide volume
+* fraction Va1_perc is reached, so the same Va1_perc still controls the overall
+* Va1_tot/(Va_tot+Va1_tot) ratio, just without every single grain being mixed.
+* Does nothing unless Va1_discrete is set.
+*
+* @author Jingxuan Deng
+* @date 16/09/2026
+*/
+void Network :: assign_discrete_Va1_grains(){
+
+	if(!Va1_discrete || Va1_perc<=0) return;
+
+	vector<int> idx;
+	double Va_reactive_tot = 0;
+	for(int i=0;i<NG;i++) if(g[i]->Va>0){ idx.push_back(i); Va_reactive_tot += g[i]->Va; }
+
+	//Fisher-Yates shuffle so the A1 grains are not spatially correlated with grain generation order
+	for(int i=(int)idx.size()-1;i>0;i--){
+		int j = rand()%(i+1);
+		int tmp = idx[i]; idx[i] = idx[j]; idx[j] = tmp;
+	}
+
+	double target = Va1_perc*Va_reactive_tot;
+	double acc = 0;
+	for(int k=0; k<(int)idx.size() && acc<target; k++){
+		Grain* gi = g[idx[k]];
+		acc  += gi->Va;
+		gi->Va1 = gi->Va;
+		gi->Va  = 0;
+	}
+
+	cerr<<"Discrete Va1 assignment: target Va1 fraction = "<<Va1_perc<<", achieved fraction = "<<acc/Va_reactive_tot<<endl;
+}
+
+/**
 * This function calculates the initial total volume of species A
 *
 * @author Agnieszka Budek

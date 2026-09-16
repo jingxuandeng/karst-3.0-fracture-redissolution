@@ -82,6 +82,7 @@ class Network
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
 		double Va1_perc;    ///< fraction of the initial reactive grain volume that is the less reactive mineral A1
+		bool   Va1_discrete; ///< if true, each grain is made entirely of A or entirely of A1 (instead of splitting every grain by Va1_perc); the network-wide volume fraction still matches Va1_perc
 		double merge_factor;  ///< ratio of actual an initial volume of a grain below the merging will occur
 
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
@@ -292,6 +293,7 @@ class Network
 // calculating initial properties of the system
 		void calculate_initial_mean_flow();		///< calculate initial mean flow through the system, important for setting Da_eff and G correctly
 		void calculate_initial_d0_and_l0 ();    ///< calculate initial mean pore length and diameter, important for setting Da_eff and G correctly
+		void assign_discrete_Va1_grains();		///< when Va1_discrete is true, reassign grains so each one is entirely A or entirely A1, matching Va1_perc network-wide
 		void calculate_initial_total_Va();		///< calculate initial amount of species A, important for mass balance
 		void calculate_initial_total_Ve();		///< calculate initial amount of species E, important for mass balance
 		void calculate_initial_total_V();		///< calculate initial total volume of the system

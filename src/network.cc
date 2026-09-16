@@ -22,6 +22,7 @@ Network::Network (string input_file_name) {
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
 	Va1_perc= 0;      // fraction of the initial reactive grain volume that is the less reactive mineral A1
+	Va1_discrete = false; // if true, grains are entirely A or entirely A1, instead of every grain being split by Va1_perc
 	merge_factor = 0.1; //  ratio of actual an initial volume of a grain below the merging will occur
 
 	//dimenssionless parameters describing evolution of the system
@@ -272,6 +273,7 @@ Network::Network (string input_file_name) {
 	if(if_track_grains){
 		cerr<<"Calculating initial grain volume..."<<endl;
 		if(type_of_topology != "from_file") for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
+		assign_discrete_Va1_grains();
 		calculate_initial_total_Va();
 		calculate_initial_total_Ve();
 		calculate_initial_total_V();

@@ -244,6 +244,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			Va1_perc = stod(value);
 			cerr<< "Setting Va1_perc = "<<Va1_perc<<endl;}
 
+		else if(name == "Va1_discrete"){
+					if      (value == "true" )   Va1_discrete  = true;
+					else if (value == "false")   Va1_discrete  = false;
+					else                     cerr<<"WARNING: Wrong value of variable Va1_discrete. Set true or false."<<endl;
+					cerr<< "Setting Va1_discrete = "<<Va1_discrete<<endl;}
+
 		else if(name == "T_max"){
 			T_max = stod(value);
 			cerr<< "Setting T_max = "<<T_max<<endl;}
