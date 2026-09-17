@@ -375,12 +375,14 @@ class Network
 
 //other output generation (for Rishabh)
 		void write_vtk_data();
+		void write_grains_vtk_data();
 		void write_point_data(string file_name);
 		void write_line_data(string file_name);
 		void write_cell_data(string file_name);
 		void write_diameter(string file_name);
 		void write_flow_rate(string file_name);
 		void write_concentration(string file_name);
+		void write_concentration_c(string file_name);
 
 
 

@@ -206,7 +206,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			cerr<< "Setting theta = "<<theta<<endl;}
 
 		else if(name == "theta2"){
-			theta = stod(value);
+			theta2 = stod(value);
 			cerr<< "Setting theta2 = "<<theta2<<endl;}
 
 		else if(name == "d_min_factor"){
@@ -631,9 +631,9 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	P_out = 0;	     //pressure at the outlet, always should be set to zero
 	NN    = N_x * N_y;
 	Da2   = kappa * Da;
-	Da3= kappa2 * Da;
+	Da3	  = kappa2 * Da;
 	G2    = theta * G1;  //TODO: Tu mogloby być G2 = kappa*theta*G1
-	G3   = theta2 * G1;
+	G3    = theta2 * G1;
 
 	// cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;
 	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<"\nDa3 = "<<Da3<<"\nG3 = "<<G3<<endl;
