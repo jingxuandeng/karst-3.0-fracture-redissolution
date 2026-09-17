@@ -245,8 +245,6 @@ void Network::write_grains_vtk_data()
 	f << "SCALARS Va float 1" << endl << "LOOKUP_TABLE default" << endl;
 	for (int i = 0; i < NG; ++i) f << g[i]->Va << endl;
 
-	f << "SCALARS Va1 float 1" << endl << "LOOKUP_TABLE default" << endl;
-	for (int i = 0; i < NG; ++i) f << g[i]->Va1 << endl;
 
 	f << "SCALARS Vx float 1" << endl << "LOOKUP_TABLE default" << endl;
 	for (int i = 0; i < NG; ++i) f << g[i]->Vx << endl;
@@ -255,7 +253,7 @@ void Network::write_grains_vtk_data()
 	for (int i = 0; i < NG; ++i) f << g[i]->Ve << endl;
 
 	f << "SCALARS Vtot float 1" << endl << "LOOKUP_TABLE default" << endl;
-	for (int i = 0; i < NG; ++i) f << (g[i]->Va + g[i]->Va1 + g[i]->Vx + g[i]->Ve) << endl;
+	for (int i = 0; i < NG; ++i) f << (g[i]->Va + g[i]->Vx + g[i]->Ve) << endl;
 
 	delete[] drawn;
 	f.close();
