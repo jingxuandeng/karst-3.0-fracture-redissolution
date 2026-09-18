@@ -7,7 +7,17 @@
 
 #include "network.h"
 
-
+/**
+* Legacy VTK's ASCII reader (vtkDataReader) fails to parse subnormal doubles
+* (magnitude below ~1e-308, e.g. from concentration fields decaying near zero
+* through many multiplicative steps): it desyncs the token stream and corrupts
+* every field written after it. Such tiny values carry no physical meaning, so
+* flush them to exact zero before writing.
+*/
+static inline double vtk_safe(double v)
+{
+	return (v != 0.0 && fabs(v) < 1e-100) ? 0.0 : v;
+}
 
 void Network::write_vtk_data()
 {
@@ -43,7 +53,7 @@ void Network::write_point_data(string file_name)
 
 	ofstream &file = *obj;
 
-	for (int j = 0; j < NN; ++j) file<< n[j]->xy.x << setw(10) << n[j]->xy.y << setw(10) << n[j]->xy.z << endl;
+	for (int j = 0; j < NN; ++j) file<< n[j]->xy.x << " " << n[j]->xy.y << " " << n[j]->xy.z << endl;
 	file.close();
 }
 
@@ -110,9 +120,9 @@ void Network::write_diameter(string file_name)
 	else os_p = &os_tmp;
 
 	ofstream &file = *os_p;
-	file << endl << "CELL_DATA" << " " << NP <<endl <<"SCALARS Diameter float" << endl << "LOOKUP_TABLE custom_table" << endl;
+	file << endl << "CELL_DATA" << " " << NP <<endl <<"SCALARS Diameter double" << endl << "LOOKUP_TABLE custom_table" << endl;
 
-	for (int i = 0; i < NP; ++i)	file<< p[i]->d << endl;
+	for (int i = 0; i < NP; ++i)	file<< vtk_safe(p[i]->d) << endl;
 
 	file.close();
 }
@@ -129,9 +139,9 @@ void Network::write_flow_rate(string file_name)
 	else os_p = &os_tmp;
 
 	ofstream &file = *os_p;
-	file << endl <<"SCALARS Flow_Rate float" << endl << "LOOKUP_TABLE custom_table" << endl;
+	file << endl <<"SCALARS Flow_Rate double" << endl << "LOOKUP_TABLE custom_table" << endl;
 
-	for (int i = 0; i < NP; ++i)	file<< p[i]->q << endl;
+	for (int i = 0; i < NP; ++i)	file<< vtk_safe(p[i]->q) << endl;
 
 	file.close();
 }
@@ -148,10 +158,10 @@ void Network::write_concentration(string file_name)
 	else os_p = &os_tmp;
 
 	ofstream &file = *os_p;
-	file << endl <<"SCALARS Concentration float" << endl << "LOOKUP_TABLE custom_table" << endl;
+	file << endl <<"SCALARS Concentration double" << endl << "LOOKUP_TABLE custom_table" << endl;
 
-	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< p[i]->c_in << endl;
-	else for (int i = 0; i < NP; ++i)	file<< p[i]->n[0]->cb << endl;
+	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< vtk_safe(p[i]->c_in) << endl;
+	else for (int i = 0; i < NP; ++i)	file<< vtk_safe(p[i]->n[0]->cb) << endl;
 	file.close();
 }
 
@@ -166,10 +176,13 @@ void Network::write_concentration_c(string file_name)
 	else os_p = &os_tmp;
 
 	ofstream &file = *os_p;
-	file << endl <<"SCALARS Concentration_C float" << endl << "LOOKUP_TABLE custom_table" << endl;
+	file << endl <<"SCALARS Concentration_C double" << endl << "LOOKUP_TABLE custom_table" << endl;
 
-	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< Cc_0 << endl; // this is not working in streamline routing. Need modification
-	else for (int i = 0; i < NP; ++i)	file<< p[i]->n[0]->cc << endl;
+	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i) {
+		file<< vtk_safe(Cc_0) << endl; // this is not working in streamline routing. Need modification
+		cerr<<"Wrong concentration field of specie C written in network.vtk. Need to define cc_in for streamline mixing"<<endl;
+	}
+	else for (int i = 0; i < NP; ++i)	file<< vtk_safe(p[i]->n[0]->cc) << endl;
 	file.close();
 }
 
@@ -242,18 +255,17 @@ void Network::write_grains_vtk_data()
 
 	f << endl << "CELL_DATA " << NG << endl;
 
-	f << "SCALARS Va float 1" << endl << "LOOKUP_TABLE default" << endl;
-	for (int i = 0; i < NG; ++i) f << g[i]->Va << endl;
+	f << "SCALARS Va double 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << vtk_safe(g[i]->Va) << endl;
 
+	f << "SCALARS Vx double 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << vtk_safe(g[i]->Vx) << endl;
 
-	f << "SCALARS Vx float 1" << endl << "LOOKUP_TABLE default" << endl;
-	for (int i = 0; i < NG; ++i) f << g[i]->Vx << endl;
+	f << "SCALARS Ve double 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << vtk_safe(g[i]->Ve) << endl;
 
-	f << "SCALARS Ve float 1" << endl << "LOOKUP_TABLE default" << endl;
-	for (int i = 0; i < NG; ++i) f << g[i]->Ve << endl;
-
-	f << "SCALARS Vtot float 1" << endl << "LOOKUP_TABLE default" << endl;
-	for (int i = 0; i < NG; ++i) f << (g[i]->Va + g[i]->Vx + g[i]->Ve) << endl;
+	f << "SCALARS Vtot double 1" << endl << "LOOKUP_TABLE default" << endl;
+	for (int i = 0; i < NG; ++i) f << vtk_safe(g[i]->Va + g[i]->Vx + g[i]->Ve) << endl;
 
 	delete[] drawn;
 	f.close();

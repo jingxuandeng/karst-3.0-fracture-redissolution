@@ -1103,10 +1103,14 @@ void Network::calculate_concentration_new(SPECIES_NAME species){
     //Filling concentration in inlet nodes
     switch (species) {
         case SPECIES_NAME::B:
-            for (int i=0; i<NN; i++)   n[i]->cb=Cb_0;
+            // for (int i=0; i<NN; i++)   n[i]->cb=Cb_0;
+    		for (int i=0; i<NN; i++)   n[i]->cb=0; //Cb_0;
+    		for (int i=0; i<N_wi; i++)   wi[i]->cb=Cb_0;
             break;
         case SPECIES_NAME::C:
-            for (int i=0; i<NN; i++)   n[i]->cc=Cc_0;
+            // for (int i=0; i<NN; i++)   n[i]->cc=Cc_0;
+    		for (int i=0; i<NN; i++)   n[i]->cc=0; //Cc_0;
+    		for (int i=0; i<N_wi; i++)   wi[i]->cc=Cc_0;
             break;
         default:
             std::cerr << "Unknown SPECIES_NAME." << std::endl;

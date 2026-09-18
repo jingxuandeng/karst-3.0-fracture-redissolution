@@ -89,9 +89,9 @@ void Network::export_topology_file_with_grains (string out_file_name){
 		Grain * gg = g[i];
 		os<<setw(8)<<gg->a<<setw(14)<<setprecision(5)<<gg->Va<<setw(14)<<setprecision(5)<<gg->Ve<<setw(14)<<gg->Vx<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
 		os << "  (";
-		for(int bb=0;bb<gg->bN;bb++)   os<<setw(w_tmp_n)<< gg->n[bb]->a;
+		for(int bb=0;bb<gg->bN;bb++)   os<<' '<<setw(w_tmp_n)<< gg->n[bb]->a;
 		os << ")\t\t(";
-		for(int bb=0;bb<gg->bP;bb++)   os<<setw(w_tmp_p)<< gg->p[bb]->a;
+		for(int bb=0;bb<gg->bP;bb++)   os<<' '<<setw(w_tmp_p)<< gg->p[bb]->a;
 		os << ")"<<endl;
 
 	}
