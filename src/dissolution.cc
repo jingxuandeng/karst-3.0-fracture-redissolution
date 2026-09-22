@@ -1010,12 +1010,27 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 	//for updating grains volume;
 	if(if_track_grains) for (int i=0;i<NG;i++) {g[i]->tmp=0; g[i]->tmp2=0; g[i]->tmp3=0;}
 
-	for(int i=0;i<NP;i++){ //for each pore...
+	//Precipitation and redissolution happen simultaneously within this step. Deciding whether a grain
+	//has material left to redissolve requires knowing this step's FULL precipitation (tmp2) for that
+	//grain, not just the contribution from pores processed so far -- so this is done in two passes:
+	//pass 1 applies dissolution (A) and accumulates the complete tmp2 for every grain; pass 2 then
+	//resolves redissolution (tmp3) from those now-complete tmp2 totals. A single combined pass (as
+	//before) made redissolution eligibility depend on pore iteration order: a grain could be wrongly
+	//judged to have nothing left to redissolve simply because the pore that would have precipitated
+	//into it this step hadn't been visited yet, silently dropping that pore's dd_plus_rediss contribution.
+	double *d_V_E2_of_pore = new double[NP]();   //stashed in pass 1 for reuse in pass 2, 0 for untouched pores
+
+	for(int i=0;i<NP;i++){ //pass 1: dissolution (A, A1) and precipitation
 
 
 		Pore* p0 = p[i];
 		if (p0->q == 0 || p0->d == 0 || p0->l==l_min)  continue;    //no reaction in tiny grain or in pore with no flow
-		if (p0->d<=d_min && (!(p0->is_Va_left())))     continue;    //no reactions at all in this pore
+		//no reactions at all in this pore -- UNLESS redissolution is active and there's E here to
+		//redissolve (is_Ve_left/is_Ve_generated, the same guard Pore::default_dd_plus_rediss uses).
+		//Without this, a pore narrowed to d_min with no A left but still actively redissolving
+		//(exactly the pores this feature reopens) got skipped here while outlet_c_b_coeff_rediss still
+		//charged its acid consumption in the concentration solve, leaking B that no grain ever debited.
+		if (p0->d<=d_min && (!(p0->is_Va_left())) && !(if_redissolution && (p0->is_Ve_left() || p0->is_Ve_generated(this))))     continue;    //no reactions at all in this pore
 		if(!p0->is_active)                             continue;
 
 		double d_old    = p0->d;
@@ -1048,26 +1063,30 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 		}
 
 
-		//updating Va and Ve volumes
+		//updating Va, Va1 (dissolution) and Ve (precipitation) volumes; redissolution (tmp3) is
+		//deferred to pass 2 below, once every grain's tmp2 here is complete.
 		int bG_tmp_A=0; int bG_tmp_E=0; int bG_tmp_E2=0;
 		bool pipe_formula = (!(sandwich_pores and p0->is_fracture) and (d_old<H_z or no_max_z)); //pip_formular is for pore
 		double pipe_factor = M_PI * (pipe_formula ? d_old : 1.0) * p0->l / 2.0;
 		double d_V_A  = pipe_factor * (dd_plus        * d0);
 		double d_V_E  = pipe_factor * (dd_minus       * d0);
 		double d_V_E2 = pipe_factor * (dd_plus_rediss * d0);
+		d_V_E2_of_pore[i] = d_V_E2;
 		// cerr<<"d_V_E = "<<d_V_E<<". d_V_E2 = "<<d_V_E2<<"."<<endl;
 
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0 or p0->g[s]->Ve >0) bG_tmp_E++;
+		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Ve > 0) bG_tmp_E2++;
 		// for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve+p0->g[s]->tmp2) >0 or (p0->g[s]->tmp2>0 && p0->g[s]->Va >0)) bG_tmp_E2++; // Question 3: do i need to add "or if d_V_E>0", if there is precipitation ongoing in the grain and if previously the grain volume is nozero, then there will be grain E generated for redissolution?
-		for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) bG_tmp_E2++;
+		// for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) bG_tmp_E2++;
 
 		for(int s=0; s<p0->bG;s++) {
 			//looking for grains that connect to this pore
 			if(p0->g[s]->Va > 0)                          p0->g[s]->tmp -=d_V_A/bG_tmp_A; // if A is available in the grain, then reduce the amount of A by the total amount of A in pore divided by total number of grain that consist of A.
-			if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
+			// if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
 			// cerr<<"dd_plus_rediss = "<<dd_plus_rediss<<". d_V_E2 = "<<d_V_E2<<". bG_tmp_E2 = "<<bG_tmp_E2<<". tmp3 = "<<p0->g[s]->tmp3<<"."<<endl;
-			if(p0->g[s]->Va > 0 or p0->g[s]->Ve > 0)      p0->g[s]->tmp2+=d_V_E/bG_tmp_E; //Question2: why if there is Ve left in grain then it will precipitate in this grain?
+			if(p0->g[s]->Va > 0 or p0->g[s]->Ve > 0)      p0->g[s]->tmp2+=d_V_E/bG_tmp_E;
+			if (p0->g[s]->Ve > 0)						  p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
 
 			// if(p0->g[s]->Ve > 0 or (d_V_E>0 && p0->g[s]->Va >0)) p0->g[s]->tmp2-=d_V_E2/bG_tmp_E2;
 			// if d_V_E is negative, check if I have enough mineral to be dissolved.
@@ -1076,6 +1095,21 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 			if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus + dd_plus_rediss)*d0/p0->d, fabs(d_V_A) + fabs(d_V_E) + fabs(d_V_E2));
 	}
 
+	for(int i=0;i<NP;i++){ //pass 2: redissolution, using this step's now-complete tmp2 per grain
+		double d_V_E2 = d_V_E2_of_pore[i];
+		if(d_V_E2 == 0) continue;
+		Pore* p0 = p[i];
+
+		int bG_tmp_E2=0;
+		for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) bG_tmp_E2++;
+
+		for(int s=0; s<p0->bG;s++)
+			if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0))
+				p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
+		// cerr<<"dd_plus_rediss = "<<". d_V_E2 = "<<d_V_E2<<". bG_tmp_E2 = "<<bG_tmp_E2<<". tmp3 = "<<p0->g[s]->tmp3<<"."<<endl;
+	}
+
+	delete[] d_V_E2_of_pore;
 
 		//updating Va and Vc (must be done after main dissolution for c_out to be calculated correctly)
 		if(if_track_grains){
