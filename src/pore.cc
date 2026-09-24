@@ -573,6 +573,10 @@ double Pore::default_dd_minus(Network*S){
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);
+	//redissolution (E+B->C) also consumes B in parallel with A and A1; must match the fb used by
+	//Network::outlet_c_c_1_rediss for the same pore, or the C produced here systematically diverges
+	//from what the concentration solve assumed (see the analogous fix in Pore::default_dd_plus_rediss).
+	double f3      = S->if_redissolution ? local_Da_eff_3(S) : 0;
 	double g       = local_G(S);
 	double c0;
 	if(S->if_streamtube_mixing) c0 = c_in;
@@ -585,15 +589,21 @@ double Pore::default_dd_minus(Network*S){
     double c0_c     = calculate_inlet_cc();
     if(S->C_eq!=0)   c0_c     = fmax(0,calculate_inlet_cc());   //irreversible reaction
 
+	double f1s      = is_Va_left() ? f1 : 0.0;   //rate at which species C is produced from A dissolution
+	//redissolution of E produces C (E+B->C), so it belongs in fs (species C production
+	//rate) as well as fb (total B decay rate) -- matching Network::outlet_c_c_1_rediss's fs = f1+f3
+	//for the same pore. With f3==0 this reduces exactly to the original f1s-only formula.
+	double fs       = f1s + f3;                //rate at which species C is produced from B (A + redissolution)
+	double fb       = f1s + f3;               //total decay rate of species B in the pore (A + redissolution)
 
 
 	//finding precipitation contribution
 	if      (f2==0)         dd_minus = 0;
-	else if (f1==f2 && is_Va_left())        dd_minus = S->gamma*S->dt/(1+g)/f1*((c0_c + c0)*(1-exp(-f1)) -c0*exp(-f1)*f1);
-	else if (!is_Va_left()) 				dd_minus = S->gamma*S->dt/(1+g)/f1*  c0_c*      (1-exp(-f2));
-	else                    				dd_minus = S->gamma*S->dt/(1+g)/f1*(\
-								       	   	   	   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
-												   c0_c*  (1-exp(-f2)) );
+	else if (fb==0)         dd_minus = S->gamma*S->dt/(1+g)/f1*  c0_c*      (1-exp(-f2));   //fs is 0 here too (fs<=fb); avoids 0/0 in f2*(1-exp(-fb))/fb below
+	else if (fb==f2)        dd_minus = S->gamma*S->dt/(1+g)/f1*( c0*fs*((1-exp(-f2))/f2 - exp(-f2)) + c0_c*(1-exp(-f2)) );
+	else                    dd_minus = S->gamma*S->dt/(1+g)/f1*(\
+												c0  * fs*(f2*(1-exp(-fb))/fb - (1-exp(-f2)))/(f2-fb)+\
+													c0_c*  (1-exp(-f2)) );
 
 
     if(!is_Ve_left() and dd_minus<0)  return 0;         //no E dissolution if there is no E left
