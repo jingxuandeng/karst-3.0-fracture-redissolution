@@ -488,6 +488,8 @@ double Pore::default_dd_plus(Network*S){
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);
+	double f3      = S->if_redissolution ? local_Da_eff_3(S) :0;
+	double f_tot   = f1+f3;
 	double g       = local_G(S);
 	double c0;
 	if(S->if_streamtube_mixing) c0 = c_in;
@@ -498,8 +500,8 @@ double Pore::default_dd_plus(Network*S){
 
 	//finding dissolution contribution
 	if      (f1==0)      dd_plus = 0;
-	else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
-	else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
+	else if (S->G1 >=0)  dd_plus = S->dt*c0*(f1/f_tot)*(1-exp(-f_tot))/(1+g)/f1;
+	else        	     dd_plus = S->dt*c0*(f1/f_tot)(1-exp(-f_tot))/f1/d;
 
 
 	return dd_plus;
@@ -518,9 +520,19 @@ double Pore::default_dd_plus_rediss(Network*S){
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
 
+	//redissolution parameters.
+	//f1_geo is the raw geometric rate of mineral A, used purely as the pore's normalizing length
+	//scale; f1_eff is zeroed once A is exhausted, matching
+	//Network::outlet_c_b_coeff_rediss's own "if(!is_Va_left()) f=0;" -- without that, once A runs out
+	//in a pore this formula kept using A's full (nonexistent) reaction rate in the redissolution
+	//exponent and split, so the E debited here systematically diverged from the B actually charged
+	//to the flow by outlet_c_b_coeff_rediss for the same pore.
+
 	//redissolution parameters
-	double f1      = local_Da_eff(S);
+	double f1_geo  = local_Da_eff(S);
+	double f1_eff  = (S->if_track_grains && !is_Va_left()) ? 0.0: f1_geo;
 	double f3      = local_Da_eff_3(S); // This Damkoehler number considered all the situation when Ve0+Ve_prec<Ve_diss2_max
+	double f_tot   = f1_eff + f3;
 	double g       = local_G(S);
 
 	double c0;
@@ -531,9 +543,9 @@ double Pore::default_dd_plus_rediss(Network*S){
 
 
 	//finding redissolution contribution
-	if      (-f1-f3==0)      dd_plus = 0;
-	else if (S->G3 >=0)  dd_plus = S->gamma*S->dt*(f3/(f1+f3))*c0*(1-exp(-f1-f3))/(1+g)/f1;
-	else        	     dd_plus = S->gamma*S->dt*(f3/(f1+f3))*c0*(1-exp(-f1-f3))/f1/d;
+	if      (f3==0 || f1_geo==0)      dd_plus = 0;
+	else if (S->G3 >=0)  dd_plus = S->gamma*S->dt*(f3/(f_tot))*c0*(1-exp(-f_tot))/(1+g)/f1_geo;
+	else        	     dd_plus = S->gamma*S->dt*(f3/(f_tot))*c0*(1-exp(-f_tot))/f1_geo/d;
 
 
 	// //finding redissolution contribution

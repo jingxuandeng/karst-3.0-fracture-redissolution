@@ -1048,11 +1048,6 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 		//        }
 
 		//Checking if there is enough space for full dissolution
-		// Question 1: do we need to add the dd_plus_rediss? the redissolution happens after the precipitation right?
-		// Or do the prec and rediss happens at the same time? This is the key for addressing this question
-		// Question for redissolution: here, we readjust dd_mimus (aka the diameter change due to precipitation) to make sure the minimum pore diameter.
-		// But what if we readjust the dd_plus_rediss? Does it make any difference to the result?
-		// adding dd_plus_rediss will impact the ve_prec so be mindful to this step.
 		if(p0->d + (dd_plus + dd_plus_rediss - dd_minus) *d0<d_min){		//there is not enough space for all precipitating material
 			dd_minus = p0->d/d0 + dd_plus + dd_plus_rediss - d_min/d0;
 			p0->d=d_min;
@@ -1063,7 +1058,7 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 		}
 
 
-		//updating Va, Va1 (dissolution) and Ve (precipitation) volumes; redissolution (tmp3) is
+		//updating Va (dissolution) and Ve (precipitation) volumes; redissolution (tmp3) is
 		//deferred to pass 2 below, once every grain's tmp2 here is complete.
 		int bG_tmp_A=0; int bG_tmp_E=0; int bG_tmp_E2=0;
 		bool pipe_formula = (!(sandwich_pores and p0->is_fracture) and (d_old<H_z or no_max_z)); //pip_formular is for pore
@@ -1076,22 +1071,12 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0 or p0->g[s]->Ve >0) bG_tmp_E++;
-		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Ve > 0) bG_tmp_E2++;
-		// for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve+p0->g[s]->tmp2) >0 or (p0->g[s]->tmp2>0 && p0->g[s]->Va >0)) bG_tmp_E2++; // Question 3: do i need to add "or if d_V_E>0", if there is precipitation ongoing in the grain and if previously the grain volume is nozero, then there will be grain E generated for redissolution?
-		// for(int s=0; s<p0->bG;s++) if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) bG_tmp_E2++;
 
 		for(int s=0; s<p0->bG;s++) {
 			//looking for grains that connect to this pore
 			if(p0->g[s]->Va > 0)                          p0->g[s]->tmp -=d_V_A/bG_tmp_A; // if A is available in the grain, then reduce the amount of A by the total amount of A in pore divided by total number of grain that consist of A.
-			// if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0)) p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
-			// cerr<<"dd_plus_rediss = "<<dd_plus_rediss<<". d_V_E2 = "<<d_V_E2<<". bG_tmp_E2 = "<<bG_tmp_E2<<". tmp3 = "<<p0->g[s]->tmp3<<"."<<endl;
 			if(p0->g[s]->Va > 0 or p0->g[s]->Ve > 0)      p0->g[s]->tmp2+=d_V_E/bG_tmp_E;
-			if (p0->g[s]->Ve > 0)						  p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
-
-			// if(p0->g[s]->Ve > 0 or (d_V_E>0 && p0->g[s]->Va >0)) p0->g[s]->tmp2-=d_V_E2/bG_tmp_E2;
-			// if d_V_E is negative, check if I have enough mineral to be dissolved.
-			// For redissolution, check if mineral E is positive or negative (unclear, check Ve or d_V_E?), If E is positive, then this dont need to change, if E is negative, then i need to change it
-		}
+			}
 			if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus + dd_plus_rediss)*d0/p0->d, fabs(d_V_A) + fabs(d_V_E) + fabs(d_V_E2));
 	}
 
@@ -1106,7 +1091,7 @@ void Network::dissolve_and_precipitate_and_redissolve() {
 		for(int s=0; s<p0->bG;s++)
 			if((p0->g[s]->Ve>0 && (p0->g[s]->Ve+p0->g[s]->tmp2)>0) or  (p0->g[s]->Ve<=0 && p0->g[s]->tmp2>0 && p0->g[s]->Va>0))
 				p0->g[s]->tmp3-=d_V_E2/bG_tmp_E2;
-		// cerr<<"dd_plus_rediss = "<<". d_V_E2 = "<<d_V_E2<<". bG_tmp_E2 = "<<bG_tmp_E2<<". tmp3 = "<<p0->g[s]->tmp3<<"."<<endl;
+				// cerr<<"dd_plus_rediss = "<<". d_V_E2 = "<<d_V_E2<<". bG_tmp_E2 = "<<bG_tmp_E2<<". tmp3 = "<<p0->g[s]->tmp3<<"."<<endl;
 	}
 
 	delete[] d_V_E2_of_pore;
@@ -1151,45 +1136,121 @@ void Network::calculate_concentration_new(SPECIES_NAME species){
             break;
     }
 
+	//Node::is_there_redissolution() (reached via local_Da_eff_3, used by both
+	//set_new_concentration_rediss below and Pore::default_dd_plus_rediss later in
+	//dissolve_and_precipitate_and_redissolve) reads calculate_inlet_cb()/cc() for every pore on a
+	//grain's boundary, not just this node's flow-upstream neighbors. The BFS below finalizes a node's
+	//concentration exactly once, in flow order, so on a single pass most of those grain-boundary
+	//pores haven't been visited yet and are still at their placeholder value -- making the
+	//redissolution decision for a given pore depend on BFS traversal order, and differ between this
+	//solve (which sets cb/cc) and the later, fully-converged read in dissolve_and_precipitate_and_redissolve
+	//(which decides how much E to actually debit). That mismatch is what breaks mass conservation.
+	//Re-running the whole BFS -- keeping the inlet boundary condition fixed but letting every node's
+	//concentration be recomputed from the previous pass's complete field -- converges this to a
+	//self-consistent fixed point. Only needed when redissolution is active; the plain BFS is already
+	//exact in one pass otherwise (set_new_concentration has no such non-local dependency).
+	const int max_iter = if_redissolution ? 20 : 1;
+	const double conc_tol = 1e-8;
+	double *prev = new double[NN];
 
+	for (int iter = 0; iter < max_iter; ++iter) {
 
-    for (int i=0; i<NN;   i++)   n[i]->tmp=0;   //tmp == 0 - not done; tmp==1 a candidate; tmp=2 done
-    for (int i=0; i<N_wi; i++)  //setting Cb_0 for inlets and
-        {
-            wi[i]->cb = Cb_0;
-            wi[i]->tmp = 2;
-            for (int b=0;  b<wi[i]->b; b++)
-                if(wi[i]->n[b]->tmp==0){
-                    wi[i]->n[b]->tmp = 1;
-                    to_be_checked.push_back(wi[i]->n[b]);
-                }
-        }
+		for (int i=0; i<NN; i++) prev[i] = (species==SPECIES_NAME::B) ? n[i]->cb : n[i]->cc;
 
-        while ( !to_be_checked.empty()){
-            bool new_action = false;
-            for (auto it = to_be_checked.begin(); it != to_be_checked.end(); ) {
+		list<Node *> to_be_checked;
+		for (int i=0; i<NN;   i++)   n[i]->tmp=0;   //tmp == 0 - not done; tmp==1 a candidate; tmp=2 done
+		for (int i=0; i<N_wi; i++)  //setting Cb_0 for inlets and
+			{
+				wi[i]->cb = Cb_0;
+				 wi[i]->tmp = 2;
+				for (int b=0;  b<wi[i]->b; b++)
+					if(wi[i]->n[b]->tmp==0){
+						wi[i]->n[b]->tmp = 1;
+					 	to_be_checked.push_back(wi[i]->n[b]);
+					}
+			}
 
-                if ((*it)->can_be_calculated()) {
-                    new_action = true;
-                	if (if_redissolution) (*it)->set_new_concentration_rediss(this, species);
-                	else (*it)->set_new_concentration(this, species);
-                    (*it)->tmp = 2;
-                    for (int b = 0; b<(*it)->b; b++)
-                        if ((*it)->n[b]->tmp == 0 and (*it)->p[b]->q!=0) {
-                            (*it)->n[b]->tmp = 1;
-                            to_be_checked.push_back((*it)->n[b]);
-                        }
-                    it = to_be_checked.erase(it);
-                }
-                else  ++it;
-            }
-            if(!new_action){
-                Node::epsilon_for_c=Node::epsilon_for_c*2;
-                cerr<<"Node::epsilon_for_c has been updated: "<<Node::epsilon_for_c<<endl;
-            }
-            //print_network_for_debugging("In new concentration: ","nic","nic","nic");
-        }
+	        while ( !to_be_checked.empty()){
+	            bool new_action = false;
+	            for (auto it = to_be_checked.begin(); it != to_be_checked.end(); ) {
+
+	                if ((*it)->can_be_calculated()) {
+	                    new_action = true;
+                		if (if_redissolution) (*it)->set_new_concentration_rediss(this, species);
+                		else (*it)->set_new_concentration(this, species);
+	                    (*it)->tmp = 2;
+	                    for (int b = 0; b<(*it)->b; b++)
+	                        if ((*it)->n[b]->tmp == 0 and (*it)->p[b]->q!=0) {
+	                            (*it)->n[b]->tmp = 1;
+	                            to_be_checked.push_back((*it)->n[b]);
+	                        }
+	                    it = to_be_checked.erase(it);
+	                }
+	                else  ++it;
+	            }
+	            if(!new_action){
+	                Node::epsilon_for_c=Node::epsilon_for_c*2;
+	                cerr<<"Node::epsilon_for_c has been updated: "<<Node::epsilon_for_c<<endl;
+	            }
+	        	//print_network_for_debugging("In new concentration: ","nic","nic","nic");
+	        }
+		if (max_iter > 1){
+			double max_diff = 0;
+			for (int i=0; i<NN; i++){
+				double cur = (species==SPECIES_NAME::B) ? n[i]->cb : n[i]->cc;
+				max_diff = max(max_diff, fabs(cur - prev[i]));
+			}
+			cerr<<"Redissolution concentration solve, iteration "<<iter<<", max_diff = "<<max_diff<<endl;
+			if (max_diff < conc_tol) break;
+		}
+	}
+
+	delete[] prev;
 
 }
 
+/**
+* Solves species B and C jointly to a mutually consistent fixed point.
+*
+* Node::is_there_redissolution() (reached via local_Da_eff_3) depends on BOTH cb and cc, but B and C
+* are solved one after the other: a plain "solve B, then solve C" leaves B evaluated against
+* whatever cc happened to be left over from the END of the PREVIOUS timestep, not this step's cc.
+* Since dissolve_and_precipitate_and_redissolve() runs after both and reads the freshly-solved cc,
+* it can compute a different redissolution decision (and so a different amount of E debited from a
+* grain) than the one implicitly assumed while B's concentration -- and hence how much acid the
+* network is charged for -- was being decided. That mismatch is invisible at low kappa2 (cc barely
+* moves step to step, so it almost never flips the underlying alpha>=1 threshold in
+* is_there_redissolution) but becomes large at high kappa2, where cc can swing by an order of
+* magnitude within a single step.
+*
+* Re-solving B and C in sequence, repeatedly, until neither field changes further, converges both to
+* a joint fixed point so every call to is_there_redissolution this step -- whether from the B solve,
+* the C solve, or the later dissolve step -- sees the same cb and cc.
+*/
+void Network::calculate_concentrations_new_joint_rediss(){
+
+	const int max_joint_iter = 20;
+	const double joint_tol = 1e-8;
+	double *prev_cb = new double[NN];
+	double *prev_cc = new double[NN];
+
+	for (int joint_iter = 0; joint_iter < max_joint_iter; ++joint_iter){
+
+		for (int i=0; i<NN; i++) { prev_cb[i] = n[i]->cb; prev_cc[i] = n[i]->cc; }
+
+		calculate_concentration_new(SPECIES_NAME::B);
+		calculate_concentration_new(SPECIES_NAME::C);
+
+		double max_diff = 0;
+		for (int i=0; i<NN; i++){
+			max_diff = max(max_diff, fabs(n[i]->cb - prev_cb[i]));
+			max_diff = max(max_diff, fabs(n[i]->cc - prev_cc[i]));
+		}
+		cerr<<"Joint B/C concentration solve, iteration "<<joint_iter<<", max_diff = "<<max_diff<<endl;
+		if (max_diff < joint_tol) break;
+	}
+
+	delete[] prev_cb;
+	delete[] prev_cc;
+}
 

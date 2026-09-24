@@ -83,8 +83,7 @@ void Network::do_one_euler_step(){
 		dissolve_and_precipitate();
 		}
 	else if (if_precipitation&&if_redissolution) {
-		calculate_concentration_new(SPECIES_NAME::B);
-		calculate_concentration_new(SPECIES_NAME::C);
+		calculate_concentrations_new_joint_rediss();
 		dissolve_and_precipitate_and_redissolve();
 	}
 	else{
