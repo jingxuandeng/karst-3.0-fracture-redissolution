@@ -247,7 +247,8 @@ class Network
 		void calculate_concentrations_c();			///< calculate concentration profile for species c
 		void calculate_concentrations_streamtube_mixing(); 		     ///< new fancy mixing method where particles prefer to go straight through the crossing
  		void calculate_concentration_new(SPECIES_NAME species);                       ///< iterative version of concentration calculation;
-        void dissolve();											 ///< change the pore sizes due to the dissolution
+		void calculate_concentrations_new_joint_rediss();			 ///< jointly iterates B and C concentration solves to a mutually consistent fixed point, for redissolution
+		void dissolve();											 ///< change the pore sizes due to the dissolution
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
 		void dissolve_and_precipitate_and_redissolve();				 ///< change the pore sizes due to dissolution, precipitation, and redissolution
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
