@@ -100,7 +100,10 @@ void Network::check_acid_balance(){
 	double Va_tot_tmp = 0;
 	for(int i=0;i<NG;i++) Va_tot_tmp+= g[i]->Va;
 
-	double Va_delta = Va_tot - Va_tot_tmp;
+	double Ve_diss2_delta = 0;
+	if(if_redissolution) for(int i=0;i<NG;i++) Ve_diss2_delta -= g[i]->tmp3;
+
+	double Va_delta = Va_tot - Va_tot_tmp + Ve_diss2_delta/gamma;
 	double Vb_delta = VB_in - VB_out;
 
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
