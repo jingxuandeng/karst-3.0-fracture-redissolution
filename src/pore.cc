@@ -501,7 +501,7 @@ double Pore::default_dd_plus(Network*S){
 	//finding dissolution contribution
 	if      (f1==0)      dd_plus = 0;
 	else if (S->G1 >=0)  dd_plus = S->dt*c0*(f1/f_tot)*(1-exp(-f_tot))/(1+g)/f1;
-	else        	     dd_plus = S->dt*c0*(f1/f_tot)(1-exp(-f_tot))/f1/d;
+	else        	     dd_plus = S->dt*c0*(f1/f_tot)*(1-exp(-f_tot))/f1/d;
 
 
 	return dd_plus;
