@@ -476,8 +476,9 @@ double Pore::local_Da_eff_3_tmp(Network* S){
 /**
 * This function returns the change in diameter due to dissolution in one time step.
 * @param S pointer to the network
-* @author Agnieszka Budek
-* @date 14/03/2020
+* @author Agnieszka Budek (modified by Jingxuan Deng)
+* @date 14/03/2020 (modified on 25/09/2026)
+*
 */
 double Pore::default_dd_plus(Network*S){
 	// To do: add check how much E is available: use a loop to get all the E ...
@@ -493,13 +494,18 @@ double Pore::default_dd_plus(Network*S){
 	if(S->if_streamtube_mixing) c0 = c_in;
 	else                        c0 = calculate_inlet_cb();
 
+	//redissolution parameters
+	double f3      = S->if_redissolution ? local_Da_eff_3(S) : 0;
+	double f_tot   = f1 + f3;
+
 	double dd_plus = 0; 		//diameter change
     //double d_tmp = min(1,d);       //possible feature for a fracture
 
 	//finding dissolution contribution
 	if      (f1==0)      dd_plus = 0;
-	else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
-	else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
+	else if (S->G1 >=0)  dd_plus = f1/f_tot * S->dt*c0*(1-exp(-f_tot))/(1+g)/f1;
+	else				 dd_plus = f1/f_tot * S->dt*c0*(1-exp(-f_tot))/f1/d;
+
 
 
 	return dd_plus;
@@ -548,8 +554,8 @@ double Pore::default_dd_plus_rediss(Network*S){
 /**
 * This function returns the change in diameter due to precipitation in one time step (no condition for left space is checked here).
 * @param S pointer to the network
-* @author Agnieszka Budek
-* @date 14/03/2020
+* @author Agnieszka Budek (Modified by Jingxuan Deng)
+* @date 14/03/2020 (modified on 25/09/2026)
 */
 double Pore::default_dd_minus(Network*S){
 
@@ -566,6 +572,9 @@ double Pore::default_dd_minus(Network*S){
 	if(S->if_streamtube_mixing) c0 = c_in;
 	else                        c0 = calculate_inlet_cb();
 
+	//redissolution parameters
+	double f3      = S->if_redissolution ? local_Da_eff_3(S) : 0;
+	double f_tot   = f1 + f3;
 
 	//precipitation parameters
     double dd_minus = 0; 		//diameter change
@@ -577,10 +586,10 @@ double Pore::default_dd_minus(Network*S){
 
 	//finding precipitation contribution
 	if      (f2==0)         dd_minus = 0;
-	else if (f1==f2 && is_Va_left())        dd_minus = S->gamma*S->dt/(1+g)/f1*((c0_c + c0)*(1-exp(-f1)) -c0*exp(-f1)*f1);
+	else if (f_tot==f2 && is_Va_left())     dd_minus = S->gamma*S->dt/(1+g)/f1*((c0_c + c0)*(1-exp(-f_tot)) -c0*exp(-f_tot)*f_tot);
 	else if (!is_Va_left()) 				dd_minus = S->gamma*S->dt/(1+g)/f1*  c0_c*      (1-exp(-f2));
 	else                    				dd_minus = S->gamma*S->dt/(1+g)/f1*(\
-								       	   	   	   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
+								       	   	   	   c0  * (f_tot*(1-exp(-f2)) - f2*(1-exp(-f_tot)))/(f_tot-f2)+\
 												   c0_c*  (1-exp(-f2)) );
 
 

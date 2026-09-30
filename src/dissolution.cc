@@ -482,7 +482,7 @@ double Network::outlet_c_c_1 (Pore *p0){
 
 /**
 * This function returns the amount of species C produced in a given pore as a result to dissolution reaction.
-* The real value of the C_c_outlet  = C_c_inlet*outlet_c_c_2_coeff (p0) + C_b_inlet*outlet_c_c_1 (p0)
+* The real value of the C_c_outlet  = C_c_inlet*outlet_c_c_2_coeff (p0) + C_b_inlet*outlet_c_c_1_rediss (p0)
 * WARNING: The d_min and d_max needed to determined if the system will clogged
 *  are calculated based on old concentration field.
 *  There is no way to synchronized it. One can only use relatively small time step.
@@ -556,10 +556,11 @@ double Network::outlet_c_c_2_coeff (Pore *p){
 	double f2       = p->local_Da_eff_2  (this);
 	double dd_plus  = p->default_dd_plus (this);
 	double dd_minus = p->default_dd_minus(this);
+	double dd_plus_rediss = if_redissolution ? p->default_dd_plus_rediss(this) : 0;
 
 
 	//Checking if there is enough space for full dissolution
-	if(p->d + (dd_plus - dd_minus) * d0 < d_min){
+	if(p->d + (dd_plus + dd_plus_rediss - dd_minus) * d0 < d_min){
 		if(p->is_Va_left()) return 1;            //if there is no space for full precipitation I use ugly but working formula form outlet_c_c_2
 		else                 return 1 - (p->d - d_min) / d0 / dd_minus * (1 - exp(-f2));
 	}
